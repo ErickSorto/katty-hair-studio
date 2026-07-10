@@ -94,7 +94,7 @@ const services = [
 
 const studioInfo = [
   {
-    title: "Plan first",
+    title: "Quote confirmed",
     detail: "You confirm your goal, timing, and quote before the chair.",
     icon: Award,
   },
@@ -214,19 +214,19 @@ const proofPoints = [
   {
     value: "4.8",
     label: "156 Google reviews",
-    icon: Star,
+    image: "/trust-badges/google-reviews-plaque-v3.png",
     href: googleReviewsUrl,
     ariaLabel: "Read Katty Hair Studio Google reviews",
   },
   {
-    value: "$10",
-    label: "Mon + Wed off services",
-    icon: BadgePercent,
+    value: "$10 off",
+    label: "Mon + Wed",
+    image: "/trust-badges/offer-plaque-v3.png",
   },
   {
-    value: "Your plan",
-    label: "confirmed before the chair",
-    icon: MessageCircle,
+    value: "Upfront quote",
+    label: "Before service",
+    image: "/trust-badges/upfront-quote-plaque-v3.png",
   },
 ] as const;
 
@@ -605,7 +605,7 @@ export default function Home() {
           fill
           priority
           sizes="100vw"
-          src="/hero/katty-salon-interior-hero-v2.webp"
+          src="/hero/katty-salon-interior-hero-clear-pink-v4.webp"
         />
         <div className="hero-shade" />
         <div className="hero-content">
@@ -639,19 +639,41 @@ export default function Home() {
             4.8 from 156 Google reviews · Quote confirmed before the chair.
           </p>
         </div>
-        <div className="hero-note" aria-label="Studio highlights">
-          <span>
-            <Sparkles aria-hidden="true" />
-            Blowouts
-          </span>
-          <span>
-            <Palette aria-hidden="true" />
-            Color
-          </span>
-          <span>
-            <Gem aria-hidden="true" />
-            Extensions
-          </span>
+        <div className="hero-mobile-signals" aria-label="Studio proof points">
+          {proofPoints.map((item) => {
+            const content = (
+              <>
+                <Image
+                  alt=""
+                  aria-hidden="true"
+                  className="hero-signal-emblem"
+                  height={240}
+                  sizes="44px"
+                  src={item.image}
+                  width={320}
+                />
+                <strong>{item.value}</strong>
+                <span>{item.label}</span>
+              </>
+            );
+
+            return "href" in item ? (
+              <a
+                aria-label={item.ariaLabel}
+                className="hero-mobile-signal"
+                href={item.href}
+                key={item.label}
+                rel="noreferrer"
+                target="_blank"
+              >
+                {content}
+              </a>
+            ) : (
+              <div className="hero-mobile-signal" key={item.label}>
+                {content}
+              </div>
+            );
+          })}
         </div>
       </section>
 
@@ -659,9 +681,15 @@ export default function Home() {
         {proofPoints.map((item) => {
           const content = (
             <>
-              <span>
-                <Icon icon={item.icon} />
-              </span>
+              <Image
+                alt=""
+                aria-hidden="true"
+                className="proof-emblem"
+                height={240}
+                sizes="(max-width: 740px) 76px, 82px"
+                src={item.image}
+                width={320}
+              />
               <strong>{item.value}</strong>
               <p>{item.label}</p>
             </>
