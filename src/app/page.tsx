@@ -609,7 +609,7 @@ export default function Home() {
         />
         <div className="hero-shade" />
         <div className="hero-content">
-          <p className="eyebrow">Dominican hair studio and beauty supply</p>
+          <p className="eyebrow">Dominican-owned hair studio and beauty supply</p>
           <h1>
             <span className="hero-title-desktop">Katty Hair Studio</span>
             <span className="hero-title-mobile">

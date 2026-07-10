@@ -16,27 +16,33 @@ const playfair = Playfair_Display({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://kattyhairstudio.com"),
-  title: "Katty Hair Studio | Dominican Hair Studio in Brentwood",
+  title: "Katty Hair Studio | Dominican-Owned Hair Studio in Brentwood",
   description:
-    "Warm Dominican hair studio and beauty supply in Brentwood, MD for blowouts, color, extensions, wigs, braids, cuts, and polished finishes.",
+    "Warm, Dominican-owned hair studio and beauty supply in Brentwood, MD welcoming every texture for blowouts, color, extensions, wigs, braids, cuts, and polished finishes.",
+  icons: {
+    icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
+    apple: [{ url: "/icon.svg", type: "image/svg+xml" }],
+  },
   openGraph: {
     title: "Katty Hair Studio",
     description:
-      "Rose-toned Brentwood hair studio for Dominican blowouts, color, extensions, wigs, braids, cuts, and beauty supply.",
+      "Your texture. Your plan. Your finish. A Dominican-owned studio welcoming every texture in Brentwood, Maryland.",
+    type: "website",
+    siteName: "Katty Hair Studio",
     images: [
       {
-        url: "/social/share-preview-salon.webp",
+        url: "/social/katty-share-preview.webp",
         width: 1200,
         height: 630,
-        alt: "Katty Hair Studio warm salon interior",
+        alt: "Katty Hair Studio founder Kathy De la Paz",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Katty Hair Studio",
-    description: "Dominican Brentwood hair studio for blowouts, color, extensions, wigs, braids, and cuts.",
-    images: ["/social/share-preview-salon.webp"],
+    description: "Dominican-owned and welcoming every texture in Brentwood, Maryland.",
+    images: ["/social/katty-share-preview.webp"],
   },
 };
 
