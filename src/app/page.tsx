@@ -121,18 +121,21 @@ const process = [
     title: "Show your goal",
     detail: "Bring your photo, texture history, and must-haves.",
     icon: MessageCircle,
+    art: "/process/katty-step-1-show-goal.webp",
   },
   {
     step: "02",
     title: "See it take shape",
     detail: "Your service is built with clean sections, careful color, and balanced blending.",
     icon: Timer,
+    art: "/process/katty-step-2-take-shape.webp",
   },
   {
     step: "03",
     title: "Leave ready",
     detail: "You leave with polished edges, movement, shine, and care notes.",
     icon: Check,
+    art: "/process/katty-step-3-leave-ready.webp",
   },
 ] as const;
 
@@ -214,19 +217,19 @@ const proofPoints = [
   {
     value: "4.8",
     label: "156 Google reviews",
-    image: "/trust-badges/google-reviews-plaque-v3.png",
+    icon: Star,
     href: googleReviewsUrl,
     ariaLabel: "Read Katty Hair Studio Google reviews",
   },
   {
     value: "$10 off",
-    label: "Mon + Wed",
-    image: "/trust-badges/offer-plaque-v3.png",
+    label: "Mondays only",
+    icon: BadgePercent,
   },
   {
     value: "Upfront quote",
     label: "Before service",
-    image: "/trust-badges/upfront-quote-plaque-v3.png",
+    icon: ClipboardCheck,
   },
 ] as const;
 
@@ -452,9 +455,9 @@ export default function Home() {
           <a className="announcement-pill" href="#prices">
             <Icon icon={BadgePercent} />
             <span className="announcement-copy-long">
-              Monday + Wednesday: $10 off all services
+              Mondays: $10 off all services
             </span>
-            <span className="announcement-copy-short">Mon + Wed: $10 off services</span>
+            <span className="announcement-copy-short">Mondays: $10 off services</span>
           </a>
           <div className="announcement-contact">
             <a className="announcement-center" href={`tel:${phoneNumber}`}>
@@ -641,17 +644,10 @@ export default function Home() {
         </div>
         <div className="hero-mobile-signals" aria-label="Studio proof points">
           {proofPoints.map((item) => {
+            const Icon = item.icon;
             const content = (
               <>
-                <Image
-                  alt=""
-                  aria-hidden="true"
-                  className="hero-signal-emblem"
-                  height={240}
-                  sizes="44px"
-                  src={item.image}
-                  width={320}
-                />
+                <Icon aria-hidden="true" className="hero-signal-icon" />
                 <strong>{item.value}</strong>
                 <span>{item.label}</span>
               </>
@@ -679,17 +675,10 @@ export default function Home() {
 
       <section className="proof-band" aria-label="Studio proof points">
         {proofPoints.map((item) => {
+          const Icon = item.icon;
           const content = (
             <>
-              <Image
-                alt=""
-                aria-hidden="true"
-                className="proof-emblem"
-                height={240}
-                sizes="(max-width: 740px) 76px, 82px"
-                src={item.image}
-                width={320}
-              />
+              <Icon aria-hidden="true" className="proof-icon" />
               <strong>{item.value}</strong>
               <p>{item.label}</p>
             </>
@@ -741,7 +730,7 @@ export default function Home() {
         <ReviewPager googleReviewsUrl={googleReviewsUrl} reviews={featuredReviews} />
       </section>
 
-      <section className="intro-section section-grid" data-reveal>
+      <section className="intro-section section-grid" data-reveal id="visit-plan">
         <div className="section-copy">
           <p className="eyebrow">Your visit, made clear</p>
           <h2>You’ll know the plan before your service begins.</h2>
@@ -764,25 +753,27 @@ export default function Home() {
             </span>
           </div>
         </div>
-        <div className="signal-art" aria-label="Editorial preview of a polished blowout">
+        <div className="signal-art" aria-label="Editorial preview of a burgundy ombré finish">
           <figure className="signal-photo signal-photo-large">
             <Image
-              alt="Editorial portrait of a woman with a polished layered espresso-brown blowout in a rose-toned salon"
+              alt="Rear view of long glossy chestnut-brown layered hair finished with soft curled ends in a blush-toned salon"
               fill
               loading="eager"
               sizes="(max-width: 1100px) 100vw, 42vw"
-              src="/editorial/katty-client-plan-result-v2.webp"
-              unoptimized
+              src="/editorial/katty-reference-chestnut-layers-v4.webp"
             />
           </figure>
           <a
-            aria-label="Plan your appointment with Katty Hair Studio"
-            className="signal-note"
+            aria-label="Share your reference and request an appointment"
+            className="finish-cta"
             href="#booking"
           >
-            <ClipboardCheck aria-hidden="true" />
-            <strong>Plan before the chair</strong>
-            <span>Goal · timing · quote · aftercare</span>
+            <MessageCircle aria-hidden="true" className="finish-cta-icon" />
+            <span className="finish-cta-copy">
+              <strong>Have a look in mind?</strong>
+              <small>Share your reference and confirm the timing and quote.</small>
+            </span>
+            <ArrowRight aria-hidden="true" className="finish-cta-arrow" />
           </a>
         </div>
       </section>
@@ -823,38 +814,39 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="process-section">
-        <div className="process-layout">
-          <div className="process-copy" data-reveal>
-            <p className="eyebrow">Your appointment</p>
-            <h2>You’ll always know what happens next.</h2>
-            <p>You bring the goal. Your service moves through three clear steps, from plan to polish.</p>
-            <div className="process-grid">
-              {process.map((item) => (
-                <article className="process-step" key={item.step}>
-                  <small>{item.step}</small>
-                  <span>
-                    <Icon icon={item.icon} />
-                  </span>
-                  <div>
-                    <h3>{item.title}</h3>
-                    <p>{item.detail}</p>
+      <section className="process-section" id="process">
+        <div className="process-heading centered" data-reveal>
+          <p className="eyebrow">Your appointment</p>
+          <h2>You’ll always know what happens next.</h2>
+          <p>You bring the goal. Your service moves through three clear steps, from plan to polish.</p>
+        </div>
+        <div className="process-story" data-reveal aria-label="Your three appointment steps">
+          <div className="process-days">
+            <div className="process-connector process-connector-one" aria-hidden="true" />
+            <div className="process-connector process-connector-two" aria-hidden="true" />
+            {process.map((item) => {
+              const StepIcon = item.icon;
+
+              return (
+                <article className="process-day" key={item.step}>
+                  <div className="process-day-art">
+                    <Image
+                      alt=""
+                      aria-hidden="true"
+                      fill
+                      sizes="(max-width: 740px) 112px, 180px"
+                      src={item.art}
+                    />
                   </div>
+                  <span className="process-day-label">
+                    <StepIcon aria-hidden="true" />
+                    Step {Number(item.step)}
+                  </span>
+                  <h3>{item.title}</h3>
+                  <p>{item.detail}</p>
                 </article>
-              ))}
-            </div>
-          </div>
-          <div className="process-visual" data-reveal>
-            <Image
-              alt="Close-up of glossy braided curls from Katty Hair Studio"
-              fill
-              sizes="(max-width: 900px) 100vw, 36vw"
-              src="/instagram/katty-clean-braid-curls.webp"
-            />
-            <span>
-              <Heart aria-hidden="true" />
-              Reference-ready finish
-            </span>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -895,7 +887,7 @@ export default function Home() {
             <div className="price-offer">
               <BadgePercent aria-hidden="true" />
               <strong>$10 off</strong>
-              <span>Monday + Wednesday services</span>
+              <span>Monday services only</span>
             </div>
           </div>
         </div>
