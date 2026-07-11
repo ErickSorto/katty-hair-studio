@@ -17,6 +17,7 @@ import {
   MessageCircle,
   Palette,
   Phone,
+  PlayCircle,
   Quote,
   Scissors,
   Sparkles,
@@ -28,6 +29,7 @@ import {
 import BookingSection from "./BookingSection";
 import DrawerAutoClose from "./DrawerAutoClose";
 import ReviewPager from "./ReviewPager";
+import VideoStoryStack from "./VideoStoryStack";
 import ViewportReveal from "./ViewportReveal";
 
 type SiteIcon = LucideIcon;
@@ -136,6 +138,33 @@ const process = [
     detail: "You leave with polished edges, movement, shine, and care notes.",
     icon: Check,
     art: "/process/katty-step-3-leave-ready.webp",
+  },
+] as const;
+
+const videoStories = [
+  {
+    eyebrow: "Client story · 01",
+    title: "The Katty difference",
+    detail: "A real client shares the feeling behind her finished look.",
+    poster: "/video-stories/client-story-best-v1.webp",
+    src: "/video-stories/client-story-best-v1.mp4",
+    alt: "Katty Hair Studio client with sleek, long dark hair speaking from her car",
+  },
+  {
+    eyebrow: "Client result · 02",
+    title: "Hair she loves more every day",
+    detail: "Healthy-looking shine, movement, and a shape made for her.",
+    poster: "/video-stories/client-story-shine-v1.webp",
+    src: "/video-stories/client-story-shine-v1.mp4",
+    alt: "Katty Hair Studio client showing her glossy shoulder-length blowout",
+  },
+  {
+    eyebrow: "Inside the studio · 03",
+    title: "A finish worth showing off",
+    detail: "Sleek length and polish, captured right where it happened.",
+    poster: "/video-stories/client-story-salon-v1.webp",
+    src: "/video-stories/client-story-salon-v1.mp4",
+    alt: "Katty Hair Studio client showing her long, sleek hair inside the salon",
   },
 ] as const;
 
@@ -727,6 +756,44 @@ export default function Home() {
         </div>
 
         <ReviewPager googleReviewsUrl={googleReviewsUrl} reviews={featuredReviews} />
+      </section>
+
+      <section
+        className="video-stories-section"
+        aria-labelledby="video-stories-heading"
+        data-reveal
+        id="client-stories"
+      >
+        <div className="video-stories-copy">
+          <p className="eyebrow">Hear it from the chair</p>
+          <h2 id="video-stories-heading">The best proof is how they talk about their hair.</h2>
+          <p>
+            Tap into three real client moments—from the reason they trust Katty to the
+            shine, movement, and confidence they leave with.
+          </p>
+          <div className="video-stories-proof" aria-label="About these client videos">
+            <span>
+              <PlayCircle aria-hidden="true" />
+              Real client reels
+            </span>
+            <span>
+              <Heart aria-hidden="true" />
+              Unscripted results
+            </span>
+          </div>
+          <div className="video-stories-actions">
+            <a className="primary-link" href="#booking">
+              Book your visit
+              <ArrowRight aria-hidden="true" />
+            </a>
+            <a className="video-instagram-link" href={instagramUrl} rel="noreferrer" target="_blank">
+              See more on Instagram
+              <ExternalLink aria-hidden="true" />
+            </a>
+          </div>
+        </div>
+
+        <VideoStoryStack stories={videoStories} />
       </section>
 
       <section className="intro-section section-grid" data-reveal id="visit-plan">

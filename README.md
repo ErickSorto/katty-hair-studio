@@ -16,6 +16,25 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+### Local Google Calendar OAuth
+
+1. Copy `.env.example` to `.env.local` and fill in the local OAuth client values.
+2. Generate `GOOGLE_CALENDAR_TOKEN_ENCRYPTION_KEY` with `openssl rand -base64 32`.
+3. Configure the OAuth client redirect URI as
+   `http://localhost:3000/api/integrations/google-calendar/callback`.
+4. Start the app and open
+   `http://localhost:3000/api/integrations/google-calendar/connect`.
+
+The callback stores the refresh token encrypted in the ignored `.data` directory for local
+development. In production, the encrypted connection is stored in Supabase once the server-only
+Supabase environment variables are configured.
+
+### Booking database
+
+The production booking system uses Supabase/Postgres. Apply
+`supabase/migrations/20260710193000_booking_foundation.sql`, then configure `SUPABASE_URL` and the
+server-only `SUPABASE_SECRET_KEY`. See `supabase/README.md` for calendar provisioning details.
+
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
