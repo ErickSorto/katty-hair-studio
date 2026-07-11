@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import type { LucideIcon } from "lucide-react";
 import {
   ArrowRight,
@@ -28,6 +29,7 @@ import {
 } from "lucide-react";
 import BookingSection from "./BookingSection";
 import DrawerAutoClose from "./DrawerAutoClose";
+import { DesktopServicesMenu, DrawerServicesMenu } from "./ServiceNavigation";
 import ReviewPager from "./ReviewPager";
 import VideoStoryStack from "./VideoStoryStack";
 import ViewportReveal from "./ViewportReveal";
@@ -63,7 +65,6 @@ const socialLinks = [
 ] as const;
 
 const navLinks = [
-  ["Services", "#services"],
   ["Prices", "#prices"],
   ["Gallery", "#gallery"],
   ["Info", "#info"],
@@ -93,6 +94,88 @@ const services = [
     icon: Scissors,
   },
 ] as const;
+
+const homeFaqs = [
+  {
+    question:
+      "Which hair salon services can I discuss with Katty Hair Studio in Brentwood?",
+    answer:
+      "You can discuss professional hair care, styling, and barbering services with us in Brentwood, including Dominican blowouts, color, extensions, braids, and cuts at our Bladensburg Rd studio.",
+  },
+  {
+    question: "How can I decide which hair salon service fits my needs?",
+    answer:
+      "Your consultation is shaped around your hair history, texture, reference photo, upkeep, and styling goals. We will explain the options and confirm the plan before your service begins.",
+  },
+  {
+    question: "What should I share when I contact the studio?",
+    answer:
+      "Share your current hair condition, recent color or extension history, desired finish, reference photos, and preferred timing. These details help us prepare for a useful consultation.",
+  },
+  {
+    question: "How do I get started with a hair appointment?",
+    answer:
+      "Request an appointment online or call the studio at (240) 582-6622. We are located at 3816 Bladensburg Rd in Brentwood, and your price is confirmed before the chair.",
+  },
+] as const;
+
+function HomeJsonLd() {
+  const graph = [
+    {
+      "@type": ["HairSalon", "LocalBusiness"],
+      "@id": "https://www.kattyhairstudio.com/#business",
+      name: "Dominican Katty Hair Studio and Barber Shop",
+      url: "https://www.kattyhairstudio.com/",
+      telephone: phoneNumber,
+      address: {
+        "@type": "PostalAddress",
+        streetAddress: "3816 Bladensburg Rd",
+        addressLocality: "Brentwood",
+        addressRegion: "MD",
+        postalCode: "20722",
+        addressCountry: "US",
+      },
+      image: "https://www.kattyhairstudio.com/social/katty-share-preview.webp",
+      sameAs: [instagramUrl, facebookUrl, youtubeUrl, xUrl, tiktokUrl],
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://www.kattyhairstudio.com/#website",
+      url: "https://www.kattyhairstudio.com/",
+      name: "Katty Hair Studio",
+      publisher: { "@id": "https://www.kattyhairstudio.com/#business" },
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://www.kattyhairstudio.com/#webpage",
+      url: "https://www.kattyhairstudio.com/",
+      name: "Katty Hair Studio | Dominican-Owned Hair Studio in Brentwood",
+      isPartOf: { "@id": "https://www.kattyhairstudio.com/#website" },
+      about: { "@id": "https://www.kattyhairstudio.com/#business" },
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://www.kattyhairstudio.com/#faq",
+      mainEntity: homeFaqs.map((faq) => ({
+        "@type": "Question",
+        name: faq.question,
+        acceptedAnswer: { "@type": "Answer", text: faq.answer },
+      })),
+    },
+  ];
+
+  return (
+    <script
+      dangerouslySetInnerHTML={{
+        __html: JSON.stringify({ "@context": "https://schema.org", "@graph": graph }).replace(
+          /</g,
+          "\\u003c",
+        ),
+      }}
+      type="application/ld+json"
+    />
+  );
+}
 
 const studioInfo = [
   {
@@ -470,6 +553,7 @@ function BestProsInTownBadge() {
 export default function Home() {
   return (
     <main className="site-shell">
+      <HomeJsonLd />
       <input
         aria-label="Toggle mobile menu"
         className="drawer-toggle"
@@ -537,6 +621,7 @@ export default function Home() {
           </a>
 
           <nav aria-label="Main navigation" className="desktop-nav">
+            <DesktopServicesMenu />
             {navLinks.map(([label, href]) => (
               <a href={href} key={href}>
                 {label}
@@ -571,6 +656,7 @@ export default function Home() {
         </div>
 
         <nav className="drawer-links" aria-label="Mobile page links">
+          <DrawerServicesMenu />
           {navLinks.map(([label, href]) => (
             <a href={href} key={href}>
               {label}
@@ -880,6 +966,78 @@ export default function Home() {
         </div>
       </section>
 
+      <section
+        aria-labelledby="category-architecture-heading"
+        className="category-architecture-section"
+        data-reveal
+        id="service-categories"
+      >
+        <div className="category-hub-inner">
+          <div className="category-hub-heading">
+            <p className="eyebrow">Your categories</p>
+            <h2 id="category-architecture-heading">Two ways to find the right service for your hair.</h2>
+            <p>Choose the category that fits your goal, then explore the services and care built around it.</p>
+          </div>
+
+          <div className="category-cards">
+            <article className="category-card category-primary">
+              <div className="category-card-media">
+                <Image
+                  alt="Warm baby-pink Katty Hair Studio interior with styling chairs and mirrors"
+                  fill
+                  sizes="(max-width: 900px) 100vw, 50vw"
+                  src="/hero/katty-salon-interior-hero-clear-pink-v4.webp"
+                />
+                <div className="category-card-image-shade" />
+                <div className="category-card-meta">
+                  <span>Primary category</span>
+                  <strong>01</strong>
+                </div>
+              </div>
+              <div className="category-card-copy">
+                <h3>Hair salon in Brentwood, MD</h3>
+                <p>
+                  Explore personalized color, Dominican blowouts, braids, cuts, treatments,
+                  and styling shaped around your texture, routine, and desired finish.
+                </p>
+                <Link className="category-card-link" href="/hair-salon">
+                  Explore hair salon services
+                  <ArrowRight aria-hidden="true" />
+                </Link>
+              </div>
+            </article>
+
+            <article className="category-card category-secondary">
+              <div className="category-card-media">
+                <Image
+                  alt="Client with long glossy black extension blend and soft curls at Katty Hair Studio"
+                  fill
+                  sizes="(max-width: 900px) 100vw, 50vw"
+                  src="/services/generated/hair-extension-technician-v2.webp"
+                />
+                <div className="category-card-image-shade" />
+                <div className="category-card-meta">
+                  <span>Specialist category</span>
+                  <strong>02</strong>
+                </div>
+              </div>
+              <div className="category-card-copy">
+                <h3>Hair extension technician in Brentwood, MD</h3>
+                <p>
+                  Compare consultations, installation, blending, maintenance, and careful
+                  removal with your natural-hair health guiding every recommendation.
+                </p>
+                <Link className="category-card-link" href="/hair-extension-technician">
+                  Explore extension services
+                  <ArrowRight aria-hidden="true" />
+                </Link>
+              </div>
+            </article>
+          </div>
+
+        </div>
+      </section>
+
       <section className="process-section" id="process">
         <div className="process-heading centered" data-reveal>
           <p className="eyebrow">Your appointment</p>
@@ -1078,6 +1236,25 @@ export default function Home() {
       </section>
 
       <BookingSection phoneDisplay={phoneDisplay} phoneNumber={phoneNumber} />
+
+      <section aria-labelledby="home-faq-heading" className="home-faq-section" data-reveal id="faq">
+        <div className="home-faq-heading">
+          <p className="eyebrow">Before your visit</p>
+          <h2 id="home-faq-heading">Frequently asked questions</h2>
+          <p>Clear answers help you arrive knowing what to bring and what happens next.</p>
+        </div>
+        <div className="home-faq-list">
+          {homeFaqs.map((faq, index) => (
+            <details key={faq.question} open={index === 0}>
+              <summary>
+                {faq.question}
+                <span aria-hidden="true">+</span>
+              </summary>
+              <p>{faq.answer}</p>
+            </details>
+          ))}
+        </div>
+      </section>
 
       <section className="final-banner" data-reveal>
         <div>

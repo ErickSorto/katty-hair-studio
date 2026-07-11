@@ -19,6 +19,9 @@ export const metadata: Metadata = {
   title: "Katty Hair Studio | Dominican-Owned Hair Studio in Brentwood",
   description:
     "Warm, Dominican-owned hair studio and beauty supply in Brentwood, MD welcoming every texture for blowouts, color, extensions, wigs, braids, cuts, and polished finishes.",
+  alternates: {
+    canonical: "https://www.kattyhairstudio.com/",
+  },
   icons: {
     icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
     apple: [{ url: "/icon.svg", type: "image/svg+xml" }],
@@ -52,7 +55,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} ${playfair.variable} antialiased`}>
+    <html
+      className={`${inter.variable} ${playfair.variable} antialiased`}
+      data-scroll-behavior="smooth"
+      lang="en"
+    >
       <body>{children}</body>
     </html>
   );

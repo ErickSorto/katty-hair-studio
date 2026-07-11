@@ -1,0 +1,166 @@
+import content from "./service-content.generated.json";
+
+export type ServiceSection = {
+  heading: string;
+  paragraphs: string[];
+};
+
+export type ServiceFaq = {
+  question: string;
+  answer: string;
+};
+
+export type ServicePageData = {
+  slug: string;
+  url: string;
+  pageType: "Service Page" | "Category Page";
+  h1: string;
+  name: string;
+  title: string;
+  description: string;
+  canonical: string;
+  sections: ServiceSection[];
+  faqs: ServiceFaq[];
+};
+
+export const servicePages = content as ServicePageData[];
+export const extensionCategory = servicePages.find(
+  (page) => page.url === "/hair-extension-technician",
+)!;
+
+export const hairSalonCategory: ServicePageData = {
+  slug: "hair-salon",
+  url: "/hair-salon",
+  pageType: "Category Page",
+  h1: "Hair salon in Brentwood, MD",
+  name: "Hair salon",
+  title: "Hair Salon in Brentwood, MD | Katty Hair Studio",
+  description:
+    "Explore blowouts, color, highlights, braids, cuts, styling, and personalized hair care at Katty Hair Studio in Brentwood, MD.",
+  canonical: "https://www.kattyhairstudio.com/hair-salon",
+  sections: [
+    {
+      heading: "Hair coloring",
+      paragraphs: [
+        "Your color plan begins with your current shade, recent color history, hair strength, and desired finish. We explain what your hair can support before choosing a formula or beginning the service.",
+        "From rich all-over color to dimensional changes, the goal is a polished result with practical guidance for protecting moisture and maintaining tone between visits.",
+      ],
+    },
+    {
+      heading: "Hairstyling",
+      paragraphs: [
+        "Bring your reference and talk through the shape, movement, hold, and upkeep you want. Your styling appointment is adapted to your texture and the way you plan to wear the finished look.",
+        "You will leave with a clear finish plan and straightforward care notes for keeping the style manageable after you leave the studio.",
+      ],
+    },
+    {
+      heading: "Balayage",
+      paragraphs: [
+        "Balayage uses thoughtful placement to create dimension that works with your natural base. Your consultation covers tone, contrast, maintenance, and the condition of your hair before lightener is applied.",
+        "The finished color is toned and styled so you can see the complete blend, movement, and brightness from root to end.",
+      ],
+    },
+    {
+      heading: "Braids",
+      paragraphs: [
+        "Braiding starts with a conversation about the pattern, size, length, tension, and daily routine you need the style to support. Clean preparation and comfortable sectioning guide the service.",
+        "We focus on a neat finish and practical upkeep so your braids feel intentional, secure, and manageable.",
+      ],
+    },
+    {
+      heading: "Blowouts",
+      paragraphs: [
+        "Your blowout is adjusted for your density, texture, length, and desired amount of body. Controlled preparation and balanced heat help create smooth roots, movement, and shine.",
+        "Before the chair, you can discuss the finish you prefer and confirm the timing and quote for your hair.",
+      ],
+    },
+    {
+      heading: "Hair highlighting",
+      paragraphs: [
+        "Highlight placement is planned around your current color, face framing, preferred brightness, and future maintenance. Your hair history helps determine a realistic and healthy direction.",
+        "After lifting, toning and styling bring the final dimension together so the result feels balanced rather than disconnected from your base color.",
+      ],
+    },
+  ],
+  faqs: [
+    {
+      question: "Which hair salon services can I explore from this category page?",
+      answer:
+        "You can explore color, highlights, balayage, blowouts, braids, cuts, straightening, smoothing treatments, wigs, and hairstyling available through Katty Hair Studio in Brentwood.",
+    },
+    {
+      question: "How do I choose the right hair salon service for my goal?",
+      answer:
+        "Bring a reference and share your hair history, current condition, daily routine, and desired upkeep. The consultation helps narrow the options to a realistic plan for your hair.",
+    },
+    {
+      question: "Can I confirm pricing before my service starts?",
+      answer:
+        "Yes. Your texture, length, density, history, and desired finish shape the timing and quote, which are discussed before the service begins.",
+    },
+    {
+      question: "Where is Katty Hair Studio located?",
+      answer:
+        "Katty Hair Studio and Barber Shop is located at 3816 Bladensburg Rd in Brentwood, Maryland. You can request an appointment online or call the studio before visiting.",
+    },
+  ],
+};
+
+export const brentwoodServices = servicePages.filter(
+  (page) => page.pageType === "Service Page",
+);
+
+export const extensionServiceSlugs = new Set([
+  "hair-extension-blending-and-styling",
+  "hair-extension-consultation",
+  "hair-extension-installation",
+  "hair-extension-maintenance",
+  "hair-extension-removal",
+  "hair-extensions-hair-extension-consul",
+]);
+
+export function getServicePage(slug: string) {
+  return brentwoodServices.find((page) => page.slug === slug);
+}
+
+const serviceImages: Record<string, string> = {
+  "hair-salon": "/hero/katty-salon-interior-hero-clear-pink-v4.webp",
+  "hair-extension-technician": "/services/generated/hair-extension-technician-v2.webp",
+  balayage: "/services/generated/balayage.webp",
+  "bang-trim": "/services/generated/bang-trim.webp",
+  blowouts: "/services/generated/blowouts.webp",
+  braids: "/services/generated/braids.webp",
+  "curly-hair": "/services/generated/curly-hair.webp",
+  "eyebrow-threading": "/services/generated/eyebrow-threading.webp",
+  "hair-blowouts": "/services/generated/hair-blowouts.webp",
+  "hair-braiding-services": "/services/generated/hair-braiding-services.webp",
+  "hair-coloring": "/services/generated/hair-coloring.webp",
+  "hair-extension-blending-and-styling": "/instagram/katty-clean-finish.webp",
+  "hair-extension-consultation": "/editorial/katty-client-plan-result-v2.webp",
+  "hair-extension-installation": "/gallery/katty-silky-side-waves-themed-v2.webp",
+  "hair-extension-maintenance": "/process/katty-step-2-take-shape.webp",
+  "hair-extension-removal": "/process/katty-step-1-show-goal.webp",
+  "hair-extensions-hair-extension-consul": "/instagram/katty-clean-pony.webp",
+  "hair-highlighting": "/instagram/katty-clean-highlights.webp",
+  "hair-straightening": "/gallery/katty-glossy-body-waves-themed.webp",
+  "hair-stylist": "/instagram/katty-clean-braid-curls.webp",
+  hairstyling: "/gallery/katty-vintage-curl-set-themed-v2.webp",
+  "mens-haircuts": "/process/katty-step-3-leave-ready.webp",
+  "partial-hair-highlights": "/gallery/katty-golden-dimension-themed.webp",
+  "smoothing-hair-treatment": "/editorial/katty-reference-chestnut-layers-v4.webp",
+  "twist-braids": "/instagram/katty-clean-braids.webp",
+  wigs: "/editorial/katty-reference-burgundy-finish-v3.webp",
+  "womens-haircuts": "/instagram/katty-clean-layered-cut.webp",
+};
+
+export function getServiceImage(slug: string) {
+  return serviceImages[slug] ?? "/hero/katty-salon-interior-hero-clear-pink-v4.webp";
+}
+
+export function getRelatedServices(page: ServicePageData) {
+  const pool = extensionServiceSlugs.has(page.slug)
+    ? brentwoodServices.filter((item) => extensionServiceSlugs.has(item.slug))
+    : brentwoodServices.filter((item) => !extensionServiceSlugs.has(item.slug));
+  const index = pool.findIndex((item) => item.slug === page.slug);
+  return [1, 2, 3].map((offset) => pool[(index + offset) % pool.length]);
+}
