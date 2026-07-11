@@ -827,7 +827,7 @@ export default function Home() {
               const StepIcon = item.icon;
 
               return (
-                <article className="process-day" key={item.step}>
+                <article className="process-day" data-process-step key={item.step}>
                   <div className="process-day-art">
                     <Image
                       alt=""
@@ -922,10 +922,10 @@ export default function Home() {
       <section className="info-section" id="info">
         <div className="info-portrait" data-reveal>
           <Image
-            alt="Katty, founder and stylist, centered inside her blush-toned salon"
+            alt="Katty, founder and stylist, standing inside her salon"
             fill
             sizes="(max-width: 900px) 100vw, 42vw"
-            src="/founder/katty-founder-portrait-pink-v4.webp"
+            src="/founder/katty-founder-original-portrait-v5.webp"
           />
           <span>
             <Award aria-hidden="true" />
