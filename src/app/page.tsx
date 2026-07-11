@@ -833,7 +833,7 @@ export default function Home() {
                       alt=""
                       aria-hidden="true"
                       fill
-                      sizes="(max-width: 740px) 112px, 180px"
+                      sizes="(max-width: 740px) 132px, 180px"
                       src={item.art}
                     />
                   </div>
@@ -922,10 +922,10 @@ export default function Home() {
       <section className="info-section" id="info">
         <div className="info-portrait" data-reveal>
           <Image
-            alt="Katty, founder and stylist, inside her warm rose-toned salon"
+            alt="Katty, founder and stylist, centered inside her blush-toned salon"
             fill
             sizes="(max-width: 900px) 100vw, 42vw"
-            src="/founder/katty-founder-white-suit-upper-body.webp"
+            src="/founder/katty-founder-portrait-pink-v4.webp"
           />
           <span>
             <Award aria-hidden="true" />
