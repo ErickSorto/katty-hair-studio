@@ -624,8 +624,7 @@ export default function Home() {
             </span>
           </h1>
           <p className="hero-copy">
-            Bring your texture, history, and reference. Your blowout, color, braids,
-            wig, extensions, or cut starts with a plan shaped around you.
+            Bring your texture and reference. We’ll shape the service around you.
           </p>
           <div className="hero-actions">
             <a className="primary-link" href="#booking">
