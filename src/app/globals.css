@@ -5989,8 +5989,8 @@ section {
 
 @media (max-width: 740px) {
   .service-page-shell .service-hero {
-    height: auto;
-    min-height: max(700px, calc(100svh - var(--header-height) - var(--mobile-action-height)));
+    height: calc(100svh - var(--header-height) - var(--mobile-action-height));
+    min-height: 0;
   }
 
   .service-page-shell .service-hero-image {
