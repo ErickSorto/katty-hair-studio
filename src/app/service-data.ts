@@ -171,7 +171,7 @@ const serviceImages: Record<string, string> = {
   "quick-weave-with-closure": "/services/generated/quick-weave-with-closure-v2.webp",
   "brazilian-knots-hair-extensions": "/services/generated/brazilian-knots-hair-extensions-v2.webp",
   "hair-highlighting": "/services/generated/hair-highlighting-v2.webp",
-  "hair-straightening": "/gallery/katty-glossy-body-waves-themed.webp",
+  "hair-straightening": "/services/generated/hair-straightening-v2.webp",
   "hair-stylist": "/services/generated/hair-stylist-v2.webp",
   hairstyling: "/gallery/katty-vintage-curl-set-themed-v2.webp",
   "mens-haircuts": "/services/generated/mens-haircuts-v2.webp",
