@@ -116,12 +116,13 @@ export default function ServicePageTemplate({ data }: { data: ServicePageData })
         url: `/services/${section.heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")}`,
       }))
     : getRelatedServices(data).map((page) => ({ name: page.name, url: page.url }));
-  const parentHref =
-    !isCategory && extensionServiceSlugs.has(data.slug) ? "/hair-extension-technician" : "/";
-  const parentLabel = parentHref === "/" ? "Hair salon" : "Hair extension technician";
+  const parentHref = extensionServiceSlugs.has(data.slug)
+    ? "/hair-extension-technician"
+    : "/hair-salon";
+  const parentLabel = extensionServiceSlugs.has(data.slug) ? "Hair extensions" : "Hair salon";
 
   return (
-    <main className={`site-shell service-page-shell service-${data.slug}`}>
+    <main className={`site-shell service-page-shell service-${data.slug} ${isCategory ? "service-category-page" : "service-detail-page"}`}>
       <ViewportReveal />
       <JsonLd data={data} />
       <SiteHeader />
@@ -140,13 +141,13 @@ export default function ServicePageTemplate({ data }: { data: ServicePageData })
           <nav aria-label="Breadcrumb" className="service-breadcrumb">
             <Link href="/">Home</Link>
             <ChevronRight aria-hidden="true" />
-            {!isCategory && extensionServiceSlugs.has(data.slug) && (
+            {!isCategory && (
               <>
                 <Link href={parentHref}>{parentLabel}</Link>
-                <ChevronRight aria-hidden="true" />
+                <ChevronRight aria-hidden="true" className="service-breadcrumb-current-divider" />
               </>
             )}
-            <span aria-current="page">{data.name}</span>
+            <span aria-current="page" className="service-breadcrumb-current">{data.name}</span>
           </nav>
           <p className="eyebrow">Personalized hair care · Bladensburg Rd</p>
           <h1>{data.h1}</h1>

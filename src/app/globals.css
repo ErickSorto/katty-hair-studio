@@ -5990,13 +5990,13 @@ section {
 @media (max-width: 740px) {
   .service-page-shell .service-hero {
     height: auto;
-    min-height: max(780px, calc(100svh - var(--header-height) - var(--mobile-action-height)));
+    min-height: max(700px, calc(100svh - var(--header-height) - var(--mobile-action-height)));
   }
 
   .service-page-shell .service-hero-image {
     bottom: 0 !important;
     height: 100% !important;
-    object-position: 52% 42%;
+    object-position: 36% 42%;
   }
 
   .service-page-shell .service-hero::before,
@@ -6026,28 +6026,38 @@ section {
 
   .service-page-shell .service-hero-content {
     width: 100%;
-    padding: 54px var(--page-gutter) 118px;
+    padding: 48px var(--page-gutter) 92px;
   }
 
   .service-page-shell .service-hero h1 {
-    font-size: clamp(2.75rem, 11.6vw, 4.1rem);
-    line-height: 0.92;
+    max-width: 94%;
+    margin-top: 10px;
+    margin-bottom: 16px;
+    font-size: clamp(2.35rem, 10.2vw, 3.6rem);
+    line-height: 0.95;
   }
 
   .service-page-shell .service-hero-content > .hero-copy {
-    margin-top: 22px;
-    font-size: 0.98rem;
+    margin-top: 16px;
+    font-size: 0.9rem;
+    line-height: 1.45;
   }
 
   .service-page-shell .service-breadcrumb {
-    margin-bottom: 18px;
+    gap: 5px;
+    margin-bottom: 14px;
+    overflow: hidden;
+    font-size: 0.7rem;
+    white-space: nowrap;
   }
 
-  .service-page-shell .hero-actions {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 10px;
-    margin-top: 22px;
+  .service-detail-page .service-breadcrumb-current,
+  .service-detail-page .service-breadcrumb-current-divider {
+    display: none;
+  }
+
+  .service-page-shell .service-hero .hero-actions {
+    display: none;
   }
 
   .service-page-shell .service-editorial,
