@@ -312,6 +312,20 @@ svg {
   display: inline-block;
 }
 
+.brand-lockup-link {
+  min-width: 94px;
+  justify-content: flex-start;
+}
+
+.brand-lockup-image {
+  width: auto;
+  height: 66px;
+  object-fit: contain;
+  filter:
+    brightness(1.05)
+    drop-shadow(0 4px 12px rgba(43, 10, 25, 0.3));
+}
+
 .desktop-nav {
   display: flex;
   justify-content: center;
@@ -4070,6 +4084,14 @@ section {
     font-size: 0.68rem;
   }
 
+  .brand-lockup-link {
+    min-width: 74px;
+  }
+
+  .brand-lockup-image {
+    height: 52px;
+  }
+
   .hero {
     height: calc(100svh - var(--header-height) - var(--mobile-action-height));
     min-height: 0;
@@ -5894,6 +5916,20 @@ section {
   );
 }
 
+.service-mens-haircuts .service-hero-image {
+  filter: saturate(0.94) contrast(1.1) brightness(1.02);
+}
+
+.service-mens-haircuts .service-hero::before {
+  background: linear-gradient(
+    90deg,
+    rgba(24, 13, 20, 0.88) 0%,
+    rgba(58, 24, 37, 0.64) 38%,
+    rgba(71, 37, 46, 0.18) 72%,
+    transparent 90%
+  );
+}
+
 .service-page-shell .service-hero-content {
   width: min(900px, 100%);
   align-self: end;
@@ -6016,6 +6052,15 @@ section {
 
   .service-page-shell .service-hero::after {
     background: linear-gradient(90deg, rgba(40, 8, 23, 0.3), transparent 78%);
+  }
+
+  .service-mens-haircuts .service-hero::before {
+    background: linear-gradient(
+      0deg,
+      rgba(21, 13, 18, 0.9) 0%,
+      rgba(47, 25, 34, 0.56) 54%,
+      rgba(33, 21, 27, 0.16) 100%
+    );
   }
 
   .service-page-shell .service-hero .hero-shade {

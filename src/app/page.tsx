@@ -456,6 +456,20 @@ function BrandLogo({ compact = false }: { compact?: boolean }) {
   );
 }
 
+function HeaderBrandLogo() {
+  return (
+    <Image
+      alt=""
+      aria-hidden="true"
+      className="brand-lockup-image"
+      height={801}
+      loading="eager"
+      src="/brand/katty-official-lockup.png"
+      width={1080}
+    />
+  );
+}
+
 function BestProsInTownBadge() {
   return (
     <>
@@ -616,8 +630,8 @@ export default function Home() {
         </div>
 
         <div className="main-nav">
-          <a className="brand" href="#home" aria-label="Katty Hair Studio home">
-            <BrandLogo />
+          <a className="brand brand-lockup-link" href="#home" aria-label="Katty Hair Studio home">
+            <HeaderBrandLogo />
           </a>
 
           <nav aria-label="Main navigation" className="desktop-nav">

@@ -54,6 +54,10 @@ function BrandLogo() {
   return <><span className="brand-logo-frame"><Image alt="" aria-hidden="true" height={512} loading="eager" src="/brand/katty-official-crest.png" width={512}/></span><span className="brand-wordmark">Katty<small>Hair Studio</small></span></>;
 }
 
+function HeaderBrandLogo() {
+  return <Image alt="" aria-hidden="true" className="brand-lockup-image" height={801} loading="eager" src="/brand/katty-official-lockup.png" width={1080}/>;
+}
+
 export function SiteHeader() {
   return (
     <>
@@ -72,7 +76,7 @@ export function SiteHeader() {
           </div>
         </div>
         <div className="main-nav">
-          <Link aria-label="Katty Hair Studio home" className="brand" href="/"><BrandLogo/></Link>
+          <Link aria-label="Katty Hair Studio home" className="brand brand-lockup-link" href="/"><HeaderBrandLogo/></Link>
           <nav aria-label="Main navigation" className="desktop-nav"><DesktopServicesMenu />{navLinks.map(([label,href])=><Link href={href} key={href}>{label}</Link>)}</nav>
           <div className="nav-actions"><Link className="nav-cta" href="#booking"><CalendarDays aria-hidden="true"/>Request appointment</Link><label aria-label="Open menu" className="menu-button" htmlFor="katty-drawer"><span/><span/><span/></label></div>
         </div>
