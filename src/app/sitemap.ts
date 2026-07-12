@@ -6,6 +6,10 @@ const origin = "https://www.kattyhairstudio.com";
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
     { url: `${origin}/`, changeFrequency: "weekly", priority: 1 },
+    { url: `${origin}/about`, changeFrequency: "monthly", priority: 0.8 },
+    { url: `${origin}/booking`, changeFrequency: "weekly", priority: 0.9 },
+    { url: `${origin}/gallery`, changeFrequency: "weekly", priority: 0.8 },
+    { url: `${origin}/location`, changeFrequency: "monthly", priority: 0.8 },
     {
       url: hairSalonCategory.canonical,
       changeFrequency: "monthly",

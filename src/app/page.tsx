@@ -65,11 +65,11 @@ const socialLinks = [
 ] as const;
 
 const navLinks = [
-  ["Prices", "#prices"],
-  ["Gallery", "#gallery"],
-  ["Info", "#info"],
-  ["Location", "#location"],
-  ["Booking", "#booking"],
+  ["Prices", "/#prices"],
+  ["Gallery", "/gallery"],
+  ["About", "/about"],
+  ["Location", "/location"],
+  ["Booking", "/booking"],
 ] as const;
 
 const services = [
@@ -644,7 +644,7 @@ export default function Home() {
           </nav>
 
           <div className="nav-actions">
-            <a className="nav-cta" href="#booking">
+            <a className="nav-cta" href="/booking">
               <CalendarDays aria-hidden="true" />
               Request appointment
             </a>
@@ -697,7 +697,7 @@ export default function Home() {
           </div>
         </div>
 
-        <a className="drawer-cta" href="#booking">
+          <a className="drawer-cta" href="/booking">
           <Icon icon={CalendarDays} />
           Request appointment
         </a>
@@ -1137,13 +1137,19 @@ export default function Home() {
             <p className="eyebrow">Your inspiration</p>
             <h2>Save the finish you want to bring in.</h2>
           </div>
-          <a className="secondary-dark-link" href={instagramUrl} rel="noreferrer" target="_blank">
-            <ExternalLink aria-hidden="true" />
-            Instagram
-          </a>
+          <div className="gallery-heading-actions">
+            <Link className="secondary-dark-link" href="/gallery">
+              View full gallery
+              <ArrowRight aria-hidden="true" />
+            </Link>
+            <a className="secondary-dark-link" href={instagramUrl} rel="noreferrer" target="_blank">
+              <ExternalLink aria-hidden="true" />
+              Instagram
+            </a>
+          </div>
         </div>
         <div className="gallery-grid" data-reveal>
-          {gallery.map((item) => (
+          {gallery.slice(0, 6).map((item) => (
             <article className="gallery-tile" key={item.title}>
               <Image
                 alt={item.alt}

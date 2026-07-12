@@ -110,6 +110,7 @@ function JsonLd({ data }: { data: ServicePageData }) {
 
 export default function ServicePageTemplate({ data }: { data: ServicePageData }) {
   const isCategory = data.pageType === "Category Page";
+  const isBrowWaxing = data.slug === "eyebrow-waxing";
   const related = isCategory
     ? data.sections.map((section) => ({
         name: section.heading,
@@ -129,7 +130,7 @@ export default function ServicePageTemplate({ data }: { data: ServicePageData })
 
       <section className="hero service-hero" id="top">
         <Image
-          alt={`${data.name} styled at Katty Hair Studio`}
+          alt={isBrowWaxing ? "Professional eyebrow waxing at Katty Hair Studio" : `${data.name} styled at Katty Hair Studio`}
           className="hero-image service-hero-image"
           fill
           priority
@@ -149,11 +150,12 @@ export default function ServicePageTemplate({ data }: { data: ServicePageData })
             )}
             <span aria-current="page" className="service-breadcrumb-current">{data.name}</span>
           </nav>
-          <p className="eyebrow">Personalized hair care · Bladensburg Rd</p>
+          <p className="eyebrow">{isBrowWaxing ? "Precision brow shaping · Bladensburg Rd" : "Personalized hair care · Bladensburg Rd"}</p>
           <h1>{data.h1}</h1>
           <p className="hero-copy">
-            Bring your reference, hair history, and goal. You will leave the consultation
-            knowing the plan, upkeep, and quote before your service begins.
+            {isBrowWaxing
+              ? "Choose a soft cleanup or a more defined brow. We agree on the shape, review skin sensitivity, and confirm the quote before wax is applied."
+              : "Bring your reference, hair history, and goal. You will leave the consultation knowing the plan, upkeep, and quote before your service begins."}
           </p>
           <div className="hero-actions">
             <Link className="primary-link" href="/#booking">
@@ -163,13 +165,13 @@ export default function ServicePageTemplate({ data }: { data: ServicePageData })
               <Phone aria-hidden="true" /> Call the studio
             </a>
           </div>
-          <p className="hero-trust-line">Every texture welcome · Quote confirmed before the chair.</p>
+          <p className="hero-trust-line">{isBrowWaxing ? "Shape agreed first · Skin sensitivity discussed before waxing." : "Every texture welcome · Quote confirmed before the chair."}</p>
         </div>
       </section>
 
       <section aria-label="Studio proof points" className="proof-band service-proof-band">
         <div className="proof-card"><Star aria-hidden="true" className="proof-icon"/><strong>4.8</strong><p>156 Google reviews</p></div>
-        <div className="proof-card"><Sparkles aria-hidden="true" className="proof-icon"/><strong>Personal plan</strong><p>Built around your hair</p></div>
+        <div className="proof-card"><Sparkles aria-hidden="true" className="proof-icon"/><strong>Personal plan</strong><p>{isBrowWaxing ? "Built around your brow" : "Built around your hair"}</p></div>
         <div className="proof-card"><ClipboardCheck aria-hidden="true" className="proof-icon"/><strong>Upfront quote</strong><p>Before service</p></div>
       </section>
 
@@ -177,8 +179,9 @@ export default function ServicePageTemplate({ data }: { data: ServicePageData })
         <p className="eyebrow">Your service, made clear</p>
         <h2>{isCategory ? "Explore extension services built around your natural hair." : `What to know about ${data.name.toLowerCase()}.`}</h2>
         <p>
-          Your texture, routine, and desired finish shape every recommendation. The details
-          below help you understand the process before you reserve your chair.
+          {isBrowWaxing
+            ? "Your natural growth, preferred fullness, and skin condition shape the service. The details below explain preparation, the waxing process, realistic results, and aftercare."
+            : "Your texture, routine, and desired finish shape every recommendation. The details below help you understand the process before you reserve your chair."}
         </p>
       </section>
 

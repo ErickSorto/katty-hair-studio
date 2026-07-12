@@ -154,7 +154,7 @@ const serviceImages: Record<string, string> = {
   blowouts: "/services/generated/blowouts.webp",
   braids: "/services/generated/braids.webp",
   "curly-hair": "/services/generated/curly-hair.webp",
-  "eyebrow-threading": "/services/generated/eyebrow-threading.webp",
+  "eyebrow-waxing": "/services/generated/eyebrow-waxing-v4.webp",
   "hair-blowouts": "/services/generated/hair-blowouts.webp",
   "hair-braiding-services": "/services/generated/hair-braiding-services.webp",
   "hair-coloring": "/services/generated/hair-coloring.webp",

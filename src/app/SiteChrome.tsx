@@ -33,10 +33,10 @@ const socialLinks = [
 
 const navLinks = [
   ["Prices", "/#prices"],
-  ["Gallery", "/#gallery"],
-  ["Info", "/#info"],
-  ["Location", "#location"],
-  ["Booking", "#booking"],
+  ["Gallery", "/gallery"],
+  ["About", "/about"],
+  ["Location", "/location"],
+  ["Booking", "/booking"],
 ] as const;
 
 type SocialPlatform = (typeof socialLinks)[number]["platform"] | "whatsapp";
@@ -78,7 +78,7 @@ export function SiteHeader() {
         <div className="main-nav">
           <Link aria-label="Katty Hair Studio home" className="brand brand-lockup-link" href="/"><HeaderBrandLogo/></Link>
           <nav aria-label="Main navigation" className="desktop-nav"><DesktopServicesMenu />{navLinks.map(([label,href])=><Link href={href} key={href}>{label}</Link>)}</nav>
-          <div className="nav-actions"><Link className="nav-cta" href="#booking"><CalendarDays aria-hidden="true"/>Request appointment</Link><label aria-label="Open menu" className="menu-button" htmlFor="katty-drawer"><span/><span/><span/></label></div>
+          <div className="nav-actions"><Link className="nav-cta" href="/booking"><CalendarDays aria-hidden="true"/>Request appointment</Link><label aria-label="Open menu" className="menu-button" htmlFor="katty-drawer"><span/><span/><span/></label></div>
         </div>
       </header>
       <label aria-label="Close menu" className="drawer-backdrop" htmlFor="katty-drawer" />
@@ -87,7 +87,7 @@ export function SiteHeader() {
         <nav aria-label="Mobile page links" className="drawer-links"><DrawerServicesMenu />{navLinks.map(([label,href])=><Link href={href} key={href}>{label}</Link>)}</nav>
         <div className="drawer-card"><span className="drawer-card-icon"><Clock aria-hidden="true" className="site-icon"/></span><div><p>Today</p><strong>Open by posted hours</strong></div></div>
         <div className="drawer-card"><span className="drawer-card-icon"><MapPinned aria-hidden="true" className="site-icon"/></span><div><p>Studio</p><strong>3816 Bladensburg Rd</strong></div></div>
-        <Link className="drawer-cta" href="#booking"><CalendarDays aria-hidden="true" className="site-icon"/>Request appointment</Link>
+        <Link className="drawer-cta" href="/booking"><CalendarDays aria-hidden="true" className="site-icon"/>Request appointment</Link>
         <div className="drawer-socials"><p>Connect</p><div className="drawer-contact-links"><a href={`tel:${phoneNumber}`}><Phone aria-hidden="true"/>Call</a><a href={whatsappUrl} rel="noreferrer" target="_blank"><SocialIcon platform="whatsapp"/>WhatsApp</a></div><div aria-label="Social media profiles" className="drawer-social-icon-row">{socialLinks.map((social)=><a aria-label={social.label} href={social.href} key={social.platform} rel="noreferrer" target="_blank" title={social.label}><SocialIcon platform={social.platform}/></a>)}</div></div>
       </aside>
     </>

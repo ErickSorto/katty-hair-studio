@@ -36,7 +36,7 @@ const serviceGroups = [
       ["Braiding services", "/services/hair-braiding-services"],
       ["Twist braids", "/services/twist-braids"],
       ["Wigs", "/services/wigs"],
-      ["Eyebrow threading", "/services/eyebrow-threading"],
+      ["Eyebrow waxing", "/services/eyebrow-waxing"],
     ],
   },
   {
