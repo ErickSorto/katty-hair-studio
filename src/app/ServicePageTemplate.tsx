@@ -78,6 +78,21 @@ function JsonLd({ data }: { data: ServicePageData }) {
       provider: { "@id": "https://www.kattyhairstudio.com/#business" },
       areaServed: { "@type": "City", name: "Brentwood, Maryland" },
     });
+  } else {
+    graph.push({
+      "@type": "ItemList",
+      "@id": `${data.canonical}#services`,
+      name: `${data.name} services in Brentwood, Maryland`,
+      itemListElement: data.sections.map((section, index) => ({
+        "@type": "ListItem",
+        position: index + 1,
+        name: section.heading,
+        url: `https://www.kattyhairstudio.com/services/${section.heading
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, "-")
+          .replace(/^-|-$/g, "")}`,
+      })),
+    });
   }
 
   return (

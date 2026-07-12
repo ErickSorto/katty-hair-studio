@@ -47,7 +47,13 @@ const serviceGroups = [
       ["Blending & styling", "/services/hair-extension-blending-and-styling"],
       ["Extension maintenance", "/services/hair-extension-maintenance"],
       ["Extension removal", "/services/hair-extension-removal"],
-      ["Extension planning", "/services/hair-extensions-hair-extension-consul"],
+      ["Tape-in extensions", "/services/tape-in-hair-extensions"],
+      ["Sew-in extensions", "/services/sew-in-hair-extensions"],
+      ["Microlink extensions", "/services/microlink-hair-extensions"],
+      ["K-tip extensions", "/services/k-tip-hair-extensions"],
+      ["Quick weave", "/services/quick-weave"],
+      ["Quick weave + closure", "/services/quick-weave-with-closure"],
+      ["Brazilian knots", "/services/brazilian-knots-hair-extensions"],
     ],
   },
 ] as const;
@@ -139,7 +145,7 @@ export function DesktopServicesMenu() {
         </div>
         <div className="services-mega-directory">
           {serviceGroups.map((group) => (
-            <section key={group.label}>
+            <section className={group.label === "Hair extensions" ? "services-mega-extensions" : undefined} key={group.label}>
               <h3>{group.label}</h3>
               <div>
                 {group.links.map(([label, href]) => (

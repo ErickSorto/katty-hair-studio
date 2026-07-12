@@ -1,4 +1,5 @@
 import content from "./service-content.generated.json";
+import { addedExtensionCategorySections, addedExtensionServices } from "./extension-services";
 
 export type ServiceSection = {
   heading: string;
@@ -23,10 +24,26 @@ export type ServicePageData = {
   faqs: ServiceFaq[];
 };
 
-export const servicePages = content as ServicePageData[];
-export const extensionCategory = servicePages.find(
+const generatedServicePages = content as ServicePageData[];
+
+export const servicePages: ServicePageData[] = [
+  ...generatedServicePages,
+  ...addedExtensionServices,
+];
+
+const generatedExtensionCategory = generatedServicePages.find(
   (page) => page.url === "/hair-extension-technician",
 )!;
+
+export const extensionCategory: ServicePageData = {
+  ...generatedExtensionCategory,
+  description:
+    "Compare tape-in, sew-in, microlink, K-tip, quick weave, closure, Brazilian knot, installation, maintenance, and removal services in Brentwood, MD.",
+  sections: [
+    ...generatedExtensionCategory.sections,
+    ...addedExtensionCategorySections,
+  ],
+};
 
 export const hairSalonCategory: ServicePageData = {
   slug: "hair-salon",
@@ -116,7 +133,13 @@ export const extensionServiceSlugs = new Set([
   "hair-extension-installation",
   "hair-extension-maintenance",
   "hair-extension-removal",
-  "hair-extensions-hair-extension-consul",
+  "tape-in-hair-extensions",
+  "sew-in-hair-extensions",
+  "microlink-hair-extensions",
+  "k-tip-hair-extensions",
+  "quick-weave",
+  "quick-weave-with-closure",
+  "brazilian-knots-hair-extensions",
 ]);
 
 export function getServicePage(slug: string) {
@@ -140,7 +163,13 @@ const serviceImages: Record<string, string> = {
   "hair-extension-installation": "/gallery/katty-silky-side-waves-themed-v2.webp",
   "hair-extension-maintenance": "/process/katty-step-2-take-shape.webp",
   "hair-extension-removal": "/process/katty-step-1-show-goal.webp",
-  "hair-extensions-hair-extension-consul": "/instagram/katty-clean-pony.webp",
+  "tape-in-hair-extensions": "/gallery/katty-copper-waves.webp",
+  "sew-in-hair-extensions": "/gallery/katty-glossy-body-waves.webp",
+  "microlink-hair-extensions": "/gallery/katty-golden-dimension.webp",
+  "k-tip-hair-extensions": "/gallery/katty-sculpted-curls.webp",
+  "quick-weave": "/instagram/katty-clean-color-process.webp",
+  "quick-weave-with-closure": "/gallery/katty-copper-waves-themed.webp",
+  "brazilian-knots-hair-extensions": "/gallery/katty-sculpted-curls-themed.webp",
   "hair-highlighting": "/instagram/katty-clean-highlights.webp",
   "hair-straightening": "/gallery/katty-glossy-body-waves-themed.webp",
   "hair-stylist": "/instagram/katty-clean-braid-curls.webp",

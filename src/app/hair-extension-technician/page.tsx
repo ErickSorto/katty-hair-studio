@@ -5,12 +5,12 @@ import { extensionCategory } from "../service-data";
 export const metadata: Metadata = {
   title: "Hair Extension Technician in Brentwood, MD | Katty",
   description:
-    "Explore extension consultations, installation, blending, maintenance, and removal at Katty Hair Studio in Brentwood, MD.",
+    "Compare tape-in, sew-in, microlink, K-tip, quick weave, closure, Brazilian knot, maintenance, and removal services in Brentwood, MD.",
   alternates: { canonical: extensionCategory.canonical },
   openGraph: {
     title: "Hair Extension Technician in Brentwood, MD | Katty",
     description:
-      "Explore personalized hair extension services at Katty Hair Studio in Brentwood, Maryland.",
+      "Explore tape-in, sew-in, microlink, K-tip, quick weave, closure, and Brazilian knot services at Katty Hair Studio in Brentwood, Maryland.",
     url: extensionCategory.canonical,
     images: ["/social/katty-share-preview.webp"],
   },

@@ -506,8 +506,17 @@ svg {
 
 .services-mega-directory {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: clamp(18px, 2vw, 28px);
+}
+
+.services-mega-extensions {
+  grid-column: span 2;
+}
+
+.services-mega-extensions > div {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: clamp(16px, 1.8vw, 26px);
 }
 
 .services-mega-directory h3 {
@@ -5179,9 +5188,10 @@ section {
   animation: service-image-arrive 1.2s cubic-bezier(0.2, 0.75, 0.22, 1) both;
 }
 
-.service-hero-shade {
+.service-hero .hero-shade {
   position: absolute;
   inset: 0;
+  height: auto;
   background:
     linear-gradient(90deg, rgba(43, 10, 25, 0.9) 0%, rgba(65, 15, 35, 0.72) 38%, rgba(47, 11, 27, 0.18) 72%),
     linear-gradient(0deg, rgba(38, 8, 22, 0.68) 0%, transparent 42%);
@@ -5751,7 +5761,7 @@ section {
     min-height: calc(100svh - 118px);
   }
 
-  .service-hero-shade {
+  .service-hero .hero-shade {
     background:
       linear-gradient(0deg, rgba(42, 9, 24, 0.92) 0%, rgba(52, 12, 30, 0.7) 58%, rgba(42, 9, 24, 0.3) 100%);
   }
@@ -5842,41 +5852,78 @@ section {
 }
 
 .service-page-shell .service-hero-image {
+  filter: saturate(1.1) contrast(1.08) brightness(1.04);
   object-position: center 42%;
 }
 
+.service-page-shell .service-hero::before {
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(43, 10, 25, 0.76) 0%,
+    rgba(69, 16, 38, 0.55) 36%,
+    rgba(69, 16, 38, 0.16) 68%,
+    transparent 88%
+  );
+}
+
+.service-page-shell .service-hero::after {
+  inset: 0;
+  background: radial-gradient(circle at 82% 46%, transparent 25%, rgba(40, 8, 23, 0.12) 100%);
+}
+
+.service-page-shell .service-hero .hero-shade {
+  inset: 0;
+  height: auto;
+  background: linear-gradient(
+    0deg,
+    rgba(38, 8, 22, 0.62) 0%,
+    rgba(43, 10, 25, 0.26) 36%,
+    rgba(43, 10, 25, 0.04) 72%,
+    transparent 100%
+  );
+}
+
 .service-hair-salon .service-hero::before {
-  background:
-    linear-gradient(90deg, rgba(75, 15, 42, 0.82) 0%, rgba(123, 31, 66, 0.58) 42%, rgba(123, 31, 66, 0.14) 72%, transparent 88%),
-    linear-gradient(180deg, rgba(89, 19, 51, 0.16), rgba(89, 19, 51, 0.08));
+  background: linear-gradient(
+    90deg,
+    rgba(75, 15, 42, 0.72) 0%,
+    rgba(123, 31, 66, 0.46) 42%,
+    rgba(123, 31, 66, 0.1) 72%,
+    transparent 88%
+  );
 }
 
 .service-page-shell .service-hero-content {
-  width: min(780px, 100%);
+  width: min(900px, 100%);
   align-self: end;
-  padding: clamp(56px, 8vh, 92px) var(--page-gutter) clamp(76px, 10vh, 112px);
+  padding: clamp(42px, 5.5vh, 58px) var(--page-gutter) clamp(56px, 7vh, 72px);
 }
 
 .service-page-shell .service-hero h1 {
-  max-width: 760px;
+  max-width: 880px;
   margin-top: 14px;
-  font-size: clamp(3.7rem, 7vw, 7.2rem);
+  font-size: clamp(3.4rem, 5.5vw, 5.8rem);
   font-weight: 700;
   letter-spacing: 0;
-  line-height: 0.9;
+  line-height: 0.92;
 }
 
 .service-page-shell .service-hero-content > .hero-copy {
   max-width: 590px;
-  margin-top: 26px;
+  margin-top: 18px;
   color: #fff;
   font-size: clamp(1rem, 1.35vw, 1.2rem);
   font-weight: 590;
-  line-height: 1.68;
+  line-height: 1.58;
 }
 
 .service-page-shell .service-breadcrumb {
-  margin-bottom: 22px;
+  margin-bottom: 16px;
+}
+
+.service-page-shell .hero-actions {
+  margin-top: 24px;
 }
 
 .service-proof-band {
@@ -5942,17 +5989,49 @@ section {
 
 @media (max-width: 740px) {
   .service-page-shell .service-hero {
-    min-height: calc(100svh - var(--header-height));
+    height: auto;
+    min-height: max(780px, calc(100svh - var(--header-height) - var(--mobile-action-height)));
+  }
+
+  .service-page-shell .service-hero-image {
+    bottom: 0 !important;
+    height: 100% !important;
+    object-position: 52% 42%;
+  }
+
+  .service-page-shell .service-hero::before,
+  .service-page-shell .service-hero::after {
+    bottom: 0 !important;
+    height: 100% !important;
+  }
+
+  .service-page-shell .service-hero::before {
+    background: linear-gradient(
+      0deg,
+      rgba(42, 9, 24, 0.82) 0%,
+      rgba(52, 12, 30, 0.5) 54%,
+      rgba(42, 9, 24, 0.14) 100%
+    );
+  }
+
+  .service-page-shell .service-hero::after {
+    background: linear-gradient(90deg, rgba(40, 8, 23, 0.3), transparent 78%);
+  }
+
+  .service-page-shell .service-hero .hero-shade {
+    inset: 0;
+    height: auto;
+    background: linear-gradient(0deg, rgba(35, 7, 20, 0.54), transparent 50%);
   }
 
   .service-page-shell .service-hero-content {
     width: 100%;
-    padding: 58px var(--page-gutter) 92px;
+    padding: 54px var(--page-gutter) 118px;
   }
 
   .service-page-shell .service-hero h1 {
-    font-size: clamp(3rem, 14vw, 4.6rem);
-    line-height: 0.9;
+    font-size: clamp(2.75rem, 11.6vw, 4.1rem);
+    line-height: 0.92;
   }
 
   .service-page-shell .service-hero-content > .hero-copy {
@@ -5962,6 +6041,13 @@ section {
 
   .service-page-shell .service-breadcrumb {
     margin-bottom: 18px;
+  }
+
+  .service-page-shell .hero-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+    margin-top: 22px;
   }
 
   .service-page-shell .service-editorial,
