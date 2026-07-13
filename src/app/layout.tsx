@@ -17,9 +17,10 @@ const playfair = Playfair_Display({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://kattyhairstudio.com"),
-  title: "Katty Hair Studio | Dominican-Owned Hair Studio in Brentwood",
+  applicationName: "Katty Hair Studio",
+  title: "Katty Hair Studio",
   description:
-    "Warm, Dominican-owned hair studio and beauty supply in Brentwood, MD welcoming every texture for blowouts, color, extensions, wigs, braids, cuts, and polished finishes.",
+    "Katty Hair Studio is an online salon appointment application that lets clients choose a service, view available times, and reserve a visit at our Dominican-owned hair studio in Brentwood, MD.",
   alternates: {
     canonical: "https://www.kattyhairstudio.com/",
   },

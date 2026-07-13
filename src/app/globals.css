@@ -3617,14 +3617,21 @@ section {
   max-width: 880px;
 }
 
-.footer-booking-purpose h2 {
+.footer-booking-purpose .footer-booking-label {
   margin: 0 0 5px;
-  color: var(--wine);
-  font-family: inherit;
-  font-size: 0.7rem;
+  color: rgba(123, 31, 66, 0.62);
+  font-size: 0.62rem;
   font-weight: 850;
   letter-spacing: 0.12em;
   text-transform: uppercase;
+}
+
+.footer-booking-purpose h2 {
+  margin: 0 0 4px;
+  color: var(--wine);
+  font-family: inherit;
+  font-size: 0.82rem;
+  font-weight: 820;
 }
 
 .footer-booking-purpose p {
