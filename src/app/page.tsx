@@ -31,6 +31,7 @@ import BookingSection from "./BookingSection";
 import BookingScrollLink from "./BookingScrollLink";
 import DrawerAutoClose from "./DrawerAutoClose";
 import { DesktopServicesMenu, DrawerServicesMenu } from "./ServiceNavigation";
+import { FooterBookingPurpose } from "./SiteChrome";
 import ReviewPager from "./ReviewPager";
 import VideoStoryStack from "./VideoStoryStack";
 import ViewportReveal from "./ViewportReveal";
@@ -1298,7 +1299,7 @@ export default function Home() {
         </a>
       </section>
 
-      <footer className="site-footer">
+      <footer className="site-footer" id="site-footer">
         <a className="brand" href="#home" aria-label="Katty Hair Studio home">
           <BrandLogo />
         </a>
@@ -1333,6 +1334,7 @@ export default function Home() {
             </a>
           ))}
         </div>
+        <FooterBookingPurpose />
       </footer>
 
       <nav className="mobile-action-bar" aria-label="Quick appointment actions">

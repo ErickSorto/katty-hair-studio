@@ -99,8 +99,26 @@ export function SiteFinalBanner() {
   return <section className="final-banner" data-reveal><div><p className="eyebrow">Ready when you are</p><h2>Bring your reference. Leave with a clear plan.</h2></div><div aria-hidden="true" className="final-brand-mark"><Image alt="" height={801} src="/brand/katty-official-lockup.png" width={1080}/></div><Link className="primary-link" href="#booking"><Heart aria-hidden="true"/>Request appointment<ArrowRight aria-hidden="true"/></Link></section>;
 }
 
+export function FooterBookingPurpose() {
+  return (
+    <section aria-labelledby="footer-booking-title" className="footer-booking-purpose">
+      <div>
+        <h2 id="footer-booking-title">Online booking</h2>
+        <p>
+          Katty Hair Studio’s online booking application lets clients choose a salon service, view available appointment times, and reserve a visit. With the salon owner’s permission, it uses Google Calendar to check availability, prevent scheduling conflicts, and create appointments.
+        </p>
+      </div>
+      <nav aria-label="Booking and legal information">
+        <Link href="/booking">Book an appointment</Link>
+        <Link href="/privacy">Privacy</Link>
+        <Link href="/terms">Terms</Link>
+      </nav>
+    </section>
+  );
+}
+
 export function SiteFooter() {
-  return <footer className="site-footer"><Link aria-label="Katty Hair Studio home" className="brand" href="/"><BrandLogo/></Link><div className="footer-address"><p>Dominican Katty Hair Studio and Barber Shop</p><p>{address}</p><nav aria-label="Legal information" className="footer-policy-links"><Link href="/privacy">Privacy</Link><Link href="/terms">Terms</Link></nav></div><div className="footer-links"><a href={`tel:${phoneNumber}`}><Phone aria-hidden="true"/>Call</a><a href={whatsappUrl} rel="noreferrer" target="_blank"><SocialIcon platform="whatsapp"/>WhatsApp</a><a href={directionsUrl} rel="noreferrer" target="_blank"><MapPinned aria-hidden="true"/>Map</a>{socialLinks.map((social)=><a aria-label={social.label} className="footer-social-link" href={social.href} key={social.platform} rel="noreferrer" target="_blank" title={social.label}><SocialIcon platform={social.platform}/></a>)}</div></footer>;
+  return <footer className="site-footer" id="site-footer"><Link aria-label="Katty Hair Studio home" className="brand" href="/"><BrandLogo/></Link><div className="footer-address"><p>Dominican Katty Hair Studio and Barber Shop</p><p>{address}</p></div><div className="footer-links"><a href={`tel:${phoneNumber}`}><Phone aria-hidden="true"/>Call</a><a href={whatsappUrl} rel="noreferrer" target="_blank"><SocialIcon platform="whatsapp"/>WhatsApp</a><a href={directionsUrl} rel="noreferrer" target="_blank"><MapPinned aria-hidden="true"/>Map</a>{socialLinks.map((social)=><a aria-label={social.label} className="footer-social-link" href={social.href} key={social.platform} rel="noreferrer" target="_blank" title={social.label}><SocialIcon platform={social.platform}/></a>)}</div><FooterBookingPurpose/></footer>;
 }
 
 export function MobileActionBar() {
