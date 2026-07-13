@@ -84,6 +84,17 @@ const defaultPromotion: Promotion = {
   weekday: 1,
 };
 
+function getServiceIcon(serviceName: string) {
+  const name = serviceName.toLowerCase();
+
+  if (name.includes("blowout")) return "/booking-icons/blowout.png";
+  if (name.includes("color") || name.includes("highlight")) return "/booking-icons/color.png";
+  if (name.includes("extension") || name.includes("wig")) return "/booking-icons/extensions.png";
+  if (name.includes("braid")) return "/booking-icons/braids.png";
+  if (name.includes("beauty supply")) return "/booking-icons/beauty-supply.png";
+  return "/booking-icons/cut.png";
+}
+
 function getLocalDateValue(offsetDays = 0) {
   const date = new Date();
   date.setDate(date.getDate() + offsetDays);
@@ -580,6 +591,7 @@ export default function BookingSection({
                     <div aria-label="Choose a service" className="reservation-service-list" role="radiogroup">
                       {services.map((service) => {
                         const selected = service.id === serviceId;
+                        const serviceIconSrc = getServiceIcon(service.name);
                         return (
                           <button
                             aria-checked={selected}
@@ -589,7 +601,9 @@ export default function BookingSection({
                             role="radio"
                             type="button"
                           >
-                            <span className="reservation-service-icon"><Scissors aria-hidden="true" /></span>
+                            <span className="reservation-service-icon">
+                              <Image alt="" aria-hidden="true" height={52} src={serviceIconSrc} width={52} />
+                            </span>
                             <span className="reservation-service-copy">
                               <strong>{service.name}</strong>
                               <small>{service.description || "Your service plan is confirmed before the chair."}</small>

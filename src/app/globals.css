@@ -5284,33 +5284,44 @@ section {
 
 .reservation-service-list {
   display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
   margin-top: clamp(28px, 3.6vw, 44px);
-  border-top: 1px solid var(--line);
 }
 
 .reservation-service-list > button {
+  position: relative;
   display: grid;
-  min-height: 104px;
-  grid-template-columns: 48px minmax(0, 1fr) 44px;
-  gap: 16px;
-  align-items: center;
-  border: 0;
-  border-bottom: 1px solid var(--line);
-  padding: 18px 4px;
-  background: transparent;
+  min-height: 154px;
+  grid-template-columns: 58px minmax(0, 1fr);
+  gap: 15px;
+  align-items: start;
+  border: 1px solid transparent;
+  border-radius: 18px;
+  padding: 20px 68px 18px 18px;
+  background: rgba(248, 237, 232, 0.52);
   color: var(--ink);
   cursor: pointer;
   text-align: left;
   transition:
+    border-color 200ms ease,
     background 200ms ease,
-    padding 200ms ease;
+    box-shadow 200ms ease,
+    transform 200ms ease;
 }
 
 .reservation-service-list > button:hover,
-.reservation-service-list > button:focus-visible,
+.reservation-service-list > button:focus-visible {
+  border-color: rgba(123, 31, 66, 0.2);
+  background: rgba(244, 200, 208, 0.28);
+  box-shadow: 0 14px 34px rgba(82, 29, 49, 0.07);
+  transform: translateY(-2px);
+}
+
 .reservation-service-list > button.is-selected {
-  padding-inline: 14px;
-  background: rgba(244, 200, 208, 0.22);
+  border-color: rgba(123, 31, 66, 0.34);
+  background: rgba(244, 200, 208, 0.36);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.7);
 }
 
 .reservation-service-icon,
@@ -5323,8 +5334,19 @@ section {
 }
 
 .reservation-service-icon {
-  background: var(--sand);
+  width: 56px;
+  height: 56px;
+  border-radius: 17px;
+  background: rgba(255, 255, 255, 0.82);
   color: var(--wine);
+  box-shadow: 0 6px 18px rgba(82, 29, 49, 0.06);
+}
+
+.reservation-service-icon img {
+  display: block;
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
 }
 
 .reservation-service-icon svg,
@@ -5334,6 +5356,9 @@ section {
 }
 
 .reservation-service-check {
+  position: absolute;
+  top: 16px;
+  right: 16px;
   border: 1px solid var(--line);
   color: var(--wine);
   transition:
@@ -5352,6 +5377,7 @@ section {
   display: grid;
   gap: 6px;
   min-width: 0;
+  align-self: stretch;
 }
 
 .reservation-service-copy > strong {
@@ -5375,6 +5401,7 @@ section {
   font-size: 0.76rem;
   font-weight: 800;
   letter-spacing: 0.03em;
+  margin-top: auto;
   text-transform: uppercase;
 }
 
@@ -6282,16 +6309,28 @@ section {
     font-size: clamp(2.35rem, 11vw, 3.35rem);
   }
 
+  .reservation-service-list {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
   .reservation-service-list > button {
-    min-height: 112px;
-    grid-template-columns: 42px minmax(0, 1fr) 36px;
+    min-height: 118px;
+    grid-template-columns: 50px minmax(0, 1fr);
     gap: 12px;
-    padding-block: 14px;
+    border-radius: 15px;
+    padding: 16px 52px 16px 14px;
   }
 
   .reservation-service-icon {
-    width: 40px;
-    height: 40px;
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+  }
+
+  .reservation-service-icon img {
+    width: 43px;
+    height: 43px;
   }
 
   .reservation-service-check {
