@@ -5144,29 +5144,31 @@ section {
 }
 
 .reservation-app-purpose {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 14px 24px;
-  align-items: end;
-  margin-top: 20px;
-  border-left: 2px solid var(--brass);
-  padding: 12px 0 12px 16px;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px 24px;
+  margin-top: clamp(42px, 5vw, 72px);
+  border-left: 0;
+  border-top: 1px solid rgba(123, 31, 66, 0.1);
+  padding-top: 14px;
 }
 
 .reservation-app-purpose p {
-  max-width: 690px;
+  max-width: 720px;
   margin: 0;
-  color: var(--ink-soft);
-  font-size: 0.78rem;
-  line-height: 1.55;
+  color: rgba(51, 27, 38, 0.48);
+  font-size: 0.66rem;
+  line-height: 1.5;
 }
 
 .reservation-app-purpose a {
-  color: var(--wine);
-  font-size: 0.76rem;
-  font-weight: 800;
+  flex: 0 0 auto;
+  color: rgba(123, 31, 66, 0.62);
+  font-size: 0.66rem;
+  font-weight: 700;
   text-decoration: underline;
-  text-decoration-color: rgba(123, 31, 66, 0.3);
+  text-decoration-color: rgba(123, 31, 66, 0.2);
   text-underline-offset: 3px;
 }
 
@@ -6239,15 +6241,13 @@ section {
   }
 
   .reservation-app-purpose {
-    grid-template-columns: 1fr;
-    margin-top: 16px;
-    padding-top: 8px;
-    padding-bottom: 8px;
+    display: grid;
+    margin-top: 38px;
+    padding-top: 12px;
   }
 
   .reservation-app-purpose p {
-    font-size: 0.72rem;
-    line-height: 1.48;
+    font-size: 0.64rem;
   }
 
   .reservation-workspace-head > a svg {

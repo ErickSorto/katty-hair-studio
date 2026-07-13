@@ -543,13 +543,6 @@ export default function BookingSection({
               <a href={`tel:${phoneNumber}`}><Phone aria-hidden="true" />Call {phoneDisplay}</a>
             </div>
 
-            <div className="reservation-app-purpose">
-              <p>
-                This appointment application uses the salon owner’s authorized Google Calendar data only to check availability, prevent scheduling conflicts, create appointments, and share salon calendars selected by the owner.
-              </p>
-              <Link href="/privacy">How we protect and use your information</Link>
-            </div>
-
             <ol aria-label="Booking progress" className="reservation-progress">
               {[
                 { label: "Service", value: 1 },
@@ -763,6 +756,13 @@ export default function BookingSection({
             </form>
           </>
         )}
+
+        <div className="reservation-app-purpose">
+          <p>
+            Katty Hair Studio Booking uses the salon owner’s authorized Google Calendar data only to check availability, prevent scheduling conflicts, create appointments, and share owner-selected salon calendars.
+          </p>
+          <Link href="/privacy">Privacy &amp; data use</Link>
+        </div>
       </div>
     </section>
   );
