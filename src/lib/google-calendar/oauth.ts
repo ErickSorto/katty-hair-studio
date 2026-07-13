@@ -4,11 +4,9 @@ const GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/token";
 export const GOOGLE_OAUTH_STATE_COOKIE = "khs_google_oauth_state";
 
 export const GOOGLE_CALENDAR_SCOPES = [
+  "https://www.googleapis.com/auth/calendar.app.created",
   "https://www.googleapis.com/auth/calendar.freebusy",
-  "https://www.googleapis.com/auth/calendar.events.owned",
   "https://www.googleapis.com/auth/calendar.calendarlist.readonly",
-  "https://www.googleapis.com/auth/calendar.calendars",
-  "https://www.googleapis.com/auth/calendar.acls",
 ] as const;
 
 export type GoogleOAuthConfig = {
@@ -58,7 +56,6 @@ export function createGoogleAuthorizationUrl(config: GoogleOAuthConfig, state: s
   const parameters = new URLSearchParams({
     access_type: "offline",
     client_id: config.clientId,
-    include_granted_scopes: "true",
     prompt: "consent",
     redirect_uri: config.redirectUri,
     response_type: "code",
@@ -122,10 +119,33 @@ export async function exchangeGoogleAuthorizationCode(
     throw new Error(payload.error_description || payload.error || "Google token exchange failed.");
   }
 
-  if (!payload.access_token || !payload.refresh_token) {
+  if (!payload.access_token || !payload.refresh_token || !payload.scope) {
     throw new Error(
-      "Google did not return the required access and refresh tokens. Revoke the app's prior " +
-        "access in the Google Account and run the connection again.",
+      "Google did not return the required access token, refresh token, and granted scopes. " +
+        "Revoke the app's prior access in the Google Account and run the connection again.",
+    );
+  }
+
+  const grantedScopes = new Set(payload.scope.split(" ").filter(Boolean));
+  const missingScopes = GOOGLE_CALENDAR_SCOPES.filter((scope) => !grantedScopes.has(scope));
+
+  if (missingScopes.length) {
+    throw new Error(
+      "Google did not grant every required Calendar permission. Revoke the app's access in " +
+        "your Google Account, reconnect, and approve all requested permissions.",
+    );
+  }
+
+  const unexpectedCalendarScopes = [...grantedScopes].filter(
+    (scope) =>
+      scope.startsWith("https://www.googleapis.com/auth/calendar") &&
+      !GOOGLE_CALENDAR_SCOPES.includes(scope as (typeof GOOGLE_CALENDAR_SCOPES)[number]),
+  );
+
+  if (unexpectedCalendarScopes.length) {
+    throw new Error(
+      "Google returned permissions from an older Calendar connection. Revoke Katty Hair " +
+        "Studio in your Google Account's third-party access settings, then reconnect.",
     );
   }
 
@@ -133,7 +153,7 @@ export async function exchangeGoogleAuthorizationCode(
     accessToken: payload.access_token,
     expiresIn: payload.expires_in ?? 3600,
     refreshToken: payload.refresh_token,
-    scope: payload.scope ?? GOOGLE_CALENDAR_SCOPES.join(" "),
+    scope: payload.scope,
     tokenType: payload.token_type ?? "Bearer",
   };
 }

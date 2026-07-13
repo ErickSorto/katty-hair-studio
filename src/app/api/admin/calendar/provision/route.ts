@@ -4,8 +4,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import {
   createGoogleCalendar,
-  listGoogleCalendars,
-  shareGoogleCalendar,
+  getGoogleCalendar,
 } from "@/lib/google-calendar/client";
 import { getSalonSettings } from "@/lib/booking/repository";
 import { getSupabaseAdmin } from "@/lib/supabase/server";
@@ -35,6 +34,22 @@ const requestSchema = z.object({
     .min(1),
 });
 
+function uniqueEmails(emails: Array<string | undefined>) {
+  const seen = new Set<string>();
+
+  return emails.flatMap((email) => {
+    const value = email?.trim();
+    const normalized = value?.toLowerCase();
+
+    if (!value || !normalized || seen.has(normalized)) {
+      return [];
+    }
+
+    seen.add(normalized);
+    return [value];
+  });
+}
+
 function authorized(request: NextRequest) {
   const expected = process.env.ADMIN_SETUP_TOKEN?.trim();
   const provided = request.headers.get("authorization")?.replace(/^Bearer\s+/i, "") ?? "";
@@ -46,31 +61,23 @@ function authorized(request: NextRequest) {
   return timingSafeEqual(Buffer.from(expected), Buffer.from(provided));
 }
 
-async function findOrCreateCalendar(
-  calendars: Awaited<ReturnType<typeof listGoogleCalendars>>,
+async function loadOrCreateCalendar(
+  existingCalendarId: string | null | undefined,
   summary: string,
   timeZone: string,
 ) {
-  const existing = calendars.find(
-    (calendar) =>
-      calendar.summary.toLocaleLowerCase() === summary.toLocaleLowerCase() &&
-      ["owner", "writer"].includes(calendar.accessRole),
-  );
-
-  if (existing) {
-    return existing;
+  if (existingCalendarId) {
+    try {
+      return await getGoogleCalendar(existingCalendarId);
+    } catch {
+      throw new Error(
+        `The stored calendar for ${summary} is not managed by this OAuth application. ` +
+          "Reconnect the correct Google account or clear the stored Calendar ID before retrying.",
+      );
+    }
   }
 
-  const created = await createGoogleCalendar(summary, timeZone);
-  const calendar = {
-    accessRole: "owner",
-    id: created.id,
-    primary: false,
-    summary: created.summary,
-    timeZone: created.timeZone,
-  };
-  calendars.push(calendar);
-  return calendar;
+  return createGoogleCalendar(summary, timeZone);
 }
 
 export async function POST(request: NextRequest) {
@@ -87,9 +94,8 @@ export async function POST(request: NextRequest) {
   try {
     const database = getSupabaseAdmin();
     const settings = await getSalonSettings();
-    const calendars = await listGoogleCalendars();
-    const operationsCalendar = await findOrCreateCalendar(
-      calendars,
+    const operationsCalendar = await loadOrCreateCalendar(
+      settings.operationsCalendarId,
       parsed.data.operationsCalendarName,
       settings.timezone,
     );
@@ -103,28 +109,29 @@ export async function POST(request: NextRequest) {
       throw new Error(`Unable to save the Operations calendar: ${settingsError.message}`);
     }
 
-    for (const managerEmail of parsed.data.managerEmails) {
-      await shareGoogleCalendar(operationsCalendar.id, managerEmail, "writer");
+    const { data: existingStaff, error: existingStaffError } = await database
+      .from("staff")
+      .select("external_key, google_calendar_id")
+      .in(
+        "external_key",
+        parsed.data.staff.map((person) => person.key),
+      );
+
+    if (existingStaffError) {
+      throw new Error(`Unable to load existing staff calendars: ${existingStaffError.message}`);
     }
 
+    const calendarIdByStaffKey = new Map(
+      (existingStaff ?? []).map((person) => [person.external_key, person.google_calendar_id]),
+    );
     const provisionedStaff = [];
 
     for (const person of parsed.data.staff) {
-      const calendar = await findOrCreateCalendar(
-        calendars,
+      const calendar = await loadOrCreateCalendar(
+        calendarIdByStaffKey.get(person.key),
         `Katty Hair Studio - ${person.displayName} Appointments`,
         settings.timezone,
       );
-
-      if (person.email) {
-        await shareGoogleCalendar(calendar.id, person.email, "writer");
-      }
-
-      for (const managerEmail of parsed.data.managerEmails) {
-        if (managerEmail.toLocaleLowerCase() !== person.email?.toLocaleLowerCase()) {
-          await shareGoogleCalendar(calendar.id, managerEmail, "writer");
-        }
-      }
 
       const { data: staffRow, error: staffError } = await database
         .from("staff")
@@ -203,12 +210,23 @@ export async function POST(request: NextRequest) {
 
       provisionedStaff.push({
         calendarId: calendar.id,
+        calendarName: calendar.summary,
         displayName: person.displayName,
         id: staffRow.id,
+        shareWith: uniqueEmails([person.email, ...parsed.data.managerEmails]),
       });
     }
 
     return NextResponse.json({
+      manualSharing: {
+        instructions:
+          "On a computer, optionally share each calendar in Google Calendar settings. Use See all event details for view-only staff. Use Make changes to events only for trusted managers who need to add or clear blocks; that permission can also edit appointment events.",
+        operations: {
+          calendarId: operationsCalendar.id,
+          calendarName: operationsCalendar.summary,
+          shareWith: uniqueEmails(parsed.data.managerEmails),
+        },
+      },
       operationsCalendarId: operationsCalendar.id,
       staff: provisionedStaff,
     });

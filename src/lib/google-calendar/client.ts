@@ -80,32 +80,6 @@ async function googleRequest<T>(path: string, init?: RequestInit): Promise<T> {
   return (await response.json()) as T;
 }
 
-export async function listGoogleCalendars() {
-  const result = await googleRequest<{
-    items?: Array<{
-      accessRole?: string;
-      id?: string;
-      primary?: boolean;
-      summary?: string;
-      timeZone?: string;
-    }>;
-  }>("/users/me/calendarList?maxResults=250&showHidden=true");
-
-  return (result.items ?? []).flatMap((calendar) =>
-    calendar.id
-      ? [
-          {
-            accessRole: calendar.accessRole ?? "reader",
-            id: calendar.id,
-            primary: Boolean(calendar.primary),
-            summary: calendar.summary ?? calendar.id,
-            timeZone: calendar.timeZone,
-          },
-        ]
-      : [],
-  );
-}
-
 export async function createGoogleCalendar(summary: string, timeZone: string) {
   return googleRequest<{ id: string; summary: string; timeZone?: string }>("/calendars", {
     body: JSON.stringify({ summary, timeZone }),
@@ -113,18 +87,10 @@ export async function createGoogleCalendar(summary: string, timeZone: string) {
   });
 }
 
-export async function shareGoogleCalendar(
-  calendarId: string,
-  email: string,
-  role: "reader" | "writer" | "owner" = "writer",
-) {
-  return googleRequest<{ id: string }>(`/calendars/${encodeURIComponent(calendarId)}/acl`, {
-    body: JSON.stringify({
-      role,
-      scope: { type: "user", value: email },
-    }),
-    method: "POST",
-  });
+export async function getGoogleCalendar(calendarId: string) {
+  return googleRequest<{ id: string; summary: string; timeZone?: string }>(
+    `/calendars/${encodeURIComponent(calendarId)}`,
+  );
 }
 
 export async function queryGoogleFreeBusy(

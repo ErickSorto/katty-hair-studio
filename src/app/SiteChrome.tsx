@@ -106,7 +106,7 @@ export function FooterBookingPurpose() {
         <p className="footer-booking-label">Online booking application</p>
         <h2 id="footer-booking-title">Katty Hair Studio</h2>
         <p>
-          Katty Hair Studio is the salon’s online appointment booking application. Clients use it to choose a service, view available times, reserve a visit, and receive appointment confirmations. The application requests access to the salon owner’s Google Calendar only to read availability, prevent double-booking, and create or manage appointment events; it does not access unrelated Google account data.
+          Katty Hair Studio is the salon’s online appointment booking application. Clients use it to choose a service, view available times, reserve a visit, and receive appointment confirmations. The application requests access to the salon owner’s Google Calendar only to identify app-created salon calendars, read availability, prevent double-booking, and create or manage appointment events on calendars the application created; it does not read event details from unrelated calendars or access other Google services.
         </p>
       </div>
       <nav aria-label="Booking and legal information">

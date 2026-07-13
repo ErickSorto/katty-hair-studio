@@ -32,8 +32,8 @@ const sections: readonly PolicySection[] = [
     id: "google-calendar-data",
     title: "Google Calendar data",
     paragraphs: [
-      "Katty Hair Studio Booking connects to a Google account authorized by the salon owner. The connection may read calendar availability and calendar-list metadata, create and manage salon-owned calendars and appointment events, and manage calendar sharing selected by the salon owner.",
-      "Google Calendar data is used only to display accurate availability, create or update appointments, prevent conflicts, and share staff calendars as directed by the salon. We do not use Google user data for advertising, profiling, or sale.",
+      "Katty Hair Studio Booking connects to a Google account authorized by the salon owner. The connection may read calendar availability and calendar-list metadata, create dedicated salon calendars, and manage appointment events only on calendars created by this application.",
+      "Google Calendar data is used only to identify calendars created by this application, display accurate availability, create or update appointments, and prevent conflicts. The application does not read event details from unrelated calendars or use Google user data for advertising, profiling, or sale.",
       "The Google refresh token is encrypted before storage. Access can be revoked at any time from the connected Google Account's third-party access settings or by contacting the studio.",
     ],
   },

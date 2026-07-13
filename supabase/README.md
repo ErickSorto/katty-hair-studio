@@ -18,9 +18,22 @@
    openssl rand -base64 32
    ```
 
-5. Reconnect Google OAuth after adding the `calendar.calendars` and `calendar.acls` scopes. The
-   provisioning endpoint can then create the Operations calendar, create one appointment calendar
-   per staff member, share calendars, save Calendar IDs, map services, and write weekly availability.
+5. Configure Google OAuth with only these non-sensitive scopes:
+
+   ```text
+   https://www.googleapis.com/auth/calendar.app.created
+   https://www.googleapis.com/auth/calendar.freebusy
+   https://www.googleapis.com/auth/calendar.calendarlist.readonly
+   ```
+
+6. Connect the salon owner's Google account, then call the provisioning endpoint. It creates the
+   Operations calendar and one appointment calendar per staff member, saves their Calendar IDs,
+   maps services, and writes weekly availability. If a manager or staff member needs direct Google
+   Calendar access, use Google Calendar on a computer to share the returned calendar with the
+   response's `shareWith` addresses. Use **See all event details** for view-only staff. Reserve
+   **Make changes to events** for trusted managers who need to add or clear blocks, because that
+   permission can also edit customer appointment events. Calendar sharing remains manual so the
+   app does not request an ACL management scope.
 
 All exposed tables have RLS enabled and no anonymous or authenticated browser policies. Application
 access uses the server-only Supabase secret through Next.js Route Handlers.

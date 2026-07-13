@@ -773,7 +773,7 @@ export default function BookingSection({
 
         <div className="reservation-app-purpose">
           <p>
-            Katty Hair Studio Booking uses the salon owner’s authorized Google Calendar data only to check availability, prevent scheduling conflicts, create appointments, and share owner-selected salon calendars.
+            Katty Hair Studio Booking uses the salon owner’s authorized Google Calendar data only to identify app-created salon calendars, check availability, prevent scheduling conflicts, and create or manage appointment events.
           </p>
           <Link href="/privacy">Privacy &amp; data use</Link>
         </div>
