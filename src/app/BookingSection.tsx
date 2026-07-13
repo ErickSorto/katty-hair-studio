@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import {
   addDays,
   addMonths,
@@ -495,9 +496,9 @@ export default function BookingSection({
         />
         <div className="reservation-atmosphere-shade" />
         <div className="reservation-atmosphere-copy">
-          <p className="eyebrow">Katty Hair Studio</p>
+          <p className="eyebrow">Katty Hair Studio Booking</p>
           <h2>Your next look starts here.</h2>
-          <p>Choose what you need. We’ll find the time and the right hands for it.</p>
+          <p>Our online appointment application helps clients choose a service, find an available time, reserve a visit, and receive confirmation.</p>
           <div className="reservation-atmosphere-notes">
             <span><BadgePercent aria-hidden="true" />Mondays save $10</span>
             <span><CheckCircle2 aria-hidden="true" />No payment today</span>
@@ -536,10 +537,17 @@ export default function BookingSection({
           <>
             <div className="reservation-workspace-head">
               <div>
-                <p className="reservation-kicker">Reserve your appointment</p>
+                <p className="reservation-kicker">Katty Hair Studio Booking</p>
                 <strong>{step === 1 ? "Choose" : step === 2 ? "Schedule" : "Your details"}</strong>
               </div>
               <a href={`tel:${phoneNumber}`}><Phone aria-hidden="true" />Call {phoneDisplay}</a>
+            </div>
+
+            <div className="reservation-app-purpose">
+              <p>
+                This appointment application uses the salon owner’s authorized Google Calendar data only to check availability, prevent scheduling conflicts, create appointments, and share salon calendars selected by the owner.
+              </p>
+              <Link href="/privacy">How we protect and use your information</Link>
             </div>
 
             <ol aria-label="Booking progress" className="reservation-progress">

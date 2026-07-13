@@ -5089,6 +5089,7 @@ section {
 }
 
 .reservation-workspace-head,
+.reservation-app-purpose,
 .reservation-progress,
 .reservation-form,
 .reservation-confirmation {
@@ -5140,6 +5141,33 @@ section {
 .reservation-workspace-head > a svg {
   width: 16px;
   height: 16px;
+}
+
+.reservation-app-purpose {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 14px 24px;
+  align-items: end;
+  margin-top: 20px;
+  border-left: 2px solid var(--brass);
+  padding: 12px 0 12px 16px;
+}
+
+.reservation-app-purpose p {
+  max-width: 690px;
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 0.78rem;
+  line-height: 1.55;
+}
+
+.reservation-app-purpose a {
+  color: var(--wine);
+  font-size: 0.76rem;
+  font-weight: 800;
+  text-decoration: underline;
+  text-decoration-color: rgba(123, 31, 66, 0.3);
+  text-underline-offset: 3px;
 }
 
 .reservation-progress {
@@ -6208,6 +6236,18 @@ section {
     white-space: nowrap;
     color: transparent;
     font-size: 0;
+  }
+
+  .reservation-app-purpose {
+    grid-template-columns: 1fr;
+    margin-top: 16px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
+
+  .reservation-app-purpose p {
+    font-size: 0.72rem;
+    line-height: 1.48;
   }
 
   .reservation-workspace-head > a svg {
