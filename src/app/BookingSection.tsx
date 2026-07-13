@@ -178,7 +178,7 @@ function MonthCalendar({
               type="button"
             >
               <span>{format(day, "d")}</span>
-              {mondayOffer ? <small>−${promotion.amount}</small> : null}
+              {mondayOffer ? <small>${promotion.amount} off</small> : null}
             </button>
           );
         })}
@@ -728,7 +728,7 @@ export default function BookingSection({
                     <div><Scissors aria-hidden="true" /><span><small>Service</small><strong>{selectedService?.name}</strong></span></div>
                     <div><CalendarDays aria-hidden="true" /><span><small>Date & time</small><strong>{formattedSelection}</strong></span></div>
                     <div><UserRound aria-hidden="true" /><span><small>Stylist</small><strong>{selectedStaff?.displayName || "First available"}</strong></span></div>
-                    {selectedDateIsMonday ? <p><BadgePercent aria-hidden="true" />Monday savings: −${promotion.amount}, applied at the salon.</p> : null}
+                    {selectedDateIsMonday ? <p><BadgePercent aria-hidden="true" />Monday savings: ${promotion.amount} off, applied at the salon.</p> : null}
                   </div>
 
                   <div className="reservation-contact-grid">
