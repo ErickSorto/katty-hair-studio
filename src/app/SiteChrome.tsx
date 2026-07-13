@@ -100,7 +100,7 @@ export function SiteFinalBanner() {
 }
 
 export function SiteFooter() {
-  return <footer className="site-footer"><Link aria-label="Katty Hair Studio home" className="brand" href="/"><BrandLogo/></Link><div><p>Dominican Katty Hair Studio and Barber Shop</p><p>{address}</p></div><div className="footer-links"><a href={`tel:${phoneNumber}`}><Phone aria-hidden="true"/>Call</a><a href={whatsappUrl} rel="noreferrer" target="_blank"><SocialIcon platform="whatsapp"/>WhatsApp</a><a href={directionsUrl} rel="noreferrer" target="_blank"><MapPinned aria-hidden="true"/>Map</a>{socialLinks.map((social)=><a aria-label={social.label} className="footer-social-link" href={social.href} key={social.platform} rel="noreferrer" target="_blank" title={social.label}><SocialIcon platform={social.platform}/></a>)}</div></footer>;
+  return <footer className="site-footer"><Link aria-label="Katty Hair Studio home" className="brand" href="/"><BrandLogo/></Link><div className="footer-address"><p>Dominican Katty Hair Studio and Barber Shop</p><p>{address}</p><nav aria-label="Legal information" className="footer-policy-links"><Link href="/privacy">Privacy</Link><Link href="/terms">Terms</Link></nav></div><div className="footer-links"><a href={`tel:${phoneNumber}`}><Phone aria-hidden="true"/>Call</a><a href={whatsappUrl} rel="noreferrer" target="_blank"><SocialIcon platform="whatsapp"/>WhatsApp</a><a href={directionsUrl} rel="noreferrer" target="_blank"><MapPinned aria-hidden="true"/>Map</a>{socialLinks.map((social)=><a aria-label={social.label} className="footer-social-link" href={social.href} key={social.platform} rel="noreferrer" target="_blank" title={social.label}><SocialIcon platform={social.platform}/></a>)}</div></footer>;
 }
 
 export function MobileActionBar() {
