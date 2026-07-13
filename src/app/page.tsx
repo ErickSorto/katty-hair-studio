@@ -28,6 +28,7 @@ import {
   WandSparkles,
 } from "lucide-react";
 import BookingSection from "./BookingSection";
+import BookingScrollLink from "./BookingScrollLink";
 import DrawerAutoClose from "./DrawerAutoClose";
 import { DesktopServicesMenu, DrawerServicesMenu } from "./ServiceNavigation";
 import ReviewPager from "./ReviewPager";
@@ -1181,8 +1182,9 @@ export default function Home() {
           <p className="eyebrow">Meet Katty</p>
           <h2>Your texture deserves a stylist who listens first.</h2>
           <p>
-            From your reference photo to your final care notes, Katty keeps the visit
-            personal, clear, and grounded in what your hair can support.
+            Katty Hair Studio is proudly Dominican-owned and open to everyone. From
+            your reference photo to your final care notes, every texture, background,
+            and style goal receives personal, thoughtful care.
           </p>
           <div className="info-card-grid">
             {studioInfo.map((item) => (
@@ -1334,10 +1336,10 @@ export default function Home() {
       </footer>
 
       <nav className="mobile-action-bar" aria-label="Quick appointment actions">
-        <a className="mobile-action-primary" href="#booking">
+        <BookingScrollLink className="mobile-action-primary">
           <CalendarDays aria-hidden="true" />
           Request
-        </a>
+        </BookingScrollLink>
         <a className="mobile-action-secondary" href={`tel:${phoneNumber}`}>
           <Phone aria-hidden="true" />
           Call

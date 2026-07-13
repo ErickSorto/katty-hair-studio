@@ -2,6 +2,7 @@ import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { getAvailableSlots } from "@/lib/booking/availability";
+import { getDemoAvailability, isBookingDemoEnabled } from "@/lib/booking/demo";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -21,6 +22,12 @@ export async function GET(request: NextRequest) {
 
   if (!parsed.success) {
     return NextResponse.json({ error: "Choose a valid service, stylist, and date." }, { status: 400 });
+  }
+
+  if (isBookingDemoEnabled(request.nextUrl.searchParams)) {
+    return NextResponse.json(getDemoAvailability(parsed.data), {
+      headers: { "Cache-Control": "no-store" },
+    });
   }
 
   try {

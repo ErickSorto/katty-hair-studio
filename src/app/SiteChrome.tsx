@@ -12,6 +12,7 @@ import {
   Phone,
 } from "lucide-react";
 import DrawerAutoClose from "./DrawerAutoClose";
+import BookingScrollLink from "./BookingScrollLink";
 import { DesktopServicesMenu, DrawerServicesMenu } from "./ServiceNavigation";
 
 const phoneNumber = "+12405826622";
@@ -103,5 +104,5 @@ export function SiteFooter() {
 }
 
 export function MobileActionBar() {
-  return <nav aria-label="Quick appointment actions" className="mobile-action-bar"><Link className="mobile-action-primary" href="#booking"><CalendarDays aria-hidden="true"/>Request</Link><a className="mobile-action-secondary" href={`tel:${phoneNumber}`}><Phone aria-hidden="true"/>Call</a></nav>;
+  return <nav aria-label="Quick appointment actions" className="mobile-action-bar"><BookingScrollLink className="mobile-action-primary"><CalendarDays aria-hidden="true"/>Request</BookingScrollLink><a className="mobile-action-secondary" href={`tel:${phoneNumber}`}><Phone aria-hidden="true"/>Call</a></nav>;
 }

@@ -24,8 +24,8 @@ export const metadata: Metadata = {
     canonical: "https://www.kattyhairstudio.com/",
   },
   icons: {
-    icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
-    apple: [{ url: "/icon.svg", type: "image/svg+xml" }],
+    icon: [{ url: "/icon.png", type: "image/png" }],
+    apple: [{ url: "/icon.png", type: "image/png" }],
   },
   openGraph: {
     title: "Katty Hair Studio",
