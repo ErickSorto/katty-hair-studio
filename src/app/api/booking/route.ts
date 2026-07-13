@@ -7,7 +7,6 @@ import { z } from "zod";
 import { getAvailableSlots } from "@/lib/booking/availability";
 import {
   demoServices,
-  demoStaff,
   getDemoAvailability,
   isBookingDemoEnabled,
 } from "@/lib/booking/demo";
@@ -19,7 +18,6 @@ import {
   failPendingBooking,
   getAvailabilityConfiguration,
 } from "@/lib/booking/repository";
-import type { AvailableSlot, StaffServiceConfiguration } from "@/lib/booking/types";
 import {
   createGoogleCalendarEvent,
   deleteGoogleCalendarEvent,
@@ -35,7 +33,6 @@ const bookingSchema = z.object({
   customerPhone: z.string().trim().max(30).optional(),
   serviceId: z.string().uuid(),
   smsConsent: z.boolean().default(false),
-  staffId: z.string().uuid().nullable().optional(),
   startsAt: z.string().datetime({ offset: true }),
 });
 
@@ -65,7 +62,10 @@ export async function POST(request: NextRequest) {
   const parsed = bookingSchema.safeParse(await request.json().catch(() => null));
 
   if (!parsed.success) {
-    return NextResponse.json({ error: "Review the appointment and contact details." }, { status: 400 });
+    return NextResponse.json(
+      { error: "Review the appointment and contact details." },
+      { status: 400 },
+    );
   }
 
   let customerPhone: string | undefined;
@@ -88,18 +88,17 @@ export async function POST(request: NextRequest) {
 
   if (isBookingDemoEnabled(request.nextUrl.searchParams)) {
     const service = demoServices.find((item) => item.id === parsed.data.serviceId);
-    const date = formatInTimeZone(new Date(parsed.data.startsAt), "America/New_York", "yyyy-MM-dd");
-    const availability = getDemoAvailability({
-      date,
-      serviceId: parsed.data.serviceId,
-      staffId: parsed.data.staffId || undefined,
-    });
+    const date = formatInTimeZone(
+      new Date(parsed.data.startsAt),
+      "America/New_York",
+      "yyyy-MM-dd",
+    );
+    const availability = getDemoAvailability({ date, serviceId: parsed.data.serviceId });
     const selectedSlot = availability.slots.find(
       (slot) => slot.startsAt === parsed.data.startsAt,
     );
-    const staff = demoStaff.find((person) => person.id === selectedSlot?.staffId);
 
-    if (!service || !selectedSlot || !staff) {
+    if (!service || !selectedSlot) {
       return NextResponse.json(
         { error: "That preview appointment time is no longer available." },
         { status: 409 },
@@ -112,7 +111,6 @@ export async function POST(request: NextRequest) {
           confirmationCode: confirmationCode(),
           endsAt: selectedSlot.endsAt,
           serviceName: service.name,
-          staffName: staff.displayName,
           startsAt: selectedSlot.startsAt,
         },
       },
@@ -120,11 +118,9 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const requestedStaffId = parsed.data.staffId || undefined;
-  const configuration = await getAvailabilityConfiguration(
-    parsed.data.serviceId,
-    requestedStaffId,
-  ).catch((error) => ({ error }));
+  const configuration = await getAvailabilityConfiguration(parsed.data.serviceId).catch(
+    (error) => ({ error }),
+  );
 
   if ("error" in configuration) {
     console.error("Booking configuration unavailable", configuration.error);
@@ -134,52 +130,29 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const service = configuration.service;
+  const { service, settings, team } = configuration;
 
-  if (!configuration.staff.length || !service) {
-    return NextResponse.json({ error: "That stylist or service is unavailable." }, { status: 409 });
+  if (!team || !service || !settings.bookingCalendarId) {
+    return NextResponse.json(
+      { error: "Online booking is still being configured. Please call the salon." },
+      { status: 409 },
+    );
   }
 
   const date = formatInTimeZone(
     new Date(parsed.data.startsAt),
-    configuration.settings.timezone,
+    settings.timezone,
     "yyyy-MM-dd",
   );
 
   try {
     await expireStaleBookingHolds();
-    const availability = await getAvailableSlots({
-      date,
-      serviceId: service.id,
-      staffId: requestedStaffId,
-    });
-    const slotCountsByStaff = new Map<string, number>();
+    const availability = await getAvailableSlots({ date, serviceId: service.id });
+    const selectedSlot = availability.slots.find(
+      (slot) => slot.startsAt === parsed.data.startsAt,
+    );
 
-    for (const slot of availability.slots) {
-      slotCountsByStaff.set(slot.staffId, (slotCountsByStaff.get(slot.staffId) ?? 0) + 1);
-    }
-
-    const candidateSlots = availability.slots
-      .filter(
-        (slot) =>
-          slot.startsAt === parsed.data.startsAt &&
-          (!requestedStaffId || slot.staffId === requestedStaffId),
-      )
-      .sort((left, right) => {
-        const availabilityDifference =
-          (slotCountsByStaff.get(right.staffId) ?? 0) -
-          (slotCountsByStaff.get(left.staffId) ?? 0);
-
-        if (availabilityDifference !== 0) {
-          return availabilityDifference;
-        }
-
-        const leftStaff = configuration.staff.find((person) => person.id === left.staffId);
-        const rightStaff = configuration.staff.find((person) => person.id === right.staffId);
-        return (leftStaff?.sortOrder ?? 0) - (rightStaff?.sortOrder ?? 0);
-      });
-
-    if (!candidateSlots.length) {
+    if (!selectedSlot) {
       return NextResponse.json(
         { error: "That appointment time is no longer available." },
         { status: 409 },
@@ -187,65 +160,32 @@ export async function POST(request: NextRequest) {
     }
 
     const cancellationToken = randomBytes(32).toString("base64url");
-    const cancellationTokenHash = createHash("sha256").update(cancellationToken).digest("hex");
+    const cancellationTokenHash = createHash("sha256")
+      .update(cancellationToken)
+      .digest("hex");
     const code = confirmationCode();
-    let reserved:
-      | {
-          bookingId: string;
-          selectedSlot: AvailableSlot;
-          staff: StaffServiceConfiguration;
-        }
-      | undefined;
-
-    for (const selectedSlot of candidateSlots) {
-      const staff = configuration.staff.find((person) => person.id === selectedSlot.staffId);
-
-      if (!staff) {
-        continue;
-      }
-
-      try {
-        const bookingId = await createPendingBooking({
-          blockedEndsAt: selectedSlot.blockedEndsAt,
-          blockedStartsAt: selectedSlot.blockedStartsAt,
-          cancellationTokenHash,
-          confirmationCode: code,
-          customerEmail: parsed.data.customerEmail,
-          customerName: parsed.data.customerName,
-          customerNotes: parsed.data.customerNotes,
-          customerPhone,
-          endsAt: selectedSlot.endsAt,
-          holdExpiresAt: addMinutes(new Date(), configuration.settings.holdMinutes).toISOString(),
-          serviceId: service.id,
-          smsConsentAt: parsed.data.smsConsent ? new Date().toISOString() : undefined,
-          staffId: staff.id,
-          startsAt: selectedSlot.startsAt,
-        });
-        reserved = { bookingId, selectedSlot, staff };
-        break;
-      } catch (error) {
-        if (error instanceof Error && /time was just taken/i.test(error.message)) {
-          continue;
-        }
-
-        throw error;
-      }
-    }
-
-    if (!reserved) {
-      return NextResponse.json(
-        { error: "That appointment time was just taken. Choose another available time." },
-        { status: 409 },
-      );
-    }
-
-    const { bookingId, selectedSlot, staff } = reserved;
+    const bookingId = await createPendingBooking({
+      blockedEndsAt: selectedSlot.blockedEndsAt,
+      blockedStartsAt: selectedSlot.blockedStartsAt,
+      cancellationTokenHash,
+      confirmationCode: code,
+      customerEmail: parsed.data.customerEmail,
+      customerName: parsed.data.customerName,
+      customerNotes: parsed.data.customerNotes,
+      customerPhone,
+      endsAt: selectedSlot.endsAt,
+      holdExpiresAt: addMinutes(new Date(), settings.holdMinutes).toISOString(),
+      serviceId: service.id,
+      smsConsentAt: parsed.data.smsConsent ? new Date().toISOString() : undefined,
+      startsAt: selectedSlot.startsAt,
+    });
     let googleEvent: { htmlLink?: string; id: string } | undefined;
 
     try {
       googleEvent = await createGoogleCalendarEvent({
         attendeeEmail: parsed.data.customerEmail,
-        calendarId: staff.calendarId,
+        bookingId,
+        calendarId: settings.bookingCalendarId,
         description: [
           `Booking ${code}`,
           `Customer: ${parsed.data.customerName}`,
@@ -256,17 +196,19 @@ export async function POST(request: NextRequest) {
           .filter(Boolean)
           .join("\n"),
         end: selectedSlot.endsAt,
-        location: configuration.settings.address,
+        location: settings.address,
         start: selectedSlot.startsAt,
         summary: `${service.name} — ${parsed.data.customerName}`,
-        timeZone: configuration.settings.timezone,
+        timeZone: settings.timezone,
       });
       await confirmBooking(bookingId, googleEvent);
     } catch (error) {
       await failPendingBooking(bookingId);
 
       if (googleEvent) {
-        await deleteGoogleCalendarEvent(staff.calendarId, googleEvent.id).catch(() => undefined);
+        await deleteGoogleCalendarEvent(settings.bookingCalendarId, googleEvent.id).catch(
+          () => undefined,
+        );
       }
 
       throw error;
@@ -281,9 +223,8 @@ export async function POST(request: NextRequest) {
       customerPhone,
       serviceName: service.name,
       smsConsent: parsed.data.smsConsent,
-      staffName: staff.displayName,
       startsAt: selectedSlot.startsAt,
-      timezone: configuration.settings.timezone,
+      timezone: settings.timezone,
     });
 
     return NextResponse.json(
@@ -292,7 +233,6 @@ export async function POST(request: NextRequest) {
           confirmationCode: code,
           endsAt: selectedSlot.endsAt,
           serviceName: service.name,
-          staffName: staff.displayName,
           startsAt: selectedSlot.startsAt,
         },
       },
@@ -300,10 +240,11 @@ export async function POST(request: NextRequest) {
     );
   } catch (error) {
     console.error("Booking creation failed", error);
-    const message =
-      error instanceof Error && /time was just taken|time is no longer available/i.test(error.message)
-        ? error.message
-        : "We couldn't confirm that appointment. Choose another time or call the salon.";
-    return NextResponse.json({ error: message }, { status: 503 });
+    const capacityConflict =
+      error instanceof Error && /time was just taken|time is no longer available/i.test(error.message);
+    const message = capacityConflict
+      ? error.message
+      : "We couldn't confirm that appointment. Choose another time or call the salon.";
+    return NextResponse.json({ error: message }, { status: capacityConflict ? 409 : 503 });
   }
 }

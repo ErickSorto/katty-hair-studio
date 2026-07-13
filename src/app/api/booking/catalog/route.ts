@@ -17,6 +17,7 @@ export async function GET(request: NextRequest) {
       {
         ...catalog,
         bookingWindowDays: settings.bookingWindowDays,
+        maxConcurrentBookings: settings.maxConcurrentBookings,
         promotion: {
           amount: 10,
           label: "Mondays are $10 off all services",

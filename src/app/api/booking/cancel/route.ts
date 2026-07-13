@@ -4,8 +4,8 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import {
   cancelBookingRecord,
+  getBookingCalendarId,
   getBookingForCancellation,
-  getStaffCalendarId,
 } from "@/lib/booking/repository";
 import { deleteGoogleCalendarEvent } from "@/lib/google-calendar/client";
 
@@ -48,7 +48,7 @@ export async function POST(request: NextRequest) {
       throw new Error("This appointment does not have an active Google Calendar event.");
     }
 
-    const calendarId = await getStaffCalendarId(booking.staff_id);
+    const calendarId = await getBookingCalendarId();
     await deleteGoogleCalendarEvent(calendarId, booking.google_event_id);
     await cancelBookingRecord(booking.id, parsed.data.reason || "Customer cancelled online");
 

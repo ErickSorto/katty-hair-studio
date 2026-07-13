@@ -33,7 +33,6 @@ import {
   Phone,
   Scissors,
   Sparkles,
-  UserRound,
 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 
@@ -46,17 +45,9 @@ type Service = {
   requiresQuote: boolean;
 };
 
-type Staff = {
-  displayName: string;
-  id: string;
-  serviceIds: string[];
-};
-
 type Slot = {
   endsAt: string;
   label: string;
-  staffId: string;
-  staffName: string;
   startsAt: string;
 };
 
@@ -70,7 +61,6 @@ type BookingConfirmation = {
   confirmationCode: string;
   endsAt: string;
   serviceName: string;
-  staffName: string;
   startsAt: string;
 };
 
@@ -218,9 +208,7 @@ export default function BookingSection({
   const stepHeadingRef = useRef<HTMLHeadingElement>(null);
   const [step, setStep] = useState<BookingStep>(1);
   const [services, setServices] = useState<Service[]>([]);
-  const [staff, setStaff] = useState<Staff[]>([]);
   const [serviceId, setServiceId] = useState("");
-  const [staffId, setStaffId] = useState("");
   const [date, setDate] = useState(today);
   const [slots, setSlots] = useState<Slot[]>([]);
   const [startsAt, setStartsAt] = useState("");
@@ -239,17 +227,8 @@ export default function BookingSection({
   const [confirmation, setConfirmation] = useState<BookingConfirmation | null>(null);
 
   const selectedService = services.find((service) => service.id === serviceId);
-  const selectedStaff = staff.find((person) => person.id === staffId);
   const selectedDateIsMonday = parseISO(date).getDay() === promotion.weekday;
-  const eligibleStaff = useMemo(
-    () => staff.filter((person) => person.serviceIds.includes(serviceId)),
-    [serviceId, staff],
-  );
-  const visibleSlots = useMemo(() => {
-    if (staffId) {
-      return slots.filter((slot) => slot.staffId === staffId);
-    }
-
+  const uniqueSlots = useMemo(() => {
     const uniqueByStart = new Map<string, Slot>();
     for (const slot of slots) {
       if (!uniqueByStart.has(slot.startsAt)) {
@@ -257,7 +236,7 @@ export default function BookingSection({
       }
     }
     return [...uniqueByStart.values()];
-  }, [slots, staffId]);
+  }, [slots]);
   const slotsByPeriod = useMemo(() => {
     const periods: Record<"Morning" | "Afternoon" | "Evening", Slot[]> = {
       Morning: [],
@@ -265,12 +244,12 @@ export default function BookingSection({
       Evening: [],
     };
 
-    for (const slot of visibleSlots) {
+    for (const slot of uniqueSlots) {
       const hour = Number(formatInTimeZone(new Date(slot.startsAt), timezone, "H"));
       periods[hour < 12 ? "Morning" : hour < 17 ? "Afternoon" : "Evening"].push(slot);
     }
     return periods;
-  }, [timezone, visibleSlots]);
+  }, [timezone, uniqueSlots]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -286,16 +265,14 @@ export default function BookingSection({
           error?: string;
           promotion?: Promotion;
           services?: Service[];
-          staff?: Staff[];
           timezone?: string;
         };
 
-        if (!response.ok || !result.services || !result.staff) {
+        if (!response.ok || !result.services) {
           throw new Error(result.error || "Online booking is still being configured.");
         }
 
         setServices(result.services);
-        setStaff(result.staff);
         setTimezone(result.timezone || "America/New_York");
         setBookingWindowDays(result.bookingWindowDays || 90);
         setPromotion(result.promotion || defaultPromotion);
@@ -331,7 +308,6 @@ export default function BookingSection({
 
       try {
         const query = new URLSearchParams({ date, serviceId });
-        if (staffId) query.set("staffId", staffId);
         if (demoMode) query.set("demo", "1");
 
         const response = await fetch(`/api/booking/availability?${query}`, {
@@ -363,7 +339,7 @@ export default function BookingSection({
 
     loadAvailability();
     return () => controller.abort();
-  }, [date, demoMode, serviceId, staffId, step]);
+  }, [date, demoMode, serviceId, step]);
 
   useEffect(() => {
     if (!confirmation) {
@@ -408,7 +384,6 @@ export default function BookingSection({
 
   function chooseService(id: string) {
     setServiceId(id);
-    setStaffId("");
     setStartsAt("");
     setSlots([]);
     setError("");
@@ -420,16 +395,9 @@ export default function BookingSection({
     setSlots([]);
   }
 
-  function chooseStaff(id: string) {
-    setStaffId(id);
-    setStartsAt("");
-    setSlots([]);
-  }
-
   function resetBooking() {
     setStep(1);
     setServiceId("");
-    setStaffId("");
     setDate(today);
     setSlots([]);
     setStartsAt("");
@@ -462,7 +430,6 @@ export default function BookingSection({
           customerPhone,
           serviceId,
           smsConsent,
-          staffId: staffId || null,
           startsAt,
         }),
         headers: { "Content-Type": "application/json" },
@@ -528,7 +495,6 @@ export default function BookingSection({
             </p>
             <dl className="reservation-confirmation-details">
               <div><dt>Service</dt><dd>{confirmation.serviceName}</dd></div>
-              <div><dt>Stylist</dt><dd>{confirmation.staffName}</dd></div>
               <div><dt>Confirmation</dt><dd>{confirmation.confirmationCode}</dd></div>
             </dl>
             <div className="reservation-message-status">
@@ -643,35 +609,8 @@ export default function BookingSection({
                   <div className="reservation-step-heading">
                     <p>Step 2 of 3</p>
                     <h2 ref={stepHeadingRef} tabIndex={-1}>Choose a date and time.</h2>
-                    <span>First available shows the widest choice of appointments.</span>
+                    <span>Choose any open time. Katty will coordinate your visit with the salon team.</span>
                   </div>
-
-                  <fieldset className="reservation-preference">
-                    <legend>Stylist preference</legend>
-                    <div className="reservation-preference-options">
-                      <button
-                        aria-pressed={!staffId}
-                        className={!staffId ? "is-selected" : ""}
-                        onClick={() => chooseStaff("")}
-                        type="button"
-                      >
-                        <Sparkles aria-hidden="true" />
-                        <span><strong>First available</strong><small>Most appointment times</small></span>
-                      </button>
-                      {eligibleStaff.map((person) => (
-                        <button
-                          aria-pressed={staffId === person.id}
-                          className={staffId === person.id ? "is-selected" : ""}
-                          key={person.id}
-                          onClick={() => chooseStaff(person.id)}
-                          type="button"
-                        >
-                          <UserRound aria-hidden="true" />
-                          <span><strong>{person.displayName}</strong><small>Choose this stylist</small></span>
-                        </button>
-                      ))}
-                    </div>
-                  </fieldset>
 
                   <div className="reservation-schedule-grid">
                     <MonthCalendar
@@ -690,7 +629,7 @@ export default function BookingSection({
 
                       {availabilityLoading ? (
                         <div className="reservation-time-skeletons"><span /><span /><span /><span /></div>
-                      ) : visibleSlots.length ? (
+                      ) : uniqueSlots.length ? (
                         <div className="reservation-time-groups">
                           {(Object.keys(slotsByPeriod) as Array<keyof typeof slotsByPeriod>).map((period) =>
                             slotsByPeriod[period].length ? (
@@ -717,7 +656,7 @@ export default function BookingSection({
                         <div className="reservation-no-times">
                           <Clock3 aria-hidden="true" />
                           <strong>No online times for this date.</strong>
-                          <span>Try another day{staffId ? " or choose First available" : ""}.</span>
+                          <span>Try another day.</span>
                         </div>
                       )}
                     </div>
@@ -742,7 +681,6 @@ export default function BookingSection({
                   <div className="reservation-selection-summary">
                     <div><Scissors aria-hidden="true" /><span><small>Service</small><strong>{selectedService?.name}</strong></span></div>
                     <div><CalendarDays aria-hidden="true" /><span><small>Date & time</small><strong>{formattedSelection}</strong></span></div>
-                    <div><UserRound aria-hidden="true" /><span><small>Stylist</small><strong>{selectedStaff?.displayName || "First available"}</strong></span></div>
                     {selectedDateIsMonday ? <p><BadgePercent aria-hidden="true" />Monday savings: ${promotion.amount} off, applied at the salon.</p> : null}
                   </div>
 
@@ -773,7 +711,7 @@ export default function BookingSection({
 
         <div className="reservation-app-purpose">
           <p>
-            Katty Hair Studio Booking uses the salon owner’s authorized Google Calendar data only to identify app-created salon calendars, check availability, prevent scheduling conflicts, and create or manage appointment events.
+            Katty Hair Studio Booking uses the salon owner’s authorized Google Calendar data only to identify the app-created salon booking calendar, check availability, prevent scheduling conflicts, and create or manage appointment events.
           </p>
           <Link href="/privacy">Privacy &amp; data use</Link>
         </div>

@@ -13,6 +13,14 @@ export type GoogleBusyPeriod = {
   start: string;
 };
 
+export type GoogleCalendarEvent = {
+  end?: { date?: string; dateTime?: string };
+  id?: string;
+  start?: { date?: string; dateTime?: string };
+  status?: string;
+  transparency?: string;
+};
+
 async function getStoredConnection() {
   if (process.env.NODE_ENV !== "production" && !process.env.VERCEL) {
     const localConnection = await getLocalGoogleCalendarConnection();
@@ -136,8 +144,43 @@ export async function queryGoogleFreeBusy(
   return busyByCalendar;
 }
 
+export async function listGoogleCalendarEvents(
+  calendarId: string,
+  timeMin: string,
+  timeMax: string,
+) {
+  const events: GoogleCalendarEvent[] = [];
+  let pageToken: string | undefined;
+
+  do {
+    const query = new URLSearchParams({
+      maxResults: "2500",
+      orderBy: "startTime",
+      showDeleted: "false",
+      singleEvents: "true",
+      timeMax,
+      timeMin,
+    });
+
+    if (pageToken) {
+      query.set("pageToken", pageToken);
+    }
+
+    const result = await googleRequest<{
+      items?: GoogleCalendarEvent[];
+      nextPageToken?: string;
+    }>(`/calendars/${encodeURIComponent(calendarId)}/events?${query}`);
+
+    events.push(...(result.items ?? []));
+    pageToken = result.nextPageToken;
+  } while (pageToken);
+
+  return events;
+}
+
 export async function createGoogleCalendarEvent(input: {
   attendeeEmail: string;
+  bookingId: string;
   calendarId: string;
   description: string;
   end: string;
@@ -155,6 +198,12 @@ export async function createGoogleCalendarEvent(input: {
         attendees: [{ email: input.attendeeEmail }],
         description: input.description,
         end: { dateTime: input.end, timeZone: input.timeZone },
+        extendedProperties: {
+          private: {
+            kattyBookingId: input.bookingId,
+            source: "katty-booking-app",
+          },
+        },
         location: input.location,
         start: { dateTime: input.start, timeZone: input.timeZone },
         summary: input.summary,

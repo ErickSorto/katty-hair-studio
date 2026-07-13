@@ -1,9 +1,9 @@
 import { getSupabaseAdmin } from "@/lib/supabase/server";
 import type {
+  BookingOccupancy,
   BookingService,
-  BookingStaff,
   SalonSettings,
-  StaffServiceConfiguration,
+  SalonTeamConfiguration,
   WeeklyAvailability,
 } from "@/lib/booking/types";
 
@@ -27,7 +27,7 @@ export async function getSalonSettings(): Promise<SalonSettings> {
   const { data, error } = await getSupabaseAdmin()
     .from("salon_settings")
     .select(
-      "salon_name, address, phone, email, timezone, operations_calendar_id, slot_interval_minutes, minimum_notice_minutes, booking_window_days, hold_minutes",
+      "salon_name, address, phone, email, timezone, booking_calendar_id, slot_interval_minutes, minimum_notice_minutes, booking_window_days, hold_minutes, max_concurrent_bookings",
     )
     .eq("id", 1)
     .single();
@@ -36,11 +36,12 @@ export async function getSalonSettings(): Promise<SalonSettings> {
 
   return {
     address: settings.address,
+    bookingCalendarId: settings.booking_calendar_id,
     bookingWindowDays: settings.booking_window_days,
     email: settings.email,
     holdMinutes: settings.hold_minutes,
+    maxConcurrentBookings: settings.max_concurrent_bookings,
     minimumNoticeMinutes: settings.minimum_notice_minutes,
-    operationsCalendarId: settings.operations_calendar_id,
     salonName: settings.salon_name,
     slotIntervalMinutes: settings.slot_interval_minutes,
     timezone: settings.timezone,
@@ -71,40 +72,37 @@ export async function createPendingBooking(input: {
   holdExpiresAt: string;
   serviceId: string;
   smsConsentAt?: string;
-  staffId: string;
   startsAt: string;
 }) {
-  const { data, error } = await getSupabaseAdmin()
-    .from("bookings")
-    .insert({
-      blocked_ends_at: input.blockedEndsAt,
-      blocked_starts_at: input.blockedStartsAt,
-      cancellation_token_hash: input.cancellationTokenHash,
-      confirmation_code: input.confirmationCode,
-      customer_email: input.customerEmail,
-      customer_name: input.customerName,
-      customer_notes: input.customerNotes || null,
-      customer_phone: input.customerPhone || null,
-      ends_at: input.endsAt,
-      hold_expires_at: input.holdExpiresAt,
-      service_id: input.serviceId,
-      sms_consent_at: input.smsConsentAt || null,
-      staff_id: input.staffId,
-      starts_at: input.startsAt,
-      status: "pending",
-    })
-    .select("id")
-    .single();
+  const { data, error } = await getSupabaseAdmin().rpc("reserve_salon_booking", {
+    p_blocked_ends_at: input.blockedEndsAt,
+    p_blocked_starts_at: input.blockedStartsAt,
+    p_cancellation_token_hash: input.cancellationTokenHash,
+    p_confirmation_code: input.confirmationCode,
+    p_customer_email: input.customerEmail,
+    p_customer_name: input.customerName,
+    p_customer_notes: input.customerNotes || null,
+    p_customer_phone: input.customerPhone || null,
+    p_ends_at: input.endsAt,
+    p_hold_expires_at: input.holdExpiresAt,
+    p_service_id: input.serviceId,
+    p_sms_consent_at: input.smsConsentAt || null,
+    p_starts_at: input.startsAt,
+  });
 
   if (error) {
-    if (error.code === "23P01") {
+    if (error.message.includes("BOOKING_CAPACITY_REACHED")) {
       throw new Error("That appointment time was just taken. Choose another available time.");
     }
 
     throw new Error(`Unable to reserve the appointment: ${error.message}`);
   }
 
-  return data.id as string;
+  if (typeof data !== "string") {
+    throw new Error("Unable to reserve the appointment: no booking ID was returned.");
+  }
+
+  return data;
 }
 
 export async function confirmBooking(
@@ -165,7 +163,7 @@ export async function getBookingForCancellation(confirmationCode: string) {
   const { data, error } = await getSupabaseAdmin()
     .from("bookings")
     .select(
-      "id, status, cancellation_token_hash, google_event_id, staff_id, service_id, customer_email, customer_phone, customer_name, starts_at",
+      "id, status, cancellation_token_hash, google_event_id, service_id, customer_email, customer_phone, customer_name, starts_at",
     )
     .eq("confirmation_code", confirmationCode)
     .maybeSingle();
@@ -194,53 +192,30 @@ export async function cancelBookingRecord(bookingId: string, reason: string) {
   }
 }
 
-export async function getStaffCalendarId(staffId: string) {
-  const { data, error } = await getSupabaseAdmin()
-    .from("staff")
-    .select("google_calendar_id")
-    .eq("id", staffId)
-    .single();
-  const staff = requireData(data, error, "Unable to load the staff calendar");
+export async function getBookingCalendarId() {
+  const settings = await getSalonSettings();
 
-  if (!staff.google_calendar_id) {
-    throw new Error("The staff calendar is not configured.");
+  if (!settings.bookingCalendarId) {
+    throw new Error("The salon booking calendar is not configured.");
   }
 
-  return staff.google_calendar_id as string;
+  return settings.bookingCalendarId;
 }
 
 export async function getBookingCatalog() {
-  const database = getSupabaseAdmin();
-  const [servicesResult, staffResult, mappingsResult] = await Promise.all([
-    database
-      .from("services")
-      .select(
-        "id, slug, name, description, duration_minutes, buffer_before_minutes, buffer_after_minutes, price_from, requires_quote, active",
-      )
-      .eq("active", true)
-      .order("sort_order"),
-    database
-      .from("staff")
-      .select("id, display_name, email, google_calendar_id, sort_order")
-      .eq("active", true)
-      .eq("accepts_online_bookings", true)
-      .not("google_calendar_id", "is", null)
-      .order("sort_order"),
-    database.from("staff_services").select("staff_id, service_id").eq("active", true),
-  ]);
+  const servicesResult = await getSupabaseAdmin()
+    .from("services")
+    .select(
+      "id, slug, name, description, duration_minutes, buffer_before_minutes, buffer_after_minutes, price_from, requires_quote, active",
+    )
+    .eq("active", true)
+    .order("sort_order");
 
   const serviceRows = requireData(
     servicesResult.data,
     servicesResult.error,
     "Unable to load services",
   );
-  const staffRows = requireData(staffResult.data, staffResult.error, "Unable to load staff");
-  const mappingRows = requireData(
-    mappingsResult.data,
-    mappingsResult.error,
-    "Unable to load staff-service mappings",
-  );
-
   const services: BookingService[] = serviceRows.map((service) => ({
     active: service.active,
     bufferAfterMinutes: service.buffer_after_minutes,
@@ -253,36 +228,12 @@ export async function getBookingCatalog() {
     requiresQuote: service.requires_quote,
     slug: service.slug,
   }));
-  const serviceIdsByStaff = new Map<string, string[]>();
-
-  for (const mapping of mappingRows) {
-    serviceIdsByStaff.set(mapping.staff_id, [
-      ...(serviceIdsByStaff.get(mapping.staff_id) ?? []),
-      mapping.service_id,
-    ]);
-  }
-
-  const staff: BookingStaff[] = staffRows.flatMap((person) =>
-    person.google_calendar_id
-      ? [
-          {
-            calendarId: person.google_calendar_id,
-            displayName: person.display_name,
-            email: person.email,
-            id: person.id,
-            serviceIds: serviceIdsByStaff.get(person.id) ?? [],
-            sortOrder: person.sort_order,
-          },
-        ]
-      : [],
-  );
-
-  return { services, staff };
+  return { services };
 }
 
-export async function getAvailabilityConfiguration(serviceId: string, staffId?: string) {
+export async function getAvailabilityConfiguration(serviceId: string) {
   const database = getSupabaseAdmin();
-  const [settings, serviceResult, mappingsResult] = await Promise.all([
+  const [settings, serviceResult, teamResult] = await Promise.all([
     getSalonSettings(),
     database
       .from("services")
@@ -293,12 +244,12 @@ export async function getAvailabilityConfiguration(serviceId: string, staffId?: 
       .eq("active", true)
       .single(),
     database
-      .from("staff_services")
-      .select(
-        "staff_id, duration_minutes, buffer_before_minutes, buffer_after_minutes, active",
-      )
-      .eq("service_id", serviceId)
-      .eq("active", true),
+      .from("staff")
+      .select("id")
+      .eq("external_key", "salon-team")
+      .eq("active", true)
+      .eq("accepts_online_bookings", true)
+      .single(),
   ]);
 
   const serviceRow = requireData(
@@ -306,69 +257,41 @@ export async function getAvailabilityConfiguration(serviceId: string, staffId?: 
     serviceResult.error,
     "Unable to load the selected service",
   );
-  const mappingRows = requireData(
-    mappingsResult.data,
-    mappingsResult.error,
-    "Unable to load eligible staff",
-  );
+  const teamRow = requireData(teamResult.data, teamResult.error, "Unable to load the salon team");
 
-  const selectedMappings = staffId
-    ? mappingRows.filter((mapping) => mapping.staff_id === staffId)
-    : mappingRows;
-  const staffIds = selectedMappings.map((mapping) => mapping.staff_id);
-
-  if (!staffIds.length) {
-    return { availability: [], service: null, settings, staff: [] };
-  }
-
-  const [staffResult, availabilityResult] = await Promise.all([
+  const [mappingResult, availabilityResult] = await Promise.all([
     database
-      .from("staff")
-      .select("id, display_name, email, google_calendar_id, sort_order")
-      .in("id", staffIds)
+      .from("staff_services")
+      .select("duration_minutes, buffer_before_minutes, buffer_after_minutes")
+      .eq("staff_id", teamRow.id)
+      .eq("service_id", serviceId)
       .eq("active", true)
-      .eq("accepts_online_bookings", true)
-      .not("google_calendar_id", "is", null),
+      .maybeSingle(),
     database
       .from("weekly_availability")
       .select("id, staff_id, day_of_week, start_time, end_time")
-      .in("staff_id", staffIds),
+      .eq("staff_id", teamRow.id),
   ]);
 
-  const staffRows = requireData(
-    staffResult.data,
-    staffResult.error,
-    "Unable to load staff calendars",
-  );
+  assertNoError(mappingResult.error, "Unable to load the salon service configuration");
   const availabilityRows = requireData(
     availabilityResult.data,
     availabilityResult.error,
-    "Unable to load staff availability",
+    "Unable to load salon availability",
   );
 
-  const mappingByStaff = new Map(selectedMappings.map((mapping) => [mapping.staff_id, mapping]));
-  const staff: StaffServiceConfiguration[] = staffRows.flatMap((person) => {
-    const mapping = mappingByStaff.get(person.id);
+  if (!mappingResult.data) {
+    return { availability: [], service: null, settings, team: null };
+  }
 
-    if (!mapping || !person.google_calendar_id) {
-      return [];
-    }
-
-    return [
-      {
-        bufferAfterMinutes:
-          mapping.buffer_after_minutes ?? serviceRow.buffer_after_minutes,
-        bufferBeforeMinutes:
-          mapping.buffer_before_minutes ?? serviceRow.buffer_before_minutes,
-        calendarId: person.google_calendar_id,
-        displayName: person.display_name,
-        durationMinutes: mapping.duration_minutes ?? serviceRow.duration_minutes,
-        email: person.email,
-        id: person.id,
-        sortOrder: person.sort_order,
-      },
-    ];
-  });
+  const team: SalonTeamConfiguration = {
+    bufferAfterMinutes:
+      mappingResult.data.buffer_after_minutes ?? serviceRow.buffer_after_minutes,
+    bufferBeforeMinutes:
+      mappingResult.data.buffer_before_minutes ?? serviceRow.buffer_before_minutes,
+    durationMinutes: mappingResult.data.duration_minutes ?? serviceRow.duration_minutes,
+    id: teamRow.id,
+  };
   const availability: WeeklyAvailability[] = availabilityRows.map((window) => ({
     dayOfWeek: window.day_of_week,
     endTime: window.end_time,
@@ -389,5 +312,23 @@ export async function getAvailabilityConfiguration(serviceId: string, staffId?: 
     slug: serviceRow.slug,
   };
 
-  return { availability, service, settings, staff };
+  return { availability, service, settings, team };
+}
+
+export async function getActiveBookingOccupancy(timeMin: string, timeMax: string) {
+  const { data, error } = await getSupabaseAdmin()
+    .from("bookings")
+    .select("blocked_starts_at, blocked_ends_at, google_event_id")
+    .in("status", ["pending", "confirmed"])
+    .lt("blocked_starts_at", timeMax)
+    .gt("blocked_ends_at", timeMin);
+  const rows = requireData(data, error, "Unable to load current booking capacity");
+
+  return rows.map(
+    (booking): BookingOccupancy => ({
+      end: booking.blocked_ends_at,
+      googleEventId: booking.google_event_id,
+      start: booking.blocked_starts_at,
+    }),
+  );
 }

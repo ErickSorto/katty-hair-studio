@@ -8,7 +8,7 @@ const phoneDisplay = "(240) 582-6622";
 export const metadata: Metadata = {
   title: "Book a Hair Appointment in Brentwood, MD | Katty",
   description:
-    "Choose a Katty Hair Studio service, see live availability across qualified stylists, and reserve your appointment in Brentwood, Maryland.",
+    "Choose a Katty Hair Studio service, see live salon availability, and reserve your appointment in Brentwood, Maryland.",
   alternates: { canonical: "https://www.kattyhairstudio.com/booking" },
 };
 

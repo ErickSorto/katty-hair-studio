@@ -10,18 +10,16 @@ export const runtime = "nodejs";
 const querySchema = z.object({
   date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
   serviceId: z.string().uuid(),
-  staffId: z.string().uuid().optional(),
 });
 
 export async function GET(request: NextRequest) {
   const parsed = querySchema.safeParse({
     date: request.nextUrl.searchParams.get("date"),
     serviceId: request.nextUrl.searchParams.get("serviceId"),
-    staffId: request.nextUrl.searchParams.get("staffId") || undefined,
   });
 
   if (!parsed.success) {
-    return NextResponse.json({ error: "Choose a valid service, stylist, and date." }, { status: 400 });
+    return NextResponse.json({ error: "Choose a valid service and date." }, { status: 400 });
   }
 
   if (isBookingDemoEnabled(request.nextUrl.searchParams)) {

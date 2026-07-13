@@ -26,14 +26,27 @@
    https://www.googleapis.com/auth/calendar.calendarlist.readonly
    ```
 
-6. Connect the salon owner's Google account, then call the provisioning endpoint. It creates the
-   Operations calendar and one appointment calendar per staff member, saves their Calendar IDs,
-   maps services, and writes weekly availability. If a manager or staff member needs direct Google
-   Calendar access, use Google Calendar on a computer to share the returned calendar with the
-   response's `shareWith` addresses. Use **See all event details** for view-only staff. Reserve
-   **Make changes to events** for trusted managers who need to add or clear blocks, because that
-   permission can also edit customer appointment events. Calendar sharing remains manual so the
-   app does not request an ACL management scope.
+6. Connect the salon owner's Google account, then call the provisioning endpoint. It creates one
+   `Katty Hair Studio Bookings` calendar, stores its Calendar ID, maps every active service to the
+   hidden salon-team record, and optionally writes the salon's weekly availability. The default
+   `maxConcurrentBookings` is `4`. Customers never select or see an individual stylist; Katty
+   assigns the team internally. Calendar sharing remains manual so the app does not request an ACL
+   management scope.
+
+   ```json
+   {
+     "bookingCalendarName": "Katty Hair Studio Bookings",
+     "maxConcurrentBookings": 4,
+     "managerEmails": [],
+     "availability": [
+       { "dayOfWeek": 1, "startTime": "09:00", "endTime": "18:00" }
+     ]
+   }
+   ```
+
+7. Run every migration in filename order. The single-calendar capacity migration adds an atomic
+   `reserve_salon_booking` function. The booking API uses that function so simultaneous requests
+   cannot both claim the salon's final available spot.
 
 All exposed tables have RLS enabled and no anonymous or authenticated browser policies. Application
 access uses the server-only Supabase secret through Next.js Route Handlers.

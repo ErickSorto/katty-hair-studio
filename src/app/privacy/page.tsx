@@ -12,7 +12,7 @@ const sections: readonly PolicySection[] = [
     id: "information-we-collect",
     title: "Information we collect",
     paragraphs: [
-      "When you request or manage an appointment, we may collect your name, email address, phone number, requested service, preferred stylist, appointment time, notes, SMS consent choice, and booking history.",
+      "When you request or manage an appointment, we may collect your name, email address, phone number, requested service, appointment time, notes, SMS consent choice, and booking history.",
       "Our website and hosting providers may also process basic technical information such as IP address, browser type, device type, pages visited, and error or security logs.",
     ],
   },
@@ -32,8 +32,8 @@ const sections: readonly PolicySection[] = [
     id: "google-calendar-data",
     title: "Google Calendar data",
     paragraphs: [
-      "Katty Hair Studio Booking connects to a Google account authorized by the salon owner. The connection may read calendar availability and calendar-list metadata, create dedicated salon calendars, and manage appointment events only on calendars created by this application.",
-      "Google Calendar data is used only to identify calendars created by this application, display accurate availability, create or update appointments, and prevent conflicts. The application does not read event details from unrelated calendars or use Google user data for advertising, profiling, or sale.",
+      "Katty Hair Studio Booking connects to a Google account authorized by the salon owner. The connection may read calendar-list metadata, create one dedicated salon booking calendar, and see, create, change, or delete events only on calendars created by this application.",
+      "Google Calendar data is used only to identify the application-created booking calendar, count appointment availability, create or cancel appointment events, and prevent overbooking. The application does not read event details from unrelated calendars or use Google user data for advertising, profiling, or sale.",
       "The Google refresh token is encrypted before storage. Access can be revoked at any time from the connected Google Account's third-party access settings or by contacting the studio.",
     ],
   },

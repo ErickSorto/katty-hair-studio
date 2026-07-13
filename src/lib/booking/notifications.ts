@@ -10,7 +10,6 @@ type BookingNotification = {
   customerPhone?: string;
   serviceName: string;
   smsConsent: boolean;
-  staffName: string;
   startsAt: string;
   timezone: string;
 };
@@ -56,7 +55,6 @@ async function sendConfirmationEmail(booking: BookingNotification) {
   const cancellationUrl = getCancellationUrl(booking);
   const customerName = escapeHtml(booking.customerName);
   const serviceName = escapeHtml(booking.serviceName);
-  const staffName = escapeHtml(booking.staffName);
   const safeWhen = escapeHtml(when);
   const safeCode = escapeHtml(booking.confirmationCode);
   const safeCancellationUrl = cancellationUrl ? escapeHtml(cancellationUrl) : undefined;
@@ -65,11 +63,11 @@ async function sendConfirmationEmail(booking: BookingNotification) {
       from,
       html: `<h1>Your appointment is confirmed</h1>
 <p>Hi ${customerName},</p>
-<p>${serviceName} with ${staffName}<br />${safeWhen}</p>
+<p>${serviceName} at Katty Hair Studio<br />${safeWhen}</p>
 <p>Confirmation: <strong>${safeCode}</strong></p>
 ${safeCancellationUrl ? `<p><a href="${safeCancellationUrl}">Cancel this appointment</a></p>` : ""}`,
       subject: `Appointment confirmed — ${booking.confirmationCode}`,
-      text: `Your ${booking.serviceName} appointment with ${booking.staffName} is confirmed for ${when}. Confirmation: ${booking.confirmationCode}.${cancellationUrl ? ` Cancel: ${cancellationUrl}` : ""}`,
+      text: `Your ${booking.serviceName} appointment at Katty Hair Studio is confirmed for ${when}. Confirmation: ${booking.confirmationCode}.${cancellationUrl ? ` Cancel: ${cancellationUrl}` : ""}`,
       to: [booking.customerEmail],
     }),
     cache: "no-store",
@@ -104,7 +102,7 @@ async function sendConfirmationSms(booking: BookingNotification) {
 
   const cancellationUrl = getCancellationUrl(booking);
   const form = new URLSearchParams({
-    Body: `Katty Hair Studio: ${booking.serviceName} with ${booking.staffName}, ${appointmentWhen(booking)}. Confirmation ${booking.confirmationCode}.${cancellationUrl ? ` Cancel: ${cancellationUrl}` : ""} Reply STOP to opt out.`,
+    Body: `Katty Hair Studio: ${booking.serviceName}, ${appointmentWhen(booking)}. Confirmation ${booking.confirmationCode}.${cancellationUrl ? ` Cancel: ${cancellationUrl}` : ""} Reply STOP to opt out.`,
     MessagingServiceSid: messagingServiceSid,
     To: booking.customerPhone,
   });

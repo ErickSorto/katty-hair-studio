@@ -1,10 +1,11 @@
 export type SalonSettings = {
   address: string;
+  bookingCalendarId: string | null;
   bookingWindowDays: number;
   email: string;
   holdMinutes: number;
+  maxConcurrentBookings: number;
   minimumNoticeMinutes: number;
-  operationsCalendarId: string | null;
   salonName: string;
   slotIntervalMinutes: number;
   timezone: string;
@@ -24,24 +25,11 @@ export type BookingService = {
   slug: string;
 };
 
-export type BookingStaff = {
-  calendarId: string;
-  displayName: string;
-  email: string | null;
-  id: string;
-  serviceIds: string[];
-  sortOrder: number;
-};
-
-export type StaffServiceConfiguration = {
+export type SalonTeamConfiguration = {
   bufferAfterMinutes: number;
   bufferBeforeMinutes: number;
-  calendarId: string;
-  displayName: string;
   durationMinutes: number;
-  email: string | null;
   id: string;
-  sortOrder: number;
 };
 
 export type WeeklyAvailability = {
@@ -57,7 +45,12 @@ export type AvailableSlot = {
   blockedStartsAt: string;
   endsAt: string;
   label: string;
-  staffId: string;
-  staffName: string;
+  remainingCapacity: number;
   startsAt: string;
+};
+
+export type BookingOccupancy = {
+  end: string;
+  googleEventId: string | null;
+  start: string;
 };

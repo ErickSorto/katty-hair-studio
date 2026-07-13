@@ -2,10 +2,7 @@ import { timingSafeEqual } from "node:crypto";
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import {
-  createGoogleCalendar,
-  getGoogleCalendar,
-} from "@/lib/google-calendar/client";
+import { createGoogleCalendar, getGoogleCalendar } from "@/lib/google-calendar/client";
 import { getSalonSettings } from "@/lib/booking/repository";
 import { getSupabaseAdmin } from "@/lib/supabase/server";
 
@@ -19,29 +16,24 @@ const availabilitySchema = z.object({
 });
 
 const requestSchema = z.object({
+  availability: z.array(availabilitySchema).min(1).optional(),
+  bookingCalendarName: z
+    .string()
+    .trim()
+    .min(2)
+    .default("Katty Hair Studio Bookings"),
   managerEmails: z.array(z.string().email()).default([]),
-  operationsCalendarName: z.string().trim().min(2).default("Katty Hair Studio - Operations"),
-  staff: z
-    .array(
-      z.object({
-        availability: z.array(availabilitySchema).min(1),
-        displayName: z.string().trim().min(2).max(100),
-        email: z.string().email().optional(),
-        key: z.string().regex(/^[a-z0-9-]+$/),
-        serviceSlugs: z.array(z.string()).min(1),
-      }),
-    )
-    .min(1),
+  maxConcurrentBookings: z.number().int().min(1).max(20).default(4),
 });
 
-function uniqueEmails(emails: Array<string | undefined>) {
+function uniqueEmails(emails: string[]) {
   const seen = new Set<string>();
 
   return emails.flatMap((email) => {
-    const value = email?.trim();
-    const normalized = value?.toLowerCase();
+    const value = email.trim();
+    const normalized = value.toLowerCase();
 
-    if (!value || !normalized || seen.has(normalized)) {
+    if (!value || seen.has(normalized)) {
       return [];
     }
 
@@ -62,7 +54,7 @@ function authorized(request: NextRequest) {
 }
 
 async function loadOrCreateCalendar(
-  existingCalendarId: string | null | undefined,
+  existingCalendarId: string | null,
   summary: string,
   timeZone: string,
 ) {
@@ -72,7 +64,7 @@ async function loadOrCreateCalendar(
     } catch {
       throw new Error(
         `The stored calendar for ${summary} is not managed by this OAuth application. ` +
-          "Reconnect the correct Google account or clear the stored Calendar ID before retrying.",
+          "Clear the stored booking Calendar ID before retrying.",
       );
     }
   }
@@ -88,150 +80,137 @@ export async function POST(request: NextRequest) {
   const parsed = requestSchema.safeParse(await request.json().catch(() => null));
 
   if (!parsed.success) {
-    return NextResponse.json({ error: "Review the staff provisioning request." }, { status: 400 });
+    return NextResponse.json(
+      { error: "Review the salon calendar provisioning request." },
+      { status: 400 },
+    );
   }
 
   try {
     const database = getSupabaseAdmin();
     const settings = await getSalonSettings();
-    const operationsCalendar = await loadOrCreateCalendar(
-      settings.operationsCalendarId,
-      parsed.data.operationsCalendarName,
+    const bookingCalendar = await loadOrCreateCalendar(
+      settings.bookingCalendarId,
+      parsed.data.bookingCalendarName,
       settings.timezone,
     );
-
     const { error: settingsError } = await database
       .from("salon_settings")
-      .update({ operations_calendar_id: operationsCalendar.id })
+      .update({
+        booking_calendar_id: bookingCalendar.id,
+        max_concurrent_bookings: parsed.data.maxConcurrentBookings,
+        operations_calendar_id: bookingCalendar.id,
+      })
       .eq("id", 1);
 
     if (settingsError) {
-      throw new Error(`Unable to save the Operations calendar: ${settingsError.message}`);
+      throw new Error(`Unable to save the booking calendar: ${settingsError.message}`);
     }
 
-    const { data: existingStaff, error: existingStaffError } = await database
+    const { error: retireStaffError } = await database
       .from("staff")
-      .select("external_key, google_calendar_id")
-      .in(
-        "external_key",
-        parsed.data.staff.map((person) => person.key),
-      );
+      .update({
+        accepts_online_bookings: false,
+        active: false,
+        google_calendar_id: null,
+      })
+      .neq("external_key", "salon-team");
 
-    if (existingStaffError) {
-      throw new Error(`Unable to load existing staff calendars: ${existingStaffError.message}`);
+    if (retireStaffError) {
+      throw new Error(`Unable to retire individual stylist calendars: ${retireStaffError.message}`);
     }
 
-    const calendarIdByStaffKey = new Map(
-      (existingStaff ?? []).map((person) => [person.external_key, person.google_calendar_id]),
-    );
-    const provisionedStaff = [];
-
-    for (const person of parsed.data.staff) {
-      const calendar = await loadOrCreateCalendar(
-        calendarIdByStaffKey.get(person.key),
-        `Katty Hair Studio - ${person.displayName} Appointments`,
-        settings.timezone,
-      );
-
-      const { data: staffRow, error: staffError } = await database
-        .from("staff")
-        .upsert(
-          {
-            display_name: person.displayName,
-            email: person.email || null,
-            external_key: person.key,
-            google_calendar_id: calendar.id,
-          },
-          { onConflict: "external_key" },
-        )
-        .select("id")
-        .single();
-
-      if (staffError || !staffRow) {
-        throw new Error(`Unable to save ${person.displayName}: ${staffError?.message ?? "no row"}`);
-      }
-
-      const { data: serviceRows, error: serviceError } = await database
-        .from("services")
-        .select("id, slug")
-        .in("slug", person.serviceSlugs)
-        .eq("active", true);
-
-      if (serviceError || !serviceRows) {
-        throw new Error(`Unable to map services for ${person.displayName}.`);
-      }
-
-      const missingServices = person.serviceSlugs.filter(
-        (slug) => !serviceRows.some((service) => service.slug === slug),
-      );
-
-      if (missingServices.length) {
-        throw new Error(`Unknown service slugs: ${missingServices.join(", ")}`);
-      }
-
-      const { error: mappingError } = await database.from("staff_services").upsert(
-        serviceRows.map((service) => ({
+    const { data: team, error: teamError } = await database
+      .from("staff")
+      .upsert(
+        {
+          accepts_online_bookings: true,
           active: true,
-          service_id: service.id,
-          staff_id: staffRow.id,
-        })),
-        { onConflict: "staff_id,service_id" },
+          display_name: "Katty Hair Studio team",
+          external_key: "salon-team",
+          google_calendar_id: bookingCalendar.id,
+          sort_order: 0,
+        },
+        { onConflict: "external_key" },
+      )
+      .select("id")
+      .single();
+
+    if (teamError || !team) {
+      throw new Error(`Unable to save the salon team: ${teamError?.message ?? "no row"}`);
+    }
+
+    const { data: services, error: servicesError } = await database
+      .from("services")
+      .select("id")
+      .eq("active", true);
+
+    if (servicesError || !services?.length) {
+      throw new Error(`Unable to load active services: ${servicesError?.message ?? "no services"}`);
+    }
+
+    const { error: deactivateMappingsError } = await database
+      .from("staff_services")
+      .update({ active: false })
+      .eq("staff_id", team.id);
+
+    if (deactivateMappingsError) {
+      throw new Error(
+        `Unable to refresh salon services: ${deactivateMappingsError.message}`,
       );
+    }
 
-      if (mappingError) {
-        throw new Error(`Unable to map services for ${person.displayName}: ${mappingError.message}`);
-      }
+    const { error: mappingError } = await database.from("staff_services").upsert(
+      services.map((service) => ({
+        active: true,
+        service_id: service.id,
+        staff_id: team.id,
+      })),
+      { onConflict: "staff_id,service_id" },
+    );
 
+    if (mappingError) {
+      throw new Error(`Unable to map salon services: ${mappingError.message}`);
+    }
+
+    if (parsed.data.availability) {
       const { error: deleteAvailabilityError } = await database
         .from("weekly_availability")
         .delete()
-        .eq("staff_id", staffRow.id);
+        .eq("staff_id", team.id);
 
       if (deleteAvailabilityError) {
         throw new Error(
-          `Unable to replace availability for ${person.displayName}: ${deleteAvailabilityError.message}`,
+          `Unable to replace salon availability: ${deleteAvailabilityError.message}`,
         );
       }
 
       const { error: availabilityError } = await database.from("weekly_availability").insert(
-        person.availability.map((window) => ({
+        parsed.data.availability.map((window) => ({
           day_of_week: window.dayOfWeek,
           end_time: window.endTime,
-          staff_id: staffRow.id,
+          staff_id: team.id,
           start_time: window.startTime,
         })),
       );
 
       if (availabilityError) {
-        throw new Error(
-          `Unable to save availability for ${person.displayName}: ${availabilityError.message}`,
-        );
+        throw new Error(`Unable to save salon availability: ${availabilityError.message}`);
       }
-
-      provisionedStaff.push({
-        calendarId: calendar.id,
-        calendarName: calendar.summary,
-        displayName: person.displayName,
-        id: staffRow.id,
-        shareWith: uniqueEmails([person.email, ...parsed.data.managerEmails]),
-      });
     }
 
     return NextResponse.json({
-      manualSharing: {
-        instructions:
-          "On a computer, optionally share each calendar in Google Calendar settings. Use See all event details for view-only staff. Use Make changes to events only for trusted managers who need to add or clear blocks; that permission can also edit appointment events.",
-        operations: {
-          calendarId: operationsCalendar.id,
-          calendarName: operationsCalendar.summary,
-          shareWith: uniqueEmails(parsed.data.managerEmails),
-        },
+      bookingCalendar: {
+        calendarId: bookingCalendar.id,
+        calendarName: bookingCalendar.summary,
+        shareWith: uniqueEmails(parsed.data.managerEmails),
       },
-      operationsCalendarId: operationsCalendar.id,
-      staff: provisionedStaff,
+      maxConcurrentBookings: parsed.data.maxConcurrentBookings,
+      scheduleUpdated: Boolean(parsed.data.availability),
+      teamId: team.id,
     });
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Unable to provision calendars.";
+    const message = error instanceof Error ? error.message : "Unable to provision the calendar.";
     return NextResponse.json({ error: message }, { status: 503 });
   }
 }

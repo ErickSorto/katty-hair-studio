@@ -21,7 +21,7 @@ const sections: readonly PolicySection[] = [
     title: "Appointment requests and confirmation",
     paragraphs: [
       "An appointment is reserved only after the booking system displays a confirmation or the studio confirms it directly. Availability may change while a request is being submitted.",
-      "When First Available is selected, the system may assign any eligible team member who offers the service and is available at the selected time. A named-stylist request is subject to that stylist's availability.",
+      "Clients select a service and appointment time rather than a specific team member. Katty Hair Studio coordinates the available team member internally, so an online booking does not guarantee a named stylist.",
     ],
   },
   {

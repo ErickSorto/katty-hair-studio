@@ -31,9 +31,10 @@ Supabase environment variables are configured.
 
 ### Booking database
 
-The production booking system uses Supabase/Postgres. Apply
-`supabase/migrations/20260710193000_booking_foundation.sql`, then configure `SUPABASE_URL` and the
-server-only `SUPABASE_SECRET_KEY`. See `supabase/README.md` for calendar provisioning details.
+The production booking system uses Supabase/Postgres. Apply every SQL file in
+`supabase/migrations/` in filename order, then configure `SUPABASE_URL` and the server-only
+`SUPABASE_SECRET_KEY`. See `supabase/README.md` for shared-calendar provisioning and capacity
+details.
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
