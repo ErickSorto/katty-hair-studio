@@ -8,6 +8,11 @@ const nextConfig: NextConfig = {
         permanent: true,
         source: "/services/eyebrow-threading",
       },
+      {
+        destination: "/es/services/eyebrow-waxing",
+        permanent: true,
+        source: "/es/services/eyebrow-threading",
+      },
     ];
   },
   turbopack: {

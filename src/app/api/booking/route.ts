@@ -12,6 +12,14 @@ import {
 } from "@/lib/booking/demo";
 import { sendBookingConfirmation } from "@/lib/booking/notifications";
 import {
+  getBookingErrorMessage,
+  getLocalizedBookingServiceName,
+  normalizeBookingLocale,
+  type BookingErrorCode,
+  type BookingLocale,
+} from "@/lib/booking/localization";
+import {
+  BookingCapacityError,
   confirmBooking,
   createPendingBooking,
   expireStaleBookingHolds,
@@ -29,6 +37,7 @@ export const runtime = "nodejs";
 
 const bookingSchema = z.object({
   customerEmail: z.string().trim().email().max(254),
+  customerLocale: z.enum(["en", "es"]).default("en"),
   customerName: z.string().trim().min(2).max(100),
   customerNotes: z.string().trim().max(1000).optional(),
   customerPhone: z.string().trim().max(30).optional(),
@@ -59,32 +68,100 @@ function confirmationCode() {
   return `KHS-${randomBytes(3).toString("hex").toUpperCase()}`;
 }
 
+function bookingErrorResponse(
+  locale: BookingLocale,
+  errorCode: BookingErrorCode,
+  status: number,
+) {
+  return NextResponse.json(
+    { error: getBookingErrorMessage(locale, errorCode), errorCode },
+    { status },
+  );
+}
+
+function calendarEventContent(input: {
+  confirmationCode: string;
+  customerEmail: string;
+  customerLocale: BookingLocale;
+  customerName: string;
+  customerNotes?: string;
+  customerPhone?: string;
+  localTest?: boolean;
+  serviceName: string;
+  serviceSlug: string;
+}) {
+  const localizedServiceName = getLocalizedBookingServiceName(
+    input.serviceSlug,
+    input.serviceName,
+    input.customerLocale,
+  );
+
+  if (input.customerLocale === "es") {
+    return {
+      description: [
+        input.localTest
+          ? "LOCAL TEST BOOKING / RESERVA LOCAL DE PRUEBA — no production record or notification was created / no se creó ningún registro ni aviso de producción."
+          : `Booking / Reserva ${input.confirmationCode}`,
+        input.localTest ? `Test confirmation / Confirmación de prueba: ${input.confirmationCode}` : undefined,
+        `Customer / Cliente: ${input.customerName}`,
+        `Email / Correo electrónico: ${input.customerEmail}`,
+        input.customerPhone
+          ? `Phone / Teléfono: ${input.customerPhone}`
+          : undefined,
+        input.customerNotes ? `Notes / Notas: ${input.customerNotes}` : undefined,
+      ]
+        .filter(Boolean)
+        .join("\n"),
+      summary: `${input.localTest ? "[LOCAL TEST / PRUEBA LOCAL] " : ""}${input.serviceName} / ${localizedServiceName} — ${input.customerName}`,
+    };
+  }
+
+  return {
+    description: [
+      input.localTest
+        ? "LOCAL TEST BOOKING — no production booking record or notification was created."
+        : `Booking ${input.confirmationCode}`,
+      input.localTest ? `Test confirmation: ${input.confirmationCode}` : undefined,
+      `Customer: ${input.customerName}`,
+      input.localTest
+        ? `Email entered: ${input.customerEmail}`
+        : `Email: ${input.customerEmail}`,
+      input.customerPhone
+        ? `${input.localTest ? "Phone entered" : "Phone"}: ${input.customerPhone}`
+        : undefined,
+      input.customerNotes ? `Notes: ${input.customerNotes}` : undefined,
+    ]
+      .filter(Boolean)
+      .join("\n"),
+    summary: `${input.localTest ? "[LOCAL TEST] " : ""}${input.serviceName} — ${input.customerName}`,
+  };
+}
+
 export async function POST(request: NextRequest) {
-  const parsed = bookingSchema.safeParse(await request.json().catch(() => null));
+  const body = await request.json().catch(() => null);
+  const requestedLocale = normalizeBookingLocale(
+    body && typeof body === "object" && "customerLocale" in body
+      ? body.customerLocale
+      : undefined,
+  );
+  const parsed = bookingSchema.safeParse(body);
 
   if (!parsed.success) {
-    return NextResponse.json(
-      { error: "Review the appointment and contact details." },
-      { status: 400 },
-    );
+    return bookingErrorResponse(requestedLocale, "INVALID_BOOKING_DETAILS", 400);
   }
+
+  const customerLocale = parsed.data.customerLocale;
 
   let customerPhone: string | undefined;
 
   try {
     customerPhone = normalizeUsPhone(parsed.data.customerPhone);
-  } catch (error) {
-    return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Enter a valid phone number." },
-      { status: 400 },
-    );
+  } catch {
+    return bookingErrorResponse(customerLocale, "INVALID_PHONE", 400);
   }
 
   if (parsed.data.smsConsent && !customerPhone) {
-    return NextResponse.json(
-      { error: "A phone number is required when SMS confirmations are selected." },
-      { status: 400 },
-    );
+    return bookingErrorResponse(customerLocale, "SMS_PHONE_REQUIRED", 400);
   }
 
   if (isBookingDemoEnabled(request.nextUrl.searchParams)) {
@@ -94,24 +171,31 @@ export async function POST(request: NextRequest) {
       "America/New_York",
       "yyyy-MM-dd",
     );
-    const availability = getDemoAvailability({ date, serviceId: parsed.data.serviceId });
+    const availability = getDemoAvailability(
+      { date, serviceId: parsed.data.serviceId },
+      customerLocale,
+    );
     const selectedSlot = availability.slots.find(
       (slot) => slot.startsAt === parsed.data.startsAt,
     );
 
     if (!service || !selectedSlot) {
-      return NextResponse.json(
-        { error: "That preview appointment time is no longer available." },
-        { status: 409 },
-      );
+      return bookingErrorResponse(customerLocale, "PREVIEW_SLOT_UNAVAILABLE", 409);
     }
+
+    const localizedServiceName = getLocalizedBookingServiceName(
+      service.slug,
+      service.name,
+      customerLocale,
+    );
 
     return NextResponse.json(
       {
         booking: {
           confirmationCode: confirmationCode(),
           endsAt: selectedSlot.endsAt,
-          serviceName: service.name,
+          serviceName: localizedServiceName,
+          serviceSlug: service.slug,
           startsAt: selectedSlot.startsAt,
         },
       },
@@ -125,19 +209,13 @@ export async function POST(request: NextRequest) {
 
   if ("error" in configuration) {
     console.error("Booking configuration unavailable", configuration.error);
-    return NextResponse.json(
-      { error: "Online booking is temporarily unavailable. Please call the salon." },
-      { status: 503 },
-    );
+    return bookingErrorResponse(customerLocale, "BOOKING_UNAVAILABLE", 503);
   }
 
   const { service, settings, team } = configuration;
 
   if (!team || !service || !settings.bookingCalendarId) {
-    return NextResponse.json(
-      { error: "Online booking is still being configured. Please call the salon." },
-      { status: 409 },
-    );
+    return bookingErrorResponse(customerLocale, "BOOKING_NOT_CONFIGURED", 409);
   }
 
   const date = formatInTimeZone(
@@ -154,32 +232,31 @@ export async function POST(request: NextRequest) {
     );
 
     if (!selectedSlot) {
-      return NextResponse.json(
-        { error: "That appointment time is no longer available." },
-        { status: 409 },
-      );
+      return bookingErrorResponse(customerLocale, "SLOT_UNAVAILABLE", 409);
     }
 
     if (isLocalDevelopmentRuntime()) {
       const code = `LOCAL-${randomBytes(3).toString("hex").toUpperCase()}`;
+      const eventContent = calendarEventContent({
+        confirmationCode: code,
+        customerEmail: parsed.data.customerEmail,
+        customerLocale,
+        customerName: parsed.data.customerName,
+        customerNotes: parsed.data.customerNotes,
+        customerPhone,
+        localTest: true,
+        serviceName: service.name,
+        serviceSlug: service.slug,
+      });
       const googleEvent = await createGoogleCalendarEvent({
         bookingId: `local-${randomUUID()}`,
         calendarId: settings.bookingCalendarId,
-        description: [
-          "LOCAL TEST BOOKING — no production booking record or notification was created.",
-          `Test confirmation: ${code}`,
-          `Customer: ${parsed.data.customerName}`,
-          `Email entered: ${parsed.data.customerEmail}`,
-          customerPhone ? `Phone entered: ${customerPhone}` : undefined,
-          parsed.data.customerNotes ? `Notes: ${parsed.data.customerNotes}` : undefined,
-        ]
-          .filter(Boolean)
-          .join("\n"),
+        description: eventContent.description,
         end: selectedSlot.endsAt,
         location: settings.address,
         sendUpdates: "none",
         start: selectedSlot.startsAt,
-        summary: `[LOCAL TEST] ${service.name} — ${parsed.data.customerName}`,
+        summary: eventContent.summary,
         timeZone: settings.timezone,
       });
 
@@ -190,7 +267,12 @@ export async function POST(request: NextRequest) {
             endsAt: selectedSlot.endsAt,
             googleEventLink: googleEvent.htmlLink,
             localTest: true,
-            serviceName: service.name,
+            serviceName: getLocalizedBookingServiceName(
+              service.slug,
+              service.name,
+              customerLocale,
+            ),
+            serviceSlug: service.slug,
             startsAt: selectedSlot.startsAt,
           },
         },
@@ -209,6 +291,7 @@ export async function POST(request: NextRequest) {
       cancellationTokenHash,
       confirmationCode: code,
       customerEmail: parsed.data.customerEmail,
+      customerLocale,
       customerName: parsed.data.customerName,
       customerNotes: parsed.data.customerNotes,
       customerPhone,
@@ -221,23 +304,25 @@ export async function POST(request: NextRequest) {
     let googleEvent: { htmlLink?: string; id: string } | undefined;
 
     try {
+      const eventContent = calendarEventContent({
+        confirmationCode: code,
+        customerEmail: parsed.data.customerEmail,
+        customerLocale,
+        customerName: parsed.data.customerName,
+        customerNotes: parsed.data.customerNotes,
+        customerPhone,
+        serviceName: service.name,
+        serviceSlug: service.slug,
+      });
       googleEvent = await createGoogleCalendarEvent({
         attendeeEmail: parsed.data.customerEmail,
         bookingId,
         calendarId: settings.bookingCalendarId,
-        description: [
-          `Booking ${code}`,
-          `Customer: ${parsed.data.customerName}`,
-          `Email: ${parsed.data.customerEmail}`,
-          customerPhone ? `Phone: ${customerPhone}` : undefined,
-          parsed.data.customerNotes ? `Notes: ${parsed.data.customerNotes}` : undefined,
-        ]
-          .filter(Boolean)
-          .join("\n"),
+        description: eventContent.description,
         end: selectedSlot.endsAt,
         location: settings.address,
         start: selectedSlot.startsAt,
-        summary: `${service.name} — ${parsed.data.customerName}`,
+        summary: eventContent.summary,
         timeZone: settings.timezone,
       });
       await confirmBooking(bookingId, googleEvent);
@@ -259,6 +344,7 @@ export async function POST(request: NextRequest) {
         cancellationToken,
         confirmationCode: code,
         customerEmail: parsed.data.customerEmail,
+        customerLocale,
         customerName: parsed.data.customerName,
         customerNotes: parsed.data.customerNotes,
         customerPhone,
@@ -269,6 +355,7 @@ export async function POST(request: NextRequest) {
         salonName: settings.salonName,
         salonPhone: settings.phone,
         serviceName: service.name,
+        serviceSlug: service.slug,
         smsConsent: parsed.data.smsConsent,
         startsAt: selectedSlot.startsAt,
         timezone: settings.timezone,
@@ -284,7 +371,12 @@ export async function POST(request: NextRequest) {
         booking: {
           confirmationCode: code,
           endsAt: selectedSlot.endsAt,
-          serviceName: service.name,
+          serviceName: getLocalizedBookingServiceName(
+            service.slug,
+            service.name,
+            customerLocale,
+          ),
+          serviceSlug: service.slug,
           startsAt: selectedSlot.startsAt,
         },
       },
@@ -292,11 +384,11 @@ export async function POST(request: NextRequest) {
     );
   } catch (error) {
     console.error("Booking creation failed", error);
-    const capacityConflict =
-      error instanceof Error && /time was just taken|time is no longer available/i.test(error.message);
-    const message = capacityConflict
-      ? error.message
-      : "We couldn't confirm that appointment. Choose another time or call the salon.";
-    return NextResponse.json({ error: message }, { status: capacityConflict ? 409 : 503 });
+    const capacityConflict = error instanceof BookingCapacityError;
+    return bookingErrorResponse(
+      customerLocale,
+      capacityConflict ? "BOOKING_CAPACITY_REACHED" : "BOOKING_FAILED",
+      capacityConflict ? 409 : 503,
+    );
   }
 }

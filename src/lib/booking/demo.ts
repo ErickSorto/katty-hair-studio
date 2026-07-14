@@ -1,6 +1,13 @@
 import { addMinutes } from "date-fns";
 import { formatInTimeZone, fromZonedTime } from "date-fns-tz";
 import { isSalonClosedWeekday } from "@/lib/booking/schedule";
+import {
+  formatBookingSlotTime,
+  getBookingPromotionLabel,
+  getLocalizedBookingServiceDescription,
+  getLocalizedBookingServiceName,
+  type BookingLocale,
+} from "@/lib/booking/localization";
 import type { AvailableSlot } from "@/lib/booking/types";
 
 const DEMO_TIMEZONE = "America/New_York";
@@ -80,21 +87,33 @@ export function isBookingDemoEnabled(searchParams: URLSearchParams) {
   );
 }
 
-export function getDemoCatalog() {
+export function getDemoCatalog(locale: BookingLocale = "en") {
   return {
     bookingWindowDays: 90,
     maxConcurrentBookings: 4,
     promotion: {
       amount: 10,
-      label: "Mondays are $10 off all services",
+      label: getBookingPromotionLabel(locale),
       weekday: 1,
     },
-    services: demoServices,
+    services: demoServices.map((service) => ({
+      ...service,
+      description:
+        getLocalizedBookingServiceDescription(
+          service.slug,
+          service.description,
+          locale,
+        ) || service.description,
+      name: getLocalizedBookingServiceName(service.slug, service.name, locale),
+    })),
     timezone: DEMO_TIMEZONE,
   };
 }
 
-export function getDemoAvailability(input: { date: string; serviceId: string }) {
+export function getDemoAvailability(
+  input: { date: string; serviceId: string },
+  locale: BookingLocale = "en",
+) {
   const service = demoServices.find((item) => item.id === input.serviceId);
   const requestedDate = fromZonedTime(`${input.date}T12:00:00`, DEMO_TIMEZONE);
   const dayOfWeek = Number(formatInTimeZone(requestedDate, DEMO_TIMEZONE, "i")) % 7;
@@ -121,7 +140,7 @@ export function getDemoAvailability(input: { date: string; serviceId: string }) 
       blockedEndsAt: addMinutes(endsAt, 10).toISOString(),
       blockedStartsAt: startsAt.toISOString(),
       endsAt: endsAt.toISOString(),
-      label: formatInTimeZone(startsAt, DEMO_TIMEZONE, "h:mm a"),
+      label: formatBookingSlotTime(startsAt, DEMO_TIMEZONE, locale),
       remainingCapacity: 4 - ((slotIndex + dayOfWeek) % 3),
       startsAt: startsAt.toISOString(),
     });

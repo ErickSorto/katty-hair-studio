@@ -2,6 +2,7 @@
 
 import { ChevronLeft, ChevronRight, Play } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import type { Locale } from "./i18n/config";
 
 type VideoStory = {
   eyebrow: string;
@@ -13,6 +14,7 @@ type VideoStory = {
 };
 
 type VideoStoryStackProps = {
+  locale?: Locale;
   stories: readonly VideoStory[];
 };
 
@@ -20,12 +22,15 @@ function wrapIndex(index: number, length: number) {
   return ((index % length) + length) % length;
 }
 
-export default function VideoStoryStack({ stories }: VideoStoryStackProps) {
+export default function VideoStoryStack({ locale = "en", stories }: VideoStoryStackProps) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const [playingIndex, setPlayingIndex] = useState<number | null>(null);
   const [requestedIndex, setRequestedIndex] = useState<number | null>(null);
   const videoRefs = useRef<Array<HTMLVideoElement | null>>([]);
+  const copy = locale === "es"
+    ? { choose: "Elegir un video de cliente", next: "Siguiente video de cliente", play: "Reproducir", plays: "Se reproduce aquí", previous: "Video de cliente anterior", show: "Mostrar" }
+    : { choose: "Choose a client video", next: "Next client video", play: "Play", plays: "Plays here", previous: "Previous client video", show: "Show" };
 
   useEffect(() => {
     if (
@@ -137,7 +142,7 @@ export default function VideoStoryStack({ stories }: VideoStoryStackProps) {
                 </video>
                 <span className="video-story-shade" aria-hidden="true" />
                 <button
-                  aria-label={`Play ${story.title}`}
+                  aria-label={`${copy.play} ${story.title}`}
                   className="video-story-play"
                   tabIndex={isActive ? 0 : -1}
                   type="button"
@@ -145,7 +150,7 @@ export default function VideoStoryStack({ stories }: VideoStoryStackProps) {
                   <Play aria-hidden="true" fill="currentColor" />
                 </button>
                 <span className="video-story-watch">
-                  Plays here
+                  {copy.plays}
                 </span>
                 <span className="video-story-caption">
                   <small>{story.eyebrow}</small>
@@ -158,14 +163,14 @@ export default function VideoStoryStack({ stories }: VideoStoryStackProps) {
         })}
       </div>
 
-      <div className="video-story-controls" aria-label="Choose a client video">
-        <button aria-label="Previous client video" onClick={() => move(-1)} type="button">
+      <div className="video-story-controls" aria-label={copy.choose}>
+        <button aria-label={copy.previous} onClick={() => move(-1)} type="button">
           <ChevronLeft aria-hidden="true" />
         </button>
         <div className="video-story-dots">
           {stories.map((story, index) => (
             <button
-              aria-label={`Show ${story.title}`}
+              aria-label={`${copy.show} ${story.title}`}
               aria-pressed={index === activeIndex}
               key={story.src}
               onClick={() => selectStory(index)}
@@ -173,7 +178,7 @@ export default function VideoStoryStack({ stories }: VideoStoryStackProps) {
             />
           ))}
         </div>
-        <button aria-label="Next client video" onClick={() => move(1)} type="button">
+        <button aria-label={copy.next} onClick={() => move(1)} type="button">
           <ChevronRight aria-hidden="true" />
         </button>
       </div>

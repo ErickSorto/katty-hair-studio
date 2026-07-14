@@ -17,8 +17,16 @@ import {
   startOfMonth,
   startOfWeek,
 } from "date-fns";
+import { enUS, es as esLocale } from "date-fns/locale";
 import { formatInTimeZone } from "date-fns-tz";
 import { isSalonClosedWeekday } from "@/lib/booking/schedule";
+import { formatBookingSlotTime } from "@/lib/booking/localization";
+import { localizePath, type Locale } from "@/app/i18n/config";
+import {
+  bookingServicePresentations,
+  bookingUiCopy,
+  type BookingPeriod,
+} from "@/app/i18n/booking-copy";
 import {
   ArrowLeft,
   ArrowRight,
@@ -72,54 +80,28 @@ type BookingStep = 1 | 2 | 3;
 
 const directionsUrl =
   "https://www.google.com/maps/search/?api=1&query=3816%20Bladensburg%20Rd%2C%20Brentwood%2C%20MD%2020722";
-const defaultPromotion: Promotion = {
-  amount: 10,
-  label: "Mondays are $10 off all services",
-  weekday: 1,
+const defaultPromotions: Record<Locale, Promotion> = {
+  en: { amount: 10, label: "Mondays are $10 off all services", weekday: 1 },
+  es: { amount: 10, label: "Los lunes ahorras $10 en todos los servicios", weekday: 1 },
 };
+function getServicePresentation(service: Service, locale: Locale) {
+  const presentations = bookingServicePresentations[locale] as Record<
+    string,
+    { readonly included: readonly string[]; readonly title: string }
+  >;
 
-const servicePresentations: Record<string, { included: string[]; title: string }> = {
-  "dominican-blowout": {
-    title: "Dominican blowouts",
-    included: ["Dominican blowout", "Silk press", "Hair blowout"],
-  },
-  "color-highlights": {
-    title: "Hair coloring",
-    included: ["All-over color", "Highlights", "Balayage"],
-  },
-  "extensions-wig": {
-    title: "Extensions & wigs",
-    included: ["Tape-ins", "Sew-ins", "Microlinks", "K-tips", "Quick weaves", "Wig styling"],
-  },
-  braids: {
-    title: "Braids",
-    included: ["Hair braiding", "Twist braids", "Protective styles"],
-  },
-  "cut-barber": {
-    title: "Haircuts",
-    included: ["Women’s haircuts", "Men’s haircuts", "Bang trims"],
-  },
-  "beauty-supply": {
-    title: "Beauty supply",
-    included: ["Extension hair", "Wigs", "Hair-care products"],
-  },
-};
-
-function getServicePresentation(service: Service) {
-  return servicePresentations[service.slug] || {
+  return presentations[service.slug] || {
     title: service.name,
-    included: ["Personalized service planning"],
+    included: [bookingUiCopy[locale].serviceStep.fallback],
   };
 }
 
-function getServiceIcon(serviceName: string) {
-  const name = serviceName.toLowerCase();
-
-  if (name.includes("blowout")) return "/booking-icons/blowout.png";
-  if (name.includes("color") || name.includes("highlight")) return "/booking-icons/color.png";
-  if (name.includes("extension") || name.includes("wig")) return "/booking-icons/extensions.png";
-  if (name.includes("braid")) return "/booking-icons/braids.png";
-  if (name.includes("beauty supply")) return "/booking-icons/beauty-supply.png";
+function getServiceIcon(slug: string) {
+  if (slug === "dominican-blowout") return "/booking-icons/blowout.png";
+  if (slug === "color-highlights") return "/booking-icons/color.png";
+  if (slug === "extensions-wig") return "/booking-icons/extensions.png";
+  if (slug === "braids") return "/booking-icons/braids.png";
+  if (slug === "beauty-supply") return "/booking-icons/beauty-supply.png";
   return "/booking-icons/cut.png";
 }
 
@@ -135,33 +117,39 @@ function getInitialBookingDate(today: string) {
   return format(isSalonClosedWeekday(date.getDay()) ? addDays(date, 1) : date, "yyyy-MM-dd");
 }
 
-function formatPrice(service: Service) {
-  return service.requiresQuote ? "Consultation first" : "Price confirmed at salon";
+function formatPrice(service: Service, locale: Locale) {
+  const copy = bookingUiCopy[locale].price;
+  return service.requiresQuote ? copy.consultation : copy.confirmed;
 }
 
-function formatDuration(minutes: number) {
+function formatDuration(minutes: number, locale: Locale) {
   if (minutes < 60) {
     return `${minutes} min`;
   }
 
   const hours = Math.floor(minutes / 60);
   const remainder = minutes % 60;
-  return remainder ? `${hours} hr ${remainder} min` : `${hours} hr`;
+  const hour = bookingUiCopy[locale].price.hour;
+  return remainder ? `${hours} ${hour} ${remainder} min` : `${hours} ${hour}`;
 }
 
 function MonthCalendar({
   bookingWindowDays,
   date,
+  locale,
   onChange,
   promotion,
   today,
 }: {
   bookingWindowDays: number;
   date: string;
+  locale: Locale;
   onChange: (date: string) => void;
   promotion: Promotion;
   today: string;
 }) {
+  const copy = bookingUiCopy[locale].calendar;
+  const dateLocale = locale === "es" ? esLocale : enUS;
   const todayDate = parseISO(today);
   const selectedDate = parseISO(date);
   const maximumDate = addDays(todayDate, bookingWindowDays);
@@ -178,16 +166,16 @@ function MonthCalendar({
     <div className="reservation-calendar">
       <div className="reservation-calendar-head">
         <button
-          aria-label="Show previous month"
+          aria-label={copy.previous}
           disabled={previousDisabled}
           onClick={() => setVisibleMonth(previousMonth)}
           type="button"
         >
           <ChevronLeft aria-hidden="true" />
         </button>
-        <strong>{format(visibleMonth, "MMMM yyyy")}</strong>
+        <strong>{format(visibleMonth, "MMMM yyyy", { locale: dateLocale })}</strong>
         <button
-          aria-label="Show next month"
+          aria-label={copy.next}
           disabled={nextDisabled}
           onClick={() => setVisibleMonth(nextMonth)}
           type="button"
@@ -196,8 +184,8 @@ function MonthCalendar({
         </button>
       </div>
       <div aria-hidden="true" className="reservation-calendar-weekdays">
-        {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
-          <span key={day}>{day.slice(0, 1)}</span>
+        {copy.weekdays.map((day, index) => (
+          <span key={`${day}-${index}`}>{day}</span>
         ))}
       </div>
       <div className="reservation-calendar-days">
@@ -214,7 +202,7 @@ function MonthCalendar({
 
           return (
             <button
-              aria-label={`${format(day, "EEEE, MMMM d")}${salonClosed ? ", salon closed" : mondayOffer ? `, save $${promotion.amount}` : ""}`}
+              aria-label={`${format(day, locale === "es" ? "EEEE, d 'de' MMMM" : "EEEE, MMMM d", { locale: dateLocale })}${salonClosed ? `, ${copy.closed}` : mondayOffer ? `, ${copy.save} $${promotion.amount}` : ""}`}
               aria-pressed={selected}
               className={`${selected ? "is-selected" : ""} ${mondayOffer ? "has-offer" : ""}`}
               disabled={disabled}
@@ -223,28 +211,33 @@ function MonthCalendar({
               type="button"
             >
               <span>{format(day, "d")}</span>
-              {mondayOffer ? <small>${promotion.amount} off</small> : null}
+              {mondayOffer ? <small>${promotion.amount} {copy.off}</small> : null}
             </button>
           );
         })}
       </div>
       <p className="reservation-calendar-offer">
         <BadgePercent aria-hidden="true" />
-        Mondays save ${promotion.amount}. Discount is applied at the salon.
+        {copy.offer(promotion.amount)}
       </p>
     </div>
   );
 }
 
 export default function BookingSection({
+  locale = "en",
   mode = "section",
   phoneDisplay,
   phoneNumber,
 }: {
+  locale?: Locale;
   mode?: "page" | "section";
   phoneDisplay: string;
   phoneNumber: string;
 }) {
+  const copy = bookingUiCopy[locale];
+  const dateLocale = locale === "es" ? esLocale : enUS;
+  const defaultPromotion = defaultPromotions[locale];
   const today = getLocalDateValue();
   const initialBookingDate = getInitialBookingDate(today);
   const demoMode = process.env.NEXT_PUBLIC_BOOKING_DEMO_MODE === "true";
@@ -272,7 +265,7 @@ export default function BookingSection({
 
   const selectedService = services.find((service) => service.id === serviceId);
   const selectedServicePresentation = selectedService
-    ? getServicePresentation(selectedService)
+    ? getServicePresentation(selectedService, locale)
     : null;
   const selectedDateIsMonday = parseISO(date).getDay() === promotion.weekday;
   const uniqueSlots = useMemo(() => {
@@ -285,15 +278,15 @@ export default function BookingSection({
     return [...uniqueByStart.values()];
   }, [slots]);
   const slotsByPeriod = useMemo(() => {
-    const periods: Record<"Morning" | "Afternoon" | "Evening", Slot[]> = {
-      Morning: [],
-      Afternoon: [],
-      Evening: [],
+    const periods: Record<BookingPeriod, Slot[]> = {
+      morning: [],
+      afternoon: [],
+      evening: [],
     };
 
     for (const slot of uniqueSlots) {
       const hour = Number(formatInTimeZone(new Date(slot.startsAt), timezone, "H"));
-      periods[hour < 12 ? "Morning" : hour < 17 ? "Afternoon" : "Evening"].push(slot);
+      periods[hour < 12 ? "morning" : hour < 17 ? "afternoon" : "evening"].push(slot);
     }
     return periods;
   }, [timezone, uniqueSlots]);
@@ -303,7 +296,9 @@ export default function BookingSection({
 
     async function loadCatalog() {
       try {
-        const response = await fetch(`/api/booking/catalog${demoMode ? "?demo=1" : ""}`, {
+        const query = new URLSearchParams({ locale });
+        if (demoMode) query.set("demo", "1");
+        const response = await fetch(`/api/booking/catalog?${query}`, {
           cache: "no-store",
           signal: controller.signal,
         });
@@ -316,7 +311,7 @@ export default function BookingSection({
         };
 
         if (!response.ok || !result.services) {
-          throw new Error(result.error || "Online booking is still being configured.");
+          throw new Error(result.error || copy.errors.catalog);
         }
 
         setServices(result.services);
@@ -328,7 +323,7 @@ export default function BookingSection({
           setError(
             catalogError instanceof Error
               ? catalogError.message
-              : "Online booking is still being configured.",
+              : copy.errors.catalog,
           );
         }
       } finally {
@@ -340,7 +335,7 @@ export default function BookingSection({
 
     loadCatalog();
     return () => controller.abort();
-  }, [demoMode]);
+  }, [copy.errors.catalog, defaultPromotion, demoMode, locale]);
 
   useEffect(() => {
     if (step < 2 || !serviceId || !date) {
@@ -354,7 +349,7 @@ export default function BookingSection({
       setError("");
 
       try {
-        const query = new URLSearchParams({ date, serviceId });
+        const query = new URLSearchParams({ date, locale, serviceId });
         if (demoMode) query.set("demo", "1");
 
         const response = await fetch(`/api/booking/availability?${query}`, {
@@ -364,7 +359,7 @@ export default function BookingSection({
         const result = (await response.json()) as { error?: string; slots?: Slot[] };
 
         if (!response.ok || !result.slots) {
-          throw new Error(result.error || "Unable to check availability.");
+          throw new Error(result.error || copy.errors.availability);
         }
 
         setSlots(result.slots);
@@ -374,7 +369,7 @@ export default function BookingSection({
           setError(
             availabilityError instanceof Error
               ? availabilityError.message
-              : "Unable to check availability.",
+              : copy.errors.availability,
           );
         }
       } finally {
@@ -386,7 +381,7 @@ export default function BookingSection({
 
     loadAvailability();
     return () => controller.abort();
-  }, [date, demoMode, serviceId, step]);
+  }, [copy.errors.availability, date, demoMode, locale, serviceId, step]);
 
   useEffect(() => {
     if (!confirmation) {
@@ -461,7 +456,7 @@ export default function BookingSection({
     event.preventDefault();
 
     if (!serviceId || !startsAt || !customerName || !customerEmail || !customerPhone) {
-      setError("Complete your name, email, and phone number to reserve this appointment.");
+      setError(copy.errors.incomplete);
       return;
     }
 
@@ -472,6 +467,7 @@ export default function BookingSection({
       const response = await fetch(`/api/booking${demoMode ? "?demo=1" : ""}`, {
         body: JSON.stringify({
           customerEmail,
+          customerLocale: locale,
           customerName,
           customerNotes: customerNotes || undefined,
           customerPhone,
@@ -488,13 +484,13 @@ export default function BookingSection({
       };
 
       if (!response.ok || !result.booking) {
-        throw new Error(result.error || "Unable to reserve the appointment.");
+        throw new Error(result.error || copy.errors.submit);
       }
 
       setConfirmation(result.booking);
     } catch (submitError) {
       setError(
-        submitError instanceof Error ? submitError.message : "Unable to reserve the appointment.",
+        submitError instanceof Error ? submitError.message : copy.errors.submit,
       );
     } finally {
       setSubmitting(false);
@@ -502,7 +498,12 @@ export default function BookingSection({
   }
 
   const formattedSelection = startsAt
-    ? formatInTimeZone(new Date(startsAt), timezone, "EEEE, MMMM d 'at' h:mm a")
+    ? formatInTimeZone(
+        new Date(startsAt),
+        timezone,
+        locale === "es" ? "EEEE, d 'de' MMMM 'a las' h:mm aaaa" : "EEEE, MMMM d 'at' h:mm a",
+        { locale: dateLocale },
+      ).replaceAll("a.m.", "a. m.").replaceAll("p.m.", "p. m.")
     : null;
 
   return (
@@ -513,7 +514,7 @@ export default function BookingSection({
     >
       <div className="reservation-atmosphere">
         <Image
-          alt="Katty Hair Studio client with polished, layered waves"
+          alt={copy.atmosphere.alt}
           fill
           loading={mode === "page" ? "eager" : "lazy"}
           sizes={mode === "page" ? "(max-width: 900px) 100vw, 42vw" : "(max-width: 1100px) 100vw, 42vw"}
@@ -521,12 +522,12 @@ export default function BookingSection({
         />
         <div className="reservation-atmosphere-shade" />
         <div className="reservation-atmosphere-copy">
-          <p className="eyebrow">Katty Hair Studio Booking</p>
-          <h2>Your next look starts here.</h2>
-          <p>Our online appointment application helps clients choose a service, find an available time, reserve a visit, and receive confirmation.</p>
+          <p className="eyebrow">{copy.atmosphere.eyebrow}</p>
+          <h2>{copy.atmosphere.title}</h2>
+          <p>{copy.atmosphere.body}</p>
           <div className="reservation-atmosphere-notes">
-            <span><BadgePercent aria-hidden="true" />Mondays save $10</span>
-            <span><CheckCircle2 aria-hidden="true" />No payment today</span>
+            <span><BadgePercent aria-hidden="true" />{copy.atmosphere.monday}</span>
+            <span><CheckCircle2 aria-hidden="true" />{copy.atmosphere.payment}</span>
           </div>
         </div>
       </div>
@@ -535,35 +536,35 @@ export default function BookingSection({
         {confirmation ? (
           <div aria-live="polite" className="reservation-confirmation" role="status">
             <div className="reservation-confirmation-mark"><Check aria-hidden="true" /></div>
-            <p className="reservation-kicker">Appointment reserved</p>
-            <h2 ref={confirmationHeadingRef} tabIndex={-1}>You’re booked, {customerName.split(" ")[0]}.</h2>
+            <p className="reservation-kicker">{copy.confirmation.kicker}</p>
+            <h2 ref={confirmationHeadingRef} tabIndex={-1}>{copy.confirmation.title(customerName.split(" ")[0])}</h2>
             <p className="reservation-confirmation-lead">
-              We’ll see you {formatInTimeZone(new Date(confirmation.startsAt), timezone, "EEEE, MMMM d 'at' h:mm a")}.
+              {copy.confirmation.when} {formattedSelection}.
             </p>
             <dl className="reservation-confirmation-details">
-              <div><dt>Service</dt><dd>{selectedServicePresentation?.title || confirmation.serviceName}</dd></div>
-              <div><dt>Confirmation</dt><dd>{confirmation.confirmationCode}</dd></div>
+              <div><dt>{copy.confirmation.service}</dt><dd>{selectedServicePresentation?.title || confirmation.serviceName}</dd></div>
+              <div><dt>{copy.confirmation.code}</dt><dd>{confirmation.confirmationCode}</dd></div>
             </dl>
             <div className="reservation-message-status">
               <Mail aria-hidden="true" />
               <span>
                 {confirmation.localTest
-                  ? "Local test only · No email or text was sent"
-                  : `Email sent to ${customerEmail}${smsConsent ? " · Text confirmation sent" : ""}`}
+                  ? copy.confirmation.local
+                  : copy.confirmation.email(customerEmail, smsConsent)}
               </span>
             </div>
             <div className="reservation-confirmation-actions">
               {confirmation.localTest && confirmation.googleEventLink ? (
                 <a className="reservation-primary-action" href={confirmation.googleEventLink} rel="noreferrer" target="_blank">
-                  <CalendarDays aria-hidden="true" />Open test calendar event
+                  <CalendarDays aria-hidden="true" />{copy.confirmation.testCalendar}
                 </a>
               ) : (
                 <a className="reservation-primary-action" href={directionsUrl} rel="noreferrer" target="_blank">
-                  <MapPin aria-hidden="true" />Get directions
+                  <MapPin aria-hidden="true" />{copy.confirmation.directions}
                 </a>
               )}
               <button className="reservation-text-action" onClick={resetBooking} type="button">
-                Book another appointment
+                {copy.confirmation.another}
               </button>
             </div>
           </div>
@@ -571,18 +572,14 @@ export default function BookingSection({
           <>
             <div className="reservation-workspace-head">
               <div>
-                <p className="reservation-kicker">Katty Hair Studio Booking</p>
-                <strong>{step === 1 ? "Choose" : step === 2 ? "Schedule" : "Your details"}</strong>
+                <p className="reservation-kicker">{copy.workspace.eyebrow}</p>
+                <strong>{copy.workspace.current[step - 1]}</strong>
               </div>
-              <a href={`tel:${phoneNumber}`}><Phone aria-hidden="true" />Call {phoneDisplay}</a>
+              <a href={`tel:${phoneNumber}`}><Phone aria-hidden="true" />{copy.workspace.call} {phoneDisplay}</a>
             </div>
 
-            <ol aria-label="Booking progress" className="reservation-progress">
-              {[
-                { label: "Service", value: 1 },
-                { label: "Schedule", value: 2 },
-                { label: "Details", value: 3 },
-              ].map((item) => (
+            <ol aria-label={copy.workspace.progress} className="reservation-progress">
+              {copy.workspace.steps.map((label, index) => ({ label, value: index + 1 })).map((item) => (
                 <li className={step === item.value ? "is-current" : step > item.value ? "is-complete" : ""} key={item.value}>
                   <button
                     aria-current={step === item.value ? "step" : undefined}
@@ -601,21 +598,21 @@ export default function BookingSection({
               {step === 1 ? (
                 <div className="reservation-step reservation-step--service" key="service-step">
                   <div className="reservation-step-heading">
-                    <p>Step 1 of 3</p>
-                    <h2 ref={stepHeadingRef} tabIndex={-1}>What are we doing today?</h2>
-                    <span>Select one service to see matching availability.</span>
+                    <p>{copy.serviceStep.step}</p>
+                    <h2 ref={stepHeadingRef} tabIndex={-1}>{copy.serviceStep.title}</h2>
+                    <span>{copy.serviceStep.body}</span>
                   </div>
 
                   {catalogLoading ? (
-                    <div aria-label="Loading services" className="reservation-service-skeletons">
+                    <div aria-label={copy.serviceStep.loading} className="reservation-service-skeletons">
                       <span /><span /><span />
                     </div>
                   ) : services.length ? (
-                    <div aria-label="Choose a service" className="reservation-service-list" role="radiogroup">
+                    <div aria-label={copy.serviceStep.choose} className="reservation-service-list" role="radiogroup">
                       {services.map((service) => {
                         const selected = service.id === serviceId;
-                        const presentation = getServicePresentation(service);
-                        const serviceIconSrc = getServiceIcon(presentation.title);
+                        const presentation = getServicePresentation(service, locale);
+                        const serviceIconSrc = getServiceIcon(service.slug);
                         const detailsId = `service-details-${service.id}`;
                         return (
                           <article
@@ -635,14 +632,14 @@ export default function BookingSection({
                               </span>
                               <span className="reservation-service-copy">
                                 <strong>{presentation.title}</strong>
-                                <span>{formatDuration(service.durationMinutes)} <i aria-hidden="true" /> {formatPrice(service)}</span>
+                                <span>{formatDuration(service.durationMinutes, locale)} <i aria-hidden="true" /> {formatPrice(service, locale)}</span>
                               </span>
                               <span className="reservation-service-check">{selected ? <Check aria-hidden="true" /> : <ArrowRight aria-hidden="true" />}</span>
                             </button>
                             {selected ? (
                               <div className="reservation-service-details" id={detailsId}>
                                 <div>
-                                  <p>Services in this category</p>
+                                  <p>{copy.serviceStep.category}</p>
                                   <ul>
                                     {presentation.included.map((item) => <li key={item}>{item}</li>)}
                                   </ul>
@@ -652,7 +649,7 @@ export default function BookingSection({
                                   onClick={() => moveToStep(2)}
                                   type="button"
                                 >
-                                  <span><small>Selected</small>Book a time</span>
+                                  <span><small>{copy.serviceStep.selected}</small>{copy.serviceStep.book}</span>
                                   <ArrowRight aria-hidden="true" />
                                 </button>
                               </div>
@@ -664,9 +661,9 @@ export default function BookingSection({
                   ) : (
                     <div className="reservation-unavailable">
                       <Sparkles aria-hidden="true" />
-                      <h3>Online booking is being prepared.</h3>
-                      <p>{error || "Call the salon and we’ll help plan your appointment."}</p>
-                      <a href={`tel:${phoneNumber}`}>Call {phoneDisplay}</a>
+                      <h3>{copy.serviceStep.unavailable}</h3>
+                      <p>{error || copy.serviceStep.unavailableBody}</p>
+                      <a href={`tel:${phoneNumber}`}>{copy.workspace.call} {phoneDisplay}</a>
                     </div>
                   )}
 
@@ -676,15 +673,16 @@ export default function BookingSection({
               {step === 2 ? (
                 <div className="reservation-step reservation-step--schedule" key="schedule-step">
                   <div className="reservation-step-heading">
-                    <p>Step 2 of 3</p>
-                    <h2 ref={stepHeadingRef} tabIndex={-1}>Choose a date and time.</h2>
-                    <span>Choose any open time. Katty will coordinate your visit with the salon team.</span>
+                    <p>{copy.scheduleStep.step}</p>
+                    <h2 ref={stepHeadingRef} tabIndex={-1}>{copy.scheduleStep.title}</h2>
+                    <span>{copy.scheduleStep.body}</span>
                   </div>
 
                   <div className="reservation-schedule-grid">
                     <MonthCalendar
                       bookingWindowDays={bookingWindowDays}
                       date={date}
+                      locale={locale}
                       onChange={chooseDate}
                       promotion={promotion}
                       today={today}
@@ -692,8 +690,8 @@ export default function BookingSection({
 
                     <div className="reservation-times" aria-live="polite">
                       <div className="reservation-times-head">
-                        <div><CalendarDays aria-hidden="true" /><span><strong>{format(parseISO(date), "EEEE")}</strong><small>{format(parseISO(date), "MMMM d")}</small></span></div>
-                        {selectedDateIsMonday ? <span className="reservation-savings">Save ${promotion.amount}</span> : null}
+                        <div><CalendarDays aria-hidden="true" /><span><strong>{format(parseISO(date), "EEEE", { locale: dateLocale })}</strong><small>{format(parseISO(date), locale === "es" ? "d 'de' MMMM" : "MMMM d", { locale: dateLocale })}</small></span></div>
+                        {selectedDateIsMonday ? <span className="reservation-savings">{copy.scheduleStep.savings} ${promotion.amount}</span> : null}
                       </div>
 
                       {availabilityLoading ? (
@@ -703,7 +701,7 @@ export default function BookingSection({
                           {(Object.keys(slotsByPeriod) as Array<keyof typeof slotsByPeriod>).map((period) =>
                             slotsByPeriod[period].length ? (
                               <div key={period}>
-                                <p>{period}</p>
+                                <p>{copy.periods[period]}</p>
                                 <div>
                                   {slotsByPeriod[period].map((slot) => (
                                     <button
@@ -713,7 +711,7 @@ export default function BookingSection({
                                       onClick={() => setStartsAt(slot.startsAt)}
                                       type="button"
                                     >
-                                      {slot.label}
+                                      {formatBookingSlotTime(slot.startsAt, timezone, locale)}
                                     </button>
                                   ))}
                                 </div>
@@ -724,8 +722,8 @@ export default function BookingSection({
                       ) : (
                         <div className="reservation-no-times">
                           <Clock3 aria-hidden="true" />
-                          <strong>No online times for this date.</strong>
-                          <span>Try another day.</span>
+                          <strong>{copy.scheduleStep.noTimes}</strong>
+                          <span>{copy.scheduleStep.tryAnother}</span>
                         </div>
                       )}
                     </div>
@@ -733,8 +731,8 @@ export default function BookingSection({
 
                   {error ? <p className="reservation-error" role="alert">{error}</p> : null}
                   <div className="reservation-step-actions">
-                    <button className="reservation-back-action" onClick={() => moveToStep(1)} type="button"><ArrowLeft aria-hidden="true" />Back</button>
-                    <button className="reservation-primary-action" disabled={!startsAt} onClick={() => moveToStep(3)} type="button">Your details<ArrowRight aria-hidden="true" /></button>
+                    <button className="reservation-back-action" onClick={() => moveToStep(1)} type="button"><ArrowLeft aria-hidden="true" />{copy.scheduleStep.back}</button>
+                    <button className="reservation-primary-action" disabled={!startsAt} onClick={() => moveToStep(3)} type="button">{copy.scheduleStep.continue}<ArrowRight aria-hidden="true" /></button>
                   </div>
                 </div>
               ) : null}
@@ -742,36 +740,36 @@ export default function BookingSection({
               {step === 3 ? (
                 <div className="reservation-step reservation-step--details" key="details-step">
                   <div className="reservation-step-heading">
-                    <p>Step 3 of 3</p>
-                    <h2 ref={stepHeadingRef} tabIndex={-1}>Almost yours.</h2>
-                    <span>We’ll use these details only for your appointment.</span>
+                    <p>{copy.detailsStep.step}</p>
+                    <h2 ref={stepHeadingRef} tabIndex={-1}>{copy.detailsStep.title}</h2>
+                    <span>{copy.detailsStep.body}</span>
                   </div>
 
                   <div className="reservation-selection-summary">
-                    <div><Scissors aria-hidden="true" /><span><small>Service</small><strong>{selectedServicePresentation?.title}</strong></span></div>
-                    <div><CalendarDays aria-hidden="true" /><span><small>Date & time</small><strong>{formattedSelection}</strong></span></div>
-                    {selectedDateIsMonday ? <p><BadgePercent aria-hidden="true" />Monday savings: ${promotion.amount} off, applied at the salon.</p> : null}
+                    <div><Scissors aria-hidden="true" /><span><small>{copy.detailsStep.service}</small><strong>{selectedServicePresentation?.title}</strong></span></div>
+                    <div><CalendarDays aria-hidden="true" /><span><small>{copy.detailsStep.dateTime}</small><strong>{formattedSelection}</strong></span></div>
+                    {selectedDateIsMonday ? <p><BadgePercent aria-hidden="true" />{copy.detailsStep.monday(promotion.amount)}</p> : null}
                   </div>
 
                   <div className="reservation-contact-grid">
-                    <label><span>Your name *</span><input autoComplete="name" onChange={(event) => setCustomerName(event.target.value)} required type="text" value={customerName} /></label>
-                    <label><span>Email *</span><input autoComplete="email" onChange={(event) => setCustomerEmail(event.target.value)} required type="email" value={customerEmail} /></label>
-                    <label><span>Phone *</span><input autoComplete="tel" inputMode="tel" onChange={(event) => setCustomerPhone(event.target.value)} required type="tel" value={customerPhone} /></label>
-                    <label className="reservation-contact-wide"><span>Notes or requested look</span><textarea maxLength={1000} onChange={(event) => setCustomerNotes(event.target.value)} rows={3} value={customerNotes} /></label>
+                    <label><span>{copy.detailsStep.name}</span><input autoComplete="name" onChange={(event) => setCustomerName(event.target.value)} required type="text" value={customerName} /></label>
+                    <label><span>{copy.detailsStep.email}</span><input autoComplete="email" onChange={(event) => setCustomerEmail(event.target.value)} required type="email" value={customerEmail} /></label>
+                    <label><span>{copy.detailsStep.phone}</span><input autoComplete="tel" inputMode="tel" onChange={(event) => setCustomerPhone(event.target.value)} required type="tel" value={customerPhone} /></label>
+                    <label className="reservation-contact-wide"><span>{copy.detailsStep.notes}</span><textarea maxLength={1000} onChange={(event) => setCustomerNotes(event.target.value)} rows={3} value={customerNotes} /></label>
                     <label className="reservation-sms-consent reservation-contact-wide">
                       <input checked={smsConsent} onChange={(event) => setSmsConsent(event.target.checked)} type="checkbox" />
-                      <span>Text me appointment confirmations and updates. Message and data rates may apply. Reply STOP to opt out.</span>
+                      <span>{copy.detailsStep.sms}</span>
                     </label>
                   </div>
 
                   {error ? <p className="reservation-error" role="alert">{error}</p> : null}
                   <div className="reservation-step-actions">
-                    <button className="reservation-back-action" onClick={() => moveToStep(2)} type="button"><ArrowLeft aria-hidden="true" />Back</button>
+                    <button className="reservation-back-action" onClick={() => moveToStep(2)} type="button"><ArrowLeft aria-hidden="true" />{copy.detailsStep.back}</button>
                     <button className="reservation-primary-action" disabled={submitting} type="submit">
-                      {submitting ? "Reserving…" : "Reserve appointment"}<Check aria-hidden="true" />
+                      {submitting ? copy.detailsStep.reserving : copy.detailsStep.reserve}<Check aria-hidden="true" />
                     </button>
                   </div>
-                  <p className="reservation-submit-note"><CheckCircle2 aria-hidden="true" />No payment today. Availability is rechecked before confirmation.</p>
+                  <p className="reservation-submit-note"><CheckCircle2 aria-hidden="true" />{copy.detailsStep.note}</p>
                 </div>
               ) : null}
             </form>
@@ -779,10 +777,8 @@ export default function BookingSection({
         )}
 
         <div className="reservation-app-purpose">
-          <p>
-            Katty Hair Studio Booking uses the salon owner’s authorized Google Calendar data only to identify the app-created salon booking calendar, check availability, prevent scheduling conflicts, and create or manage appointment events.
-          </p>
-          <Link href="/privacy">Privacy &amp; data use</Link>
+          <p>{copy.purpose.body}</p>
+          <Link href={localizePath("/privacy", locale)}>{copy.purpose.link}</Link>
         </div>
       </div>
     </section>

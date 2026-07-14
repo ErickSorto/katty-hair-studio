@@ -1,10 +1,16 @@
-import { formatInTimeZone } from "date-fns-tz";
+import {
+  formatBookingDate,
+  formatBookingTimeRange,
+  getLocalizedBookingServiceName,
+  type BookingLocale,
+} from "@/lib/booking/localization";
 
 export type BookingEmailDetails = {
   bookingId: string;
   cancellationToken: string;
   confirmationCode: string;
   customerEmail: string;
+  customerLocale: BookingLocale;
   customerName: string;
   customerNotes?: string;
   customerPhone?: string;
@@ -15,6 +21,7 @@ export type BookingEmailDetails = {
   salonName: string;
   salonPhone: string;
   serviceName: string;
+  serviceSlug: string;
   smsConsent: boolean;
   startsAt: string;
   timezone: string;
@@ -65,18 +72,26 @@ function siteUrl() {
 }
 
 function cancellationUrl(booking: BookingEmailDetails) {
-  return `${siteUrl()}/booking/cancel?code=${encodeURIComponent(booking.confirmationCode)}&token=${encodeURIComponent(booking.cancellationToken)}`;
+  const pathname = booking.customerLocale === "es" ? "/es/booking/cancel" : "/booking/cancel";
+  return `${siteUrl()}${pathname}?code=${encodeURIComponent(booking.confirmationCode)}&token=${encodeURIComponent(booking.cancellationToken)}`;
 }
 
-function calendarUrl(booking: BookingEmailDetails) {
+function calendarUrl(
+  booking: BookingEmailDetails,
+  locale: BookingLocale,
+  serviceName: string,
+) {
   const toCalendarDate = (value: string) =>
     new Date(value).toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
   const params = new URLSearchParams({
     action: "TEMPLATE",
     dates: `${toCalendarDate(booking.startsAt)}/${toCalendarDate(booking.endsAt)}`,
-    details: `${booking.serviceName} at ${booking.salonName}. Confirmation ${booking.confirmationCode}.`,
+    details:
+      locale === "es"
+        ? `${serviceName} en ${booking.salonName}. Confirmación ${booking.confirmationCode}.`
+        : `${serviceName} at ${booking.salonName}. Confirmation ${booking.confirmationCode}.`,
     location: booking.salonAddress,
-    text: `${booking.serviceName} — ${booking.salonName}`,
+    text: `${serviceName} — ${booking.salonName}`,
   });
 
   return `https://calendar.google.com/calendar/render?${params.toString()}`;
@@ -90,8 +105,8 @@ function phoneHref(phone: string) {
   return `tel:${phone.replace(/[^\d+]/g, "")}`;
 }
 
-function formatPhone(phone?: string) {
-  if (!phone) return "Not provided";
+function formatPhone(phone?: string, locale: BookingLocale = "en") {
+  if (!phone) return locale === "es" ? "No proporcionado" : "Not provided";
 
   const digits = phone.replace(/\D/g, "");
   const localDigits = digits.length === 11 && digits.startsWith("1") ? digits.slice(1) : digits;
@@ -103,14 +118,19 @@ function formatPhone(phone?: string) {
   return phone;
 }
 
-function appointmentParts(booking: BookingEmailDetails) {
+function appointmentParts(booking: BookingEmailDetails, locale: BookingLocale) {
   return {
-    date: formatInTimeZone(
-      new Date(booking.startsAt),
+    date: formatBookingDate(
+      booking.startsAt,
       booking.timezone,
-      "EEEE, MMMM d, yyyy",
+      locale,
     ),
-    time: `${formatInTimeZone(new Date(booking.startsAt), booking.timezone, "h:mm a")}–${formatInTimeZone(new Date(booking.endsAt), booking.timezone, "h:mm a zzz")}`,
+    time: formatBookingTimeRange(
+      booking.startsAt,
+      booking.endsAt,
+      booking.timezone,
+      locale,
+    ),
   };
 }
 
@@ -153,9 +173,24 @@ function header(label: string) {
   </tr>`;
 }
 
-function shell({ preheader, body, label }: { preheader: string; body: string; label: string }) {
+function shell({
+  preheader,
+  body,
+  label,
+  locale,
+}: {
+  preheader: string;
+  body: string;
+  label: string;
+  locale: BookingLocale;
+}) {
+  const transactionalNotice =
+    locale === "es"
+      ? "Este es un mensaje transaccional sobre una cita reservada en kattyhairstudio.com."
+      : "This is a transactional message about an appointment made at kattyhairstudio.com.";
+
   return `<!doctype html>
-<html lang="en">
+<html lang="${locale}">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
@@ -173,7 +208,7 @@ function shell({ preheader, body, label }: { preheader: string; body: string; la
             <tr>
               <td align="center" style="padding:22px 28px;background:${colors.peach};border-top:1px solid ${colors.line};font-family:Arial,Helvetica,sans-serif;font-size:11px;line-height:18px;color:${colors.muted};">
                 ${escapeHtml("Katty Hair Studio · 3816 Bladensburg Rd, Brentwood, MD 20722")}<br />
-                This is a transactional message about an appointment made at kattyhairstudio.com.
+                ${escapeHtml(transactionalNotice)}
               </td>
             </tr>
           </table>
@@ -185,10 +220,10 @@ function shell({ preheader, body, label }: { preheader: string; body: string; la
 }
 
 export function renderOwnerBookingEmail(booking: BookingEmailDetails): RenderedEmail {
-  const { date, time } = appointmentParts(booking);
-  const displayPhone = formatPhone(booking.customerPhone);
+  const { date, time } = appointmentParts(booking, "en");
+  const displayPhone = formatPhone(booking.customerPhone, "en");
   const notes = booking.customerNotes?.trim() || "No notes were added.";
-  const eventUrl = booking.googleEventLink || calendarUrl(booking);
+  const eventUrl = booking.googleEventLink || calendarUrl(booking, "en", booking.serviceName);
   const body = `<tr>
     <td style="padding:38px 34px 18px;">
       <p style="margin:0 0 10px;font-family:Arial,Helvetica,sans-serif;font-size:11px;line-height:16px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;color:${colors.accent};">New online reservation</p>
@@ -233,6 +268,7 @@ export function renderOwnerBookingEmail(booking: BookingEmailDetails): RenderedE
     html: shell({
       body,
       label: "Salon notification",
+      locale: "en",
       preheader: `${booking.customerName} booked ${booking.serviceName} for ${date} at ${time}.`,
     }),
     subject: `New booking: ${booking.customerName} — ${booking.serviceName}`,
@@ -258,24 +294,76 @@ export function renderOwnerBookingEmail(booking: BookingEmailDetails): RenderedE
 }
 
 export function renderClientBookingEmail(booking: BookingEmailDetails): RenderedEmail {
-  const { date, time } = appointmentParts(booking);
+  const locale = booking.customerLocale;
+  const spanish = locale === "es";
+  const { date, time } = appointmentParts(booking, locale);
+  const serviceName = getLocalizedBookingServiceName(
+    booking.serviceSlug,
+    booking.serviceName,
+    locale,
+  );
   const heroUrl = `${siteUrl()}/email/katty-salon-booking-hero.jpg`;
   const cancelUrl = cancellationUrl(booking);
-  const calendarInvitationUrl = booking.googleEventLink || calendarUrl(booking);
+  const calendarInvitationUrl =
+    booking.googleEventLink || calendarUrl(booking, locale, serviceName);
   const calendarButtonLabel = booking.googleEventLink
-    ? "View calendar invitation"
-    : "Add to calendar";
+    ? spanish
+      ? "Ver invitación del calendario"
+      : "View calendar invitation"
+    : spanish
+      ? "Agregar al calendario"
+      : "Add to calendar";
   const mapUrl = directionsUrl(booking.salonAddress);
+  const copy = spanish
+    ? {
+        cancel: "Cancelar esta cita en línea",
+        changePlans: "¿Necesitas cambiar tus planes?",
+        confirmation: "Confirmación",
+        date: "Fecha",
+        directions: "Cómo llegar",
+        googleInvitation:
+          "Google también enviará una invitación de calendario por separado. Si es tu primera cita, es posible que se te pida confirmar a Katty Hair Studio como remitente.",
+        heroAlt: "El acogedor interior rosado de Katty Hair Studio",
+        kicker: "Cita confirmada",
+        lead:
+          "Tu horario está reservado. Ven a relajarte; nosotros nos encargamos del resto.",
+        phone: "Teléfono",
+        questionsAfterPhone: "o responde a este correo.",
+        questionsBeforePhone: "¿Tienes preguntas? Llama al",
+        reservationConfirmed: "Reserva confirmada",
+        service: "Servicio",
+        time: "Hora",
+        yourService: "Tu servicio",
+      }
+    : {
+        cancel: "Cancel this appointment online",
+        changePlans: "Need to change your plans?",
+        confirmation: "Confirmation",
+        date: "Date",
+        directions: "Get directions",
+        googleInvitation:
+          "Google will also send a separate calendar invitation. First-time guests may be asked to confirm Katty Hair Studio as the sender.",
+        heroAlt: "The warm pink interior of Katty Hair Studio",
+        kicker: "Appointment confirmed",
+        lead: "Your time is reserved. Come ready to relax—we’ll take care of the rest.",
+        phone: "Phone",
+        questionsAfterPhone: "or reply to this email.",
+        questionsBeforePhone: "Questions? Call",
+        reservationConfirmed: "Reservation confirmed",
+        service: "Service",
+        time: "Time",
+        yourService: "Your service",
+      };
   const body = `<tr>
     <td>
-      <img src="${escapeHtml(heroUrl)}" width="640" alt="The warm pink interior of Katty Hair Studio" style="display:block;width:100%;max-width:640px;height:auto;border:0;" />
+      <img src="${escapeHtml(heroUrl)}" width="640" alt="${escapeHtml(copy.heroAlt)}" style="display:block;width:100%;max-width:640px;height:auto;border:0;" />
     </td>
   </tr>
   <tr>
     <td style="padding:38px 34px 18px;">
-      <p style="margin:0 0 10px;font-family:Arial,Helvetica,sans-serif;font-size:11px;line-height:16px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;color:${colors.accent};">Appointment confirmed · ${escapeHtml(booking.confirmationCode)}</p>
-      <h1 style="margin:0 0 14px;font-family:Georgia,'Times New Roman',serif;font-size:36px;line-height:42px;font-weight:400;color:${colors.ink};">We’ll see you soon, ${escapeHtml(booking.customerName)}.</h1>
-      <p style="margin:0;font-family:Arial,Helvetica,sans-serif;font-size:16px;line-height:26px;color:${colors.muted};">Your time is reserved. Come ready to relax—we’ll take care of the rest.</p>
+      <p style="margin:0 0 10px;font-family:Arial,Helvetica,sans-serif;font-size:11px;line-height:16px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;color:${colors.accent};">${escapeHtml(copy.kicker)} · ${escapeHtml(booking.confirmationCode)}</p>
+      <h1 style="margin:0 0 14px;font-family:Georgia,'Times New Roman',serif;font-size:36px;line-height:42px;font-weight:400;color:${colors.ink};">${spanish ? "Te esperamos pronto" : "We’ll see you soon"}, ${escapeHtml(booking.customerName)}.</h1>
+      <p style="margin:0;font-family:Arial,Helvetica,sans-serif;font-size:16px;line-height:26px;color:${colors.muted};">${escapeHtml(copy.lead)}</p>
     </td>
   </tr>
   <tr>
@@ -283,16 +371,16 @@ export function renderClientBookingEmail(booking: BookingEmailDetails): Rendered
       <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="width:100%;background:${colors.peach};border-top:3px solid ${colors.accent};">
         <tr>
           <td style="padding:23px 24px;">
-            <p style="margin:0 0 5px;font-family:Arial,Helvetica,sans-serif;font-size:11px;line-height:16px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:${colors.accent};">Your service</p>
-            <p style="margin:0 0 19px;font-family:Georgia,'Times New Roman',serif;font-size:25px;line-height:31px;color:${colors.ink};">${escapeHtml(booking.serviceName)}</p>
+            <p style="margin:0 0 5px;font-family:Arial,Helvetica,sans-serif;font-size:11px;line-height:16px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:${colors.accent};">${escapeHtml(copy.yourService)}</p>
+            <p style="margin:0 0 19px;font-family:Georgia,'Times New Roman',serif;font-size:25px;line-height:31px;color:${colors.ink};">${escapeHtml(serviceName)}</p>
             <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
               <tr>
                 <td valign="top" style="width:50%;padding-right:10px;">
-                  <p style="margin:0 0 4px;font-family:Arial,Helvetica,sans-serif;font-size:10px;line-height:15px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:${colors.muted};">Date</p>
+                  <p style="margin:0 0 4px;font-family:Arial,Helvetica,sans-serif;font-size:10px;line-height:15px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:${colors.muted};">${escapeHtml(copy.date)}</p>
                   <p style="margin:0;font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:22px;font-weight:700;color:${colors.ink};">${escapeHtml(date)}</p>
                 </td>
                 <td valign="top" style="width:50%;padding-left:10px;border-left:1px solid ${colors.line};">
-                  <p style="margin:0 0 4px;font-family:Arial,Helvetica,sans-serif;font-size:10px;line-height:15px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:${colors.muted};">Time</p>
+                  <p style="margin:0 0 4px;font-family:Arial,Helvetica,sans-serif;font-size:10px;line-height:15px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:${colors.muted};">${escapeHtml(copy.time)}</p>
                   <p style="margin:0;font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:22px;font-weight:700;color:${colors.ink};">${escapeHtml(time)}</p>
                 </td>
               </tr>
@@ -305,51 +393,60 @@ export function renderClientBookingEmail(booking: BookingEmailDetails): Rendered
   <tr>
     <td style="padding:0 34px 20px;">
       ${button(calendarButtonLabel, calendarInvitationUrl)}
-      ${button("Get directions", mapUrl, true)}
+      ${button(copy.directions, mapUrl, true)}
     </td>
   </tr>
   <tr>
     <td style="padding:0 34px 24px;">
-      <p style="margin:0;padding:14px 16px;background:${colors.canvas};border-radius:6px;font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:19px;color:${colors.muted};">Google will also send a separate calendar invitation. First-time guests may be asked to confirm Katty Hair Studio as the sender.</p>
+      <p style="margin:0;padding:14px 16px;background:${colors.canvas};border-radius:6px;font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:19px;color:${colors.muted};">${escapeHtml(copy.googleInvitation)}</p>
     </td>
   </tr>
   <tr>
     <td style="padding:4px 34px 28px;">
       <p style="margin:0 0 7px;font-family:Arial,Helvetica,sans-serif;font-size:11px;line-height:16px;font-weight:700;letter-spacing:1.3px;text-transform:uppercase;color:${colors.accent};">Katty Hair Studio</p>
       <p style="margin:0 0 5px;font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:23px;color:${colors.ink};">${escapeHtml(booking.salonAddress)}</p>
-      <p style="margin:0;font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:22px;color:${colors.muted};">Questions? Call <a href="${escapeHtml(phoneHref(booking.salonPhone))}" style="color:${colors.wine};font-weight:700;">${escapeHtml(formatPhone(booking.salonPhone))}</a> or reply to this email.</p>
+      <p style="margin:0;font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:22px;color:${colors.muted};">${escapeHtml(copy.questionsBeforePhone)} <a href="${escapeHtml(phoneHref(booking.salonPhone))}" style="color:${colors.wine};font-weight:700;">${escapeHtml(formatPhone(booking.salonPhone, locale))}</a> ${escapeHtml(copy.questionsAfterPhone)}</p>
     </td>
   </tr>
   <tr>
     <td style="padding:20px 34px 30px;border-top:1px solid ${colors.line};">
-      <p style="margin:0 0 7px;font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:19px;color:${colors.muted};">Need to change your plans?</p>
-      <a href="${escapeHtml(cancelUrl)}" style="font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:19px;font-weight:700;color:${colors.wine};">Cancel this appointment online</a>
+      <p style="margin:0 0 7px;font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:19px;color:${colors.muted};">${escapeHtml(copy.changePlans)}</p>
+      <a href="${escapeHtml(cancelUrl)}" style="font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:19px;font-weight:700;color:${colors.wine};">${escapeHtml(copy.cancel)}</a>
     </td>
   </tr>`;
 
   return {
     html: shell({
       body,
-      label: "Reservation confirmed",
-      preheader: `${booking.serviceName} is confirmed for ${date} at ${time}.`,
+      label: copy.reservationConfirmed,
+      locale,
+      preheader: spanish
+        ? `Tu cita de ${serviceName} está confirmada para el ${date}, de ${time}.`
+        : `${serviceName} is confirmed for ${date} at ${time}.`,
     }),
-    subject: `You’re confirmed at Katty Hair Studio — ${date}`,
+    subject: spanish
+      ? `Tu cita en Katty Hair Studio está confirmada — ${date}`
+      : `You’re confirmed at Katty Hair Studio — ${date}`,
     text: [
-      `WE'LL SEE YOU SOON, ${booking.customerName.toUpperCase()}.`,
+      spanish
+        ? `TE ESPERAMOS PRONTO, ${booking.customerName.toUpperCase()}.`
+        : `WE'LL SEE YOU SOON, ${booking.customerName.toUpperCase()}.`,
       "",
-      `Your appointment at ${booking.salonName} is confirmed.`,
+      spanish
+        ? `Tu cita en ${booking.salonName} está confirmada.`
+        : `Your appointment at ${booking.salonName} is confirmed.`,
       "",
-      `Service: ${booking.serviceName}`,
-      `Date: ${date}`,
-      `Time: ${time}`,
-      `Confirmation: ${booking.confirmationCode}`,
+      `${copy.service}: ${serviceName}`,
+      `${copy.date}: ${date}`,
+      `${copy.time}: ${time}`,
+      `${copy.confirmation}: ${booking.confirmationCode}`,
       "",
       booking.salonAddress,
-      `Phone: ${formatPhone(booking.salonPhone)}`,
+      `${copy.phone}: ${formatPhone(booking.salonPhone, locale)}`,
       "",
-      `Calendar invitation: ${calendarInvitationUrl}`,
-      `Directions: ${mapUrl}`,
-      `Cancel: ${cancelUrl}`,
+      `${spanish ? "Invitación del calendario" : "Calendar invitation"}: ${calendarInvitationUrl}`,
+      `${spanish ? "Cómo llegar" : "Directions"}: ${mapUrl}`,
+      `${spanish ? "Cancelar" : "Cancel"}: ${cancelUrl}`,
     ].join("\n"),
   };
 }

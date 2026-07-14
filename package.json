@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "check:booking-i18n": "JITI_TSCONFIG_PATHS=true node node_modules/jiti/lib/jiti-cli.mjs scripts/check-booking-localization.ts",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",

@@ -14,6 +14,9 @@ import {
 import DrawerAutoClose from "./DrawerAutoClose";
 import BookingScrollLink from "./BookingScrollLink";
 import { DesktopServicesMenu, DrawerServicesMenu } from "./ServiceNavigation";
+import LanguageSwitcher from "./i18n/LanguageSwitcher";
+import { localizePath, type Locale } from "./i18n/config";
+import { sharedCopy } from "./i18n/shared-copy";
 
 const phoneNumber = "+12405826622";
 const phoneDisplay = "(240) 582-6622";
@@ -30,14 +33,6 @@ const socialLinks = [
   { label: "YouTube", href: "https://www.youtube.com/@DominicanKattyHairStudio", platform: "youtube" },
   { label: "X", href: "https://x.com/DominicanKatty", platform: "x" },
   { label: "TikTok", href: "https://www.tiktok.com/@dominicankattyhairstudio", platform: "tiktok" },
-] as const;
-
-const navLinks = [
-  ["Prices", "/#prices"],
-  ["Gallery", "/gallery"],
-  ["About", "/about"],
-  ["Location", "/location"],
-  ["Booking", "/booking"],
 ] as const;
 
 type SocialPlatform = (typeof socialLinks)[number]["platform"] | "whatsapp";
@@ -59,69 +54,76 @@ function HeaderBrandLogo() {
   return <Image alt="" aria-hidden="true" className="brand-lockup-image" height={801} loading="eager" src="/brand/katty-official-lockup.png" width={1080}/>;
 }
 
-export function SiteHeader() {
+export function SiteHeader({ locale = "en" }: { locale?: Locale }) {
+  const copy = sharedCopy[locale];
+
   return (
     <>
-      <input aria-label="Toggle mobile menu" className="drawer-toggle" id="katty-drawer" type="checkbox" />
+      <input aria-label={copy.labels.openMenu} className="drawer-toggle" id="katty-drawer" type="checkbox" />
       <DrawerAutoClose />
       <header className="site-header">
         <div className="announcement-bar">
-          <Link className="announcement-pill" href="/#prices"><BadgePercent aria-hidden="true" className="site-icon"/><span className="announcement-copy-long">Mondays: $10 off all services</span><span className="announcement-copy-short">Mondays: $10 off services</span></Link>
+          <Link className="announcement-pill" href={localizePath("/#prices", locale)}><BadgePercent aria-hidden="true" className="site-icon"/><span className="announcement-copy-long">{copy.announcement.long}</span><span className="announcement-copy-short">{copy.announcement.short}</span></Link>
           <div className="announcement-contact">
-            <a className="announcement-center" href={`tel:${phoneNumber}`}><Phone aria-hidden="true"/><span>Call {phoneDisplay}</span><ChevronRight aria-hidden="true"/></a>
+            <a className="announcement-center" href={`tel:${phoneNumber}`}><Phone aria-hidden="true"/><span>{copy.call} {phoneDisplay}</span><ChevronRight aria-hidden="true"/></a>
             <a aria-label={`WhatsApp Katty Hair Studio at ${whatsappDisplay}`} className="announcement-whatsapp" href={whatsappUrl} rel="noreferrer" target="_blank"><SocialIcon platform="whatsapp"/><span>WhatsApp</span></a>
           </div>
           <div className="announcement-utilities">
-            <nav aria-label="Katty Hair Studio social profiles" className="announcement-socials">{socialLinks.map((social)=><a aria-label={social.label} href={social.href} key={social.platform} rel="noreferrer" target="_blank"><SocialIcon platform={social.platform}/></a>)}</nav>
+            <nav aria-label={copy.labels.socialProfiles} className="announcement-socials">{socialLinks.map((social)=><a aria-label={social.label} href={social.href} key={social.platform} rel="noreferrer" target="_blank"><SocialIcon platform={social.platform}/></a>)}</nav>
+            <LanguageSwitcher />
             <a className="announcement-link" href={directionsUrl} rel="noreferrer" target="_blank"><MapPin aria-hidden="true"/>Brentwood, MD</a>
           </div>
         </div>
         <div className="main-nav">
-          <Link aria-label="Katty Hair Studio home" className="brand brand-lockup-link" href="/"><HeaderBrandLogo/></Link>
-          <nav aria-label="Main navigation" className="desktop-nav"><DesktopServicesMenu />{navLinks.map(([label,href])=><Link href={href} key={href}>{label}</Link>)}</nav>
-          <div className="nav-actions"><Link className="nav-cta" href="/booking"><CalendarDays aria-hidden="true"/>Request appointment</Link><label aria-label="Open menu" className="menu-button" htmlFor="katty-drawer"><span/><span/><span/></label></div>
+          <Link aria-label="Katty Hair Studio" className="brand brand-lockup-link" href={localizePath("/", locale)}><HeaderBrandLogo/></Link>
+          <nav aria-label={copy.labels.mainNavigation} className="desktop-nav"><DesktopServicesMenu locale={locale} />{copy.nav.map(([label,href])=><Link href={localizePath(href, locale)} key={href}>{label}</Link>)}</nav>
+          <div className="nav-actions"><Link className="nav-cta" href={localizePath("/booking", locale)}><CalendarDays aria-hidden="true"/>{copy.request}</Link><label aria-label={copy.labels.openMenu} className="menu-button" htmlFor="katty-drawer"><span/><span/><span/></label></div>
         </div>
       </header>
-      <label aria-label="Close menu" className="drawer-backdrop" htmlFor="katty-drawer" />
-      <aside aria-label="Mobile navigation drawer" className="mobile-drawer">
-        <div className="drawer-top"><Link aria-label="Katty Hair Studio home" className="brand drawer-brand" href="/"><BrandLogo/></Link><label aria-label="Close menu" htmlFor="katty-drawer"><span/><span/></label></div>
-        <nav aria-label="Mobile page links" className="drawer-links"><DrawerServicesMenu />{navLinks.map(([label,href])=><Link href={href} key={href}>{label}</Link>)}</nav>
-        <div className="drawer-card"><span className="drawer-card-icon"><Clock aria-hidden="true" className="site-icon"/></span><div><p>Today</p><strong>Open by posted hours</strong></div></div>
-        <div className="drawer-card"><span className="drawer-card-icon"><MapPinned aria-hidden="true" className="site-icon"/></span><div><p>Studio</p><strong>3816 Bladensburg Rd</strong></div></div>
-        <Link className="drawer-cta" href="/booking"><CalendarDays aria-hidden="true" className="site-icon"/>Request appointment</Link>
-        <div className="drawer-socials"><p>Connect</p><div className="drawer-contact-links"><a href={`tel:${phoneNumber}`}><Phone aria-hidden="true"/>Call</a><a href={whatsappUrl} rel="noreferrer" target="_blank"><SocialIcon platform="whatsapp"/>WhatsApp</a></div><div aria-label="Social media profiles" className="drawer-social-icon-row">{socialLinks.map((social)=><a aria-label={social.label} href={social.href} key={social.platform} rel="noreferrer" target="_blank" title={social.label}><SocialIcon platform={social.platform}/></a>)}</div></div>
+      <label aria-label={copy.labels.closeMenu} className="drawer-backdrop" htmlFor="katty-drawer" />
+      <aside aria-label={copy.labels.mobileNavigation} className="mobile-drawer">
+        <div className="drawer-top"><Link aria-label="Katty Hair Studio" className="brand drawer-brand" href={localizePath("/", locale)}><BrandLogo/></Link><label aria-label={copy.labels.closeMenu} htmlFor="katty-drawer"><span/><span/></label></div>
+        <div className="drawer-language-row"><span>{copy.labels.language}</span><LanguageSwitcher placement="drawer" /></div>
+        <nav aria-label={copy.labels.mobilePageLinks} className="drawer-links"><DrawerServicesMenu locale={locale} />{copy.nav.map(([label,href])=><Link href={localizePath(href, locale)} key={href}>{label}</Link>)}</nav>
+        <div className="drawer-card"><span className="drawer-card-icon"><Clock aria-hidden="true" className="site-icon"/></span><div><p>{copy.drawer.today}</p><strong>{copy.drawer.openHours}</strong></div></div>
+        <div className="drawer-card"><span className="drawer-card-icon"><MapPinned aria-hidden="true" className="site-icon"/></span><div><p>{copy.drawer.studio}</p><strong>3816 Bladensburg Rd</strong></div></div>
+        <Link className="drawer-cta" href={localizePath("/booking", locale)}><CalendarDays aria-hidden="true" className="site-icon"/>{copy.request}</Link>
+        <div className="drawer-socials"><p>{copy.connect}</p><div className="drawer-contact-links"><a href={`tel:${phoneNumber}`}><Phone aria-hidden="true"/>{copy.call}</a><a href={whatsappUrl} rel="noreferrer" target="_blank"><SocialIcon platform="whatsapp"/>WhatsApp</a></div><div aria-label={copy.labels.socialProfiles} className="drawer-social-icon-row">{socialLinks.map((social)=><a aria-label={social.label} href={social.href} key={social.platform} rel="noreferrer" target="_blank" title={social.label}><SocialIcon platform={social.platform}/></a>)}</div></div>
       </aside>
     </>
   );
 }
 
-export function SiteFinalBanner() {
-  return <section className="final-banner" data-reveal><div><p className="eyebrow">Ready when you are</p><h2>Bring your reference. Leave with a clear plan.</h2></div><div aria-hidden="true" className="final-brand-mark"><Image alt="" height={801} src="/brand/katty-official-lockup.png" width={1080}/></div><Link className="primary-link" href="#booking"><Heart aria-hidden="true"/>Request appointment<ArrowRight aria-hidden="true"/></Link></section>;
+export function SiteFinalBanner({ locale = "en" }: { locale?: Locale }) {
+  const copy = sharedCopy[locale];
+  return <section className="final-banner" data-reveal><div><p className="eyebrow">{copy.finalBanner.eyebrow}</p><h2>{copy.finalBanner.title}</h2></div><div aria-hidden="true" className="final-brand-mark"><Image alt="" height={801} src="/brand/katty-official-lockup.png" width={1080}/></div><Link className="primary-link" href="#booking"><Heart aria-hidden="true"/>{copy.request}<ArrowRight aria-hidden="true"/></Link></section>;
 }
 
-export function FooterBookingPurpose() {
+export function FooterBookingPurpose({ locale = "en" }: { locale?: Locale }) {
+  const copy = sharedCopy[locale].footerPurpose;
+
   return (
-    <section aria-labelledby="footer-booking-title" className="footer-booking-purpose">
+    <section aria-labelledby="footer-booking-title" className="footer-booking-purpose" data-nosnippet>
       <div>
-        <p className="footer-booking-label">Online booking application</p>
+        <p className="footer-booking-label">{copy.label}</p>
         <h2 id="footer-booking-title">Katty Hair Studio</h2>
-        <p>
-          Katty Hair Studio is the salon’s online appointment booking application. Clients use it to choose a service, view available times, reserve a visit, and receive appointment confirmations. The application requests access to the salon owner’s Google Calendar only to identify its app-created booking calendar, count availability, prevent overbooking, and create or manage appointment events on that calendar; it does not read event details from unrelated calendars or access other Google services.
-        </p>
+        <p>{copy.body}</p>
       </div>
-      <nav aria-label="Booking and legal information">
-        <Link href="/booking">Book an appointment</Link>
-        <Link href="/privacy">Privacy</Link>
-        <Link href="/terms">Terms</Link>
+      <nav aria-label={copy.label}>
+        <Link href={localizePath("/booking", locale)}>{copy.booking}</Link>
+        <Link href={localizePath("/privacy", locale)}>{copy.privacy}</Link>
+        <Link href={localizePath("/terms", locale)}>{copy.terms}</Link>
       </nav>
     </section>
   );
 }
 
-export function SiteFooter() {
-  return <footer className="site-footer" id="site-footer"><Link aria-label="Katty Hair Studio home" className="brand" href="/"><BrandLogo/></Link><div className="footer-address"><p>Katty Hair Studio</p><p>{address}</p></div><div className="footer-links"><a href={`tel:${phoneNumber}`}><Phone aria-hidden="true"/>Call</a><a href={whatsappUrl} rel="noreferrer" target="_blank"><SocialIcon platform="whatsapp"/>WhatsApp</a><a href={directionsUrl} rel="noreferrer" target="_blank"><MapPinned aria-hidden="true"/>Map</a>{socialLinks.map((social)=><a aria-label={social.label} className="footer-social-link" href={social.href} key={social.platform} rel="noreferrer" target="_blank" title={social.label}><SocialIcon platform={social.platform}/></a>)}</div><FooterBookingPurpose/></footer>;
+export function SiteFooter({ locale = "en" }: { locale?: Locale }) {
+  const copy = sharedCopy[locale];
+  return <footer className="site-footer" id="site-footer"><Link aria-label="Katty Hair Studio" className="brand" href={localizePath("/", locale)}><BrandLogo/></Link><div className="footer-address"><p>Katty Hair Studio</p><p>{address}</p></div><div className="footer-links"><a href={`tel:${phoneNumber}`}><Phone aria-hidden="true"/>{copy.call}</a><a href={whatsappUrl} rel="noreferrer" target="_blank"><SocialIcon platform="whatsapp"/>WhatsApp</a><a href={directionsUrl} rel="noreferrer" target="_blank"><MapPinned aria-hidden="true"/>{copy.map}</a>{socialLinks.map((social)=><a aria-label={social.label} className="footer-social-link" href={social.href} key={social.platform} rel="noreferrer" target="_blank" title={social.label}><SocialIcon platform={social.platform}/></a>)}</div><FooterBookingPurpose locale={locale}/></footer>;
 }
 
-export function MobileActionBar() {
-  return <nav aria-label="Quick appointment actions" className="mobile-action-bar"><BookingScrollLink className="mobile-action-primary"><CalendarDays aria-hidden="true"/>Request</BookingScrollLink><a className="mobile-action-secondary" href={`tel:${phoneNumber}`}><Phone aria-hidden="true"/>Call</a></nav>;
+export function MobileActionBar({ locale = "en" }: { locale?: Locale }) {
+  const copy = sharedCopy[locale];
+  return <nav aria-label={copy.labels.mobileActions} className="mobile-action-bar"><BookingScrollLink className="mobile-action-primary"><CalendarDays aria-hidden="true"/>{copy.requestShort}</BookingScrollLink><a className="mobile-action-secondary" href={`tel:${phoneNumber}`}><Phone aria-hidden="true"/>{copy.call}</a></nav>;
 }

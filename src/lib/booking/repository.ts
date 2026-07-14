@@ -1,6 +1,7 @@
 import { getSupabaseAdmin } from "@/lib/supabase/server";
 import { getLocalGoogleBookingCalendarId } from "@/lib/google-calendar/local-token-store";
 import { isLocalDevelopmentRuntime } from "@/lib/runtime/environment";
+import type { BookingLocale } from "@/lib/booking/localization";
 import type {
   BookingOccupancy,
   BookingService,
@@ -70,6 +71,7 @@ export async function createPendingBooking(input: {
   cancellationTokenHash: string;
   confirmationCode: string;
   customerEmail: string;
+  customerLocale: BookingLocale;
   customerName: string;
   customerNotes?: string;
   customerPhone?: string;
@@ -85,6 +87,7 @@ export async function createPendingBooking(input: {
     p_cancellation_token_hash: input.cancellationTokenHash,
     p_confirmation_code: input.confirmationCode,
     p_customer_email: input.customerEmail,
+    p_customer_locale: input.customerLocale,
     p_customer_name: input.customerName,
     p_customer_notes: input.customerNotes || null,
     p_customer_phone: input.customerPhone || null,
@@ -97,7 +100,7 @@ export async function createPendingBooking(input: {
 
   if (error) {
     if (error.message.includes("BOOKING_CAPACITY_REACHED")) {
-      throw new Error("That appointment time was just taken. Choose another available time.");
+      throw new BookingCapacityError();
     }
 
     throw new Error(`Unable to reserve the appointment: ${error.message}`);
@@ -108,6 +111,13 @@ export async function createPendingBooking(input: {
   }
 
   return data;
+}
+
+export class BookingCapacityError extends Error {
+  constructor() {
+    super("BOOKING_CAPACITY_REACHED");
+    this.name = "BookingCapacityError";
+  }
 }
 
 export async function confirmBooking(
@@ -168,7 +178,7 @@ export async function getBookingForCancellation(confirmationCode: string) {
   const { data, error } = await getSupabaseAdmin()
     .from("bookings")
     .select(
-      "id, status, cancellation_token_hash, google_event_id, service_id, customer_email, customer_phone, customer_name, starts_at",
+      "id, status, cancellation_token_hash, google_event_id, service_id, customer_email, customer_locale, customer_phone, customer_name, starts_at",
     )
     .eq("confirmation_code", confirmationCode)
     .maybeSingle();

@@ -11,6 +11,7 @@ import {
   Star,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import type { Locale } from "./i18n/config";
 
 type FeaturedReview = {
   name: string;
@@ -51,14 +52,59 @@ function GoogleMark() {
 
 export default function ReviewPager({
   googleReviewsUrl,
+  locale = "en",
   reviews,
 }: {
   googleReviewsUrl: string;
+  locale?: Locale;
   reviews: readonly FeaturedReview[];
 }) {
   const trackRef = useRef<HTMLDivElement>(null);
   const [activeSlide, setActiveSlide] = useState(0);
   const slideCount = reviews.length + 1;
+  const copy = locale === "es"
+    ? {
+        aria: "Carrusel de reseñas de Google de Katty Hair Studio",
+        controls: "Controles del carrusel de reseñas",
+        featured: "Reseña destacada de",
+        fullProfile: "Abrir el perfil público de Katty Hair Studio en Google, con una calificación de 4.8 basada en 156 reseñas",
+        next: "Siguiente reseña",
+        position: "Posición en el carrusel de reseñas",
+        previous: "Reseña anterior",
+        profile: "Perfil público de Google",
+        proofBody: "Lee aquí las reseñas destacadas y consulta después el perfil público completo para ver la calificación general y todas las opiniones.",
+        proofNotes: "Datos de respaldo de las reseñas de Google",
+        proofPoints: ["Fuente pública de la calificación", "Reseñas de clientes reales", "Contexto del servicio incluido"],
+        proofTitle: "Opiniones que puedes comprobar antes de reservar.",
+        read: "Leer reseñas en Google",
+        reviews: "156 reseñas",
+        reviewsGoogle: "156 reseñas de Google",
+        show: "Mostrar reseña",
+        stars: "4.8 de 5 estrellas",
+        starsFull: "4.8 de 5 estrellas según 156 reseñas de Google",
+        swipe: "Desliza para ver la siguiente reseña",
+      }
+    : {
+        aria: "Katty Hair Studio Google reviews pager",
+        controls: "Review pager controls",
+        featured: "Featured review from",
+        fullProfile: "Open Katty Hair Studio's public Google profile with a 4.8 rating from 156 reviews",
+        next: "Next review slide",
+        position: "Review slide position",
+        previous: "Previous review slide",
+        profile: "Public Google profile",
+        proofBody: "You can read the featured reviews here, then check the full public profile for the broader rating and review count.",
+        proofNotes: "Google review proof notes",
+        proofPoints: ["Public rating source", "Real client reviews featured", "Service context included"],
+        proofTitle: "Proof you can check before you book.",
+        read: "Read Google reviews",
+        reviews: "156 reviews",
+        reviewsGoogle: "156 Google reviews",
+        show: "Show review slide",
+        stars: "4.8 out of 5 stars",
+        starsFull: "4.8 out of 5 stars from 156 Google reviews",
+        swipe: "Swipe for the next review",
+      };
 
   const goToSlide = (index: number) => {
     const track = trackRef.current;
@@ -100,10 +146,10 @@ export default function ReviewPager({
   }, [slideCount]);
 
   return (
-    <div className="review-pager" aria-label="Katty Hair Studio Google reviews pager">
+    <div className="review-pager" aria-label={copy.aria}>
       <div className="review-pager-top">
         <a
-          aria-label="Open Katty Hair Studio's public Google profile with a 4.8 rating from 156 reviews"
+          aria-label={copy.fullProfile}
           className="google-rating-signal"
           href={googleReviewsUrl}
           rel="noreferrer"
@@ -111,17 +157,17 @@ export default function ReviewPager({
         >
           <span className="google-rating-source">
             <GoogleMark />
-            Public Google profile
+            {copy.profile}
           </span>
           <span className="google-rating-score">
             <strong>4.8</strong>
-            <Stars label="4.8 out of 5 stars" />
-            <span>156 reviews</span>
+            <Stars label={copy.stars} />
+            <span>{copy.reviews}</span>
           </span>
         </a>
-        <div className="review-pager-controls" aria-label="Review pager controls">
+        <div className="review-pager-controls" aria-label={copy.controls}>
           <button
-            aria-label="Previous review slide"
+            aria-label={copy.previous}
             disabled={activeSlide === 0}
             onClick={() => goToSlide(activeSlide - 1)}
             type="button"
@@ -129,7 +175,7 @@ export default function ReviewPager({
             <ChevronLeft aria-hidden="true" />
           </button>
           <button
-            aria-label="Next review slide"
+            aria-label={copy.next}
             disabled={activeSlide === slideCount - 1}
             onClick={() => goToSlide(activeSlide + 1)}
             type="button"
@@ -140,7 +186,7 @@ export default function ReviewPager({
       </div>
 
       <p className="review-swipe-hint">
-        Swipe for the next review
+        {copy.swipe}
         <ChevronRight aria-hidden="true" />
       </p>
 
@@ -148,7 +194,7 @@ export default function ReviewPager({
         {reviews.map((review) => (
           <div
             className="review-slide"
-            aria-label={`Featured review from ${review.name}`}
+            aria-label={`${copy.featured} ${review.name}`}
             key={review.name}
           >
             <article className="featured-review-card">
@@ -170,7 +216,7 @@ export default function ReviewPager({
                     <strong>{review.name}</strong>
                     <span>{review.meta}</span>
                   </div>
-                  <Stars />
+                  <Stars label={locale === "es" ? "5 de 5 estrellas" : "5 out of 5 stars"} />
                 </div>
                 <p className="review-card-meta">{review.details.join(" · ")}</p>
                 <blockquote className="review-card-quote">
@@ -191,50 +237,36 @@ export default function ReviewPager({
           </div>
         ))}
 
-        <div className="review-slide" aria-label="Google reviews rating summary">
+        <div className="review-slide" aria-label={locale === "es" ? "Resumen de reseñas de Google" : "Google reviews rating summary"}>
           <article className="google-summary-card">
             <div className="google-summary-kicker">
               <GoogleMark />
-              Public Google profile
+              {copy.profile}
             </div>
             <div className="google-score-row">
               <strong>4.8</strong>
               <div>
-                <Stars label="4.8 out of 5 stars from 156 Google reviews" />
-                <span>156 Google reviews</span>
+                <Stars label={copy.starsFull} />
+                <span>{copy.reviewsGoogle}</span>
               </div>
             </div>
-            <h3>Proof you can check before you book.</h3>
-            <p>
-              You can read the featured reviews here, then check the full public profile
-              for the broader rating and review count.
-            </p>
-            <div className="google-summary-points" aria-label="Google review proof notes">
-              <span>
-                <Check aria-hidden="true" />
-                Public rating source
-              </span>
-              <span>
-                <Check aria-hidden="true" />
-                Real client reviews featured
-              </span>
-              <span>
-                <Check aria-hidden="true" />
-                Service context included
-              </span>
+            <h3>{copy.proofTitle}</h3>
+            <p>{copy.proofBody}</p>
+            <div className="google-summary-points" aria-label={copy.proofNotes}>
+              {copy.proofPoints.map((point) => <span key={point}><Check aria-hidden="true" />{point}</span>)}
             </div>
             <a className="secondary-dark-link" href={googleReviewsUrl} rel="noreferrer" target="_blank">
               <ExternalLink aria-hidden="true" />
-              Read Google reviews
+              {copy.read}
             </a>
           </article>
         </div>
       </div>
 
-      <div className="review-dots" aria-label="Review slide position">
+      <div className="review-dots" aria-label={copy.position}>
         {Array.from({ length: slideCount }).map((_, index) => (
           <button
-            aria-label={`Show review slide ${index + 1}`}
+            aria-label={`${copy.show} ${index + 1}`}
             aria-pressed={activeSlide === index}
             className="review-dot"
             key={index}

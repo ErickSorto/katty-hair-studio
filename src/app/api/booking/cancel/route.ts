@@ -3,6 +3,12 @@ import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import {
+  getBookingErrorMessage,
+  normalizeBookingLocale,
+  type BookingErrorCode,
+  type BookingLocale,
+} from "@/lib/booking/localization";
+import {
   cancelBookingRecord,
   getBookingCalendarId,
   getBookingForCancellation,
@@ -14,6 +20,7 @@ export const runtime = "nodejs";
 
 const requestSchema = z.object({
   confirmationCode: z.string().regex(/^KHS-[A-F0-9]{6}$/),
+  customerLocale: z.enum(["en", "es"]).default("en"),
   reason: z.string().trim().max(500).default("Customer cancelled online"),
   token: z.string().min(20).max(200),
 });
@@ -26,18 +33,54 @@ function tokenMatches(token: string, expectedHash: string) {
   );
 }
 
+function cancellationErrorResponse(
+  locale: BookingLocale,
+  errorCode: BookingErrorCode,
+  status: number,
+) {
+  return NextResponse.json(
+    { error: getBookingErrorMessage(locale, errorCode), errorCode },
+    { status },
+  );
+}
+
 export async function POST(request: NextRequest) {
-  const parsed = requestSchema.safeParse(await request.json().catch(() => null));
+  const body = await request.json().catch(() => null);
+  const hasExplicitLocale =
+    body &&
+    typeof body === "object" &&
+    "customerLocale" in body &&
+    (body.customerLocale === "en" || body.customerLocale === "es");
+  const requestedLocale = normalizeBookingLocale(
+    body && typeof body === "object" && "customerLocale" in body
+      ? body.customerLocale
+      : undefined,
+  );
+  const parsed = requestSchema.safeParse(body);
 
   if (!parsed.success) {
-    return NextResponse.json({ error: "This cancellation link is invalid." }, { status: 400 });
+    return cancellationErrorResponse(
+      requestedLocale,
+      "INVALID_CANCELLATION_LINK",
+      400,
+    );
   }
+
+  let customerLocale = parsed.data.customerLocale;
 
   try {
     const booking = await getBookingForCancellation(parsed.data.confirmationCode);
 
     if (!booking || !tokenMatches(parsed.data.token, booking.cancellation_token_hash)) {
-      return NextResponse.json({ error: "This cancellation link is invalid." }, { status: 404 });
+      return cancellationErrorResponse(
+        requestedLocale,
+        "INVALID_CANCELLATION_LINK",
+        404,
+      );
+    }
+
+    if (!hasExplicitLocale) {
+      customerLocale = normalizeBookingLocale(booking.customer_locale);
     }
 
     if (booking.status === "cancelled") {
@@ -45,7 +88,11 @@ export async function POST(request: NextRequest) {
     }
 
     if (!booking.google_event_id) {
-      throw new Error("This appointment does not have an active Google Calendar event.");
+      return cancellationErrorResponse(
+        customerLocale,
+        "CANCELLATION_UNAVAILABLE",
+        409,
+      );
     }
 
     const calendarId = await getBookingCalendarId();
@@ -54,7 +101,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ cancelled: true });
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Unable to cancel the appointment.";
-    return NextResponse.json({ error: message }, { status: 503 });
+    console.error("Booking cancellation failed", error);
+    return cancellationErrorResponse(customerLocale, "CANCELLATION_FAILED", 503);
   }
 }

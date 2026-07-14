@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, ChevronRight, Mail, Phone, Scale, ShieldCheck } from "lucide-react";
 import EditorialPageFrame from "./EditorialPageFrame";
+import { localizePath, type Locale } from "./i18n/config";
 
 export type PolicySection = {
   bullets?: readonly string[];
@@ -13,19 +14,51 @@ export type PolicySection = {
 export default function PolicyPage({
   description,
   eyebrow,
+  locale = "en",
   sections,
   title,
 }: {
   description: string;
   eyebrow: string;
+  locale?: Locale;
   sections: readonly PolicySection[];
   title: string;
 }) {
+  const copy = locale === "es"
+    ? {
+        alt: "El acogedor interior de Katty Hair Studio",
+        breadcrumb: "Inicio",
+        contactBody: "Te ayudaremos con solicitudes de privacidad, preguntas sobre reservas, cancelaciones o preferencias de comunicación.",
+        contactEyebrow: "Preguntas o solicitudes",
+        contactTitle: "Habla con el salón.",
+        effective: "Vigente desde el 13 de julio de 2026",
+        email: "Enviar un correo al salón",
+        index: "En esta página",
+        note: "¿Tienes preguntas sobre esta información? Comunícate directamente con el salón.",
+        phone: "Llamar al (240) 582-6622",
+        request: "Solicitar una cita",
+        sections: `Secciones de ${title}`,
+      }
+    : {
+        alt: "The welcoming interior of Katty Hair Studio",
+        breadcrumb: "Home",
+        contactBody: "We will help with privacy requests, booking questions, cancellations, or communication preferences.",
+        contactEyebrow: "Questions or requests",
+        contactTitle: "Talk with the studio.",
+        effective: "Effective July 13, 2026",
+        email: "Email the studio",
+        index: "On this page",
+        note: "Questions about these terms? Contact the studio directly.",
+        phone: "Call (240) 582-6622",
+        request: "Request an appointment",
+        sections: `${title} sections`,
+      };
+
   return (
-    <EditorialPageFrame className="policy-page">
+    <EditorialPageFrame className="policy-page" locale={locale}>
       <section className="policy-hero">
         <Image
-          alt="The welcoming interior of Katty Hair Studio"
+          alt={copy.alt}
           className="policy-hero-image"
           fill
           loading="eager"
@@ -34,23 +67,23 @@ export default function PolicyPage({
         />
         <div className="policy-hero-shade" />
         <div className="policy-hero-content">
-          <nav aria-label="Breadcrumb" className="editorial-page-breadcrumb">
-            <Link href="/">Home</Link>
+          <nav aria-label={locale === "es" ? "Ruta de navegación" : "Breadcrumb"} className="editorial-page-breadcrumb">
+            <Link href={localizePath("/", locale)}>{copy.breadcrumb}</Link>
             <ChevronRight aria-hidden="true" />
             <span aria-current="page">{title}</span>
           </nav>
           <p className="eyebrow">{eyebrow}</p>
           <h1>{title}</h1>
           <p>{description}</p>
-          <span><ShieldCheck aria-hidden="true" />Effective July 13, 2026</span>
+          <span><ShieldCheck aria-hidden="true" />{copy.effective}</span>
         </div>
       </section>
 
       <section className="policy-layout">
         <aside className="policy-index" data-reveal>
           <div>
-            <p className="eyebrow">On this page</p>
-            <nav aria-label={`${title} sections`}>
+            <p className="eyebrow">{copy.index}</p>
+            <nav aria-label={copy.sections}>
               {sections.map((section, index) => (
                 <a href={`#${section.id}`} key={section.id}>
                   <span>{String(index + 1).padStart(2, "0")}</span>
@@ -59,7 +92,7 @@ export default function PolicyPage({
               ))}
             </nav>
             <p className="policy-index-note">
-              <Scale aria-hidden="true" /> Questions about these terms? Contact the studio directly.
+              <Scale aria-hidden="true" /> {copy.note}
             </p>
           </div>
         </aside>
@@ -82,14 +115,14 @@ export default function PolicyPage({
 
       <section className="policy-contact" data-reveal>
         <div>
-          <p className="eyebrow">Questions or requests</p>
-          <h2>Talk with the studio.</h2>
-          <p>We will help with privacy requests, booking questions, cancellations, or communication preferences.</p>
+          <p className="eyebrow">{copy.contactEyebrow}</p>
+          <h2>{copy.contactTitle}</h2>
+          <p>{copy.contactBody}</p>
         </div>
         <div className="policy-contact-actions">
-          <a href="mailto:kattyhairstudio@gmail.com"><Mail aria-hidden="true" />Email the studio</a>
-          <a href="tel:+12405826622"><Phone aria-hidden="true" />Call (240) 582-6622</a>
-          <Link href="/booking">Request an appointment<ArrowRight aria-hidden="true" /></Link>
+          <a href="mailto:kattyhairstudio@gmail.com"><Mail aria-hidden="true" />{copy.email}</a>
+          <a href="tel:+12405826622"><Phone aria-hidden="true" />{copy.phone}</a>
+          <Link href={localizePath("/booking", locale)}>{copy.request}<ArrowRight aria-hidden="true" /></Link>
         </div>
       </section>
     </EditorialPageFrame>

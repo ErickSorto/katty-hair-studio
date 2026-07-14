@@ -1,14 +1,25 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import { getDemoCatalog, isBookingDemoEnabled } from "@/lib/booking/demo";
+import {
+  getBookingErrorMessage,
+  getBookingPromotionLabel,
+  getLocalizedBookingServiceDescription,
+  getLocalizedBookingServiceName,
+  normalizeBookingLocale,
+} from "@/lib/booking/localization";
 import { getBookingCatalog, getSalonSettings } from "@/lib/booking/repository";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
 export async function GET(request: NextRequest) {
+  const locale = normalizeBookingLocale(request.nextUrl.searchParams.get("locale"));
+
   if (isBookingDemoEnabled(request.nextUrl.searchParams)) {
-    return NextResponse.json(getDemoCatalog(), { headers: { "Cache-Control": "no-store" } });
+    return NextResponse.json(getDemoCatalog(locale), {
+      headers: { "Cache-Control": "no-store" },
+    });
   }
 
   try {
@@ -20,9 +31,18 @@ export async function GET(request: NextRequest) {
         maxConcurrentBookings: settings.maxConcurrentBookings,
         promotion: {
           amount: 10,
-          label: "Mondays are $10 off all services",
+          label: getBookingPromotionLabel(locale),
           weekday: 1,
         },
+        services: catalog.services.map((service) => ({
+          ...service,
+          description: getLocalizedBookingServiceDescription(
+            service.slug,
+            service.description,
+            locale,
+          ),
+          name: getLocalizedBookingServiceName(service.slug, service.name, locale),
+        })),
         timezone: settings.timezone,
       },
       { headers: { "Cache-Control": "no-store" } },
@@ -30,7 +50,10 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error("Booking catalog unavailable", error);
     return NextResponse.json(
-      { error: "Online booking is being prepared. Please call the salon for an appointment." },
+      {
+        error: getBookingErrorMessage(locale, "CATALOG_UNAVAILABLE"),
+        errorCode: "CATALOG_UNAVAILABLE",
+      },
       { status: 503 },
     );
   }

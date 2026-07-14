@@ -3,89 +3,33 @@
 import Link from "next/link";
 import { ArrowRight, ChevronDown } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { localizePath, type Locale } from "./i18n/config";
+import { serviceNavigationCopy } from "./i18n/shared-copy";
 
-const serviceGroups = [
-  {
-    label: "Color & highlights",
-    links: [
-      ["Balayage", "/services/balayage"],
-      ["Hair coloring", "/services/hair-coloring"],
-      ["Hair highlighting", "/services/hair-highlighting"],
-      ["Partial highlights", "/services/partial-hair-highlights"],
-    ],
-  },
-  {
-    label: "Blowouts & styling",
-    links: [
-      ["Dominican blowouts", "/services/blowouts"],
-      ["Hair blowouts", "/services/hair-blowouts"],
-      ["Curly hair", "/services/curly-hair"],
-      ["Hair straightening", "/services/hair-straightening"],
-      ["Hair stylist", "/services/hair-stylist"],
-      ["Hairstyling", "/services/hairstyling"],
-      ["Smoothing treatments", "/services/smoothing-hair-treatment"],
-    ],
-  },
-  {
-    label: "Cuts, braids & detail",
-    links: [
-      ["Bang trim", "/services/bang-trim"],
-      ["Women’s haircuts", "/services/womens-haircuts"],
-      ["Men’s haircuts", "/services/mens-haircuts"],
-      ["Braids", "/services/braids"],
-      ["Braiding services", "/services/hair-braiding-services"],
-      ["Twist braids", "/services/twist-braids"],
-      ["Wigs", "/services/wigs"],
-      ["Eyebrow waxing", "/services/eyebrow-waxing"],
-    ],
-  },
-  {
-    label: "Hair extensions",
-    links: [
-      ["Extension consultation", "/services/hair-extension-consultation"],
-      ["Extension installation", "/services/hair-extension-installation"],
-      ["Blending & styling", "/services/hair-extension-blending-and-styling"],
-      ["Extension maintenance", "/services/hair-extension-maintenance"],
-      ["Extension removal", "/services/hair-extension-removal"],
-      ["Tape-in extensions", "/services/tape-in-hair-extensions"],
-      ["Sew-in extensions", "/services/sew-in-hair-extensions"],
-      ["Microlink extensions", "/services/microlink-hair-extensions"],
-      ["K-tip extensions", "/services/k-tip-hair-extensions"],
-      ["Quick weave", "/services/quick-weave"],
-      ["Quick weave + closure", "/services/quick-weave-with-closure"],
-      ["Brazilian knots", "/services/brazilian-knots-hair-extensions"],
-    ],
-  },
-] as const;
+function CategoryGateways({ locale, mobile = false }: { locale: Locale; mobile?: boolean }) {
+  const copy = serviceNavigationCopy[locale];
 
-function CategoryGateways({ mobile = false }: { mobile?: boolean }) {
   return (
     <div className={mobile ? "drawer-category-gateways" : "services-category-gateways"}>
-      <Link href="/hair-salon">
-        <span>01</span>
-        <div>
-          <small>Primary category</small>
-          <strong>Hair salon</strong>
-          {!mobile && <p>Color, cuts, blowouts, braids, treatments, and styling.</p>}
-        </div>
-        <ArrowRight aria-hidden="true" />
-      </Link>
-      <Link href="/hair-extension-technician">
-        <span>02</span>
-        <div>
-          <small>Extension category</small>
-          <strong>Hair extensions</strong>
-          {!mobile && <p>Consultation, installation, blending, care, and removal.</p>}
-        </div>
-        <ArrowRight aria-hidden="true" />
-      </Link>
+      {copy.categoryGateways.map((gateway, index) => (
+        <Link href={localizePath(gateway.href, locale)} key={gateway.href}>
+          <span>{String(index + 1).padStart(2, "0")}</span>
+          <div>
+            <small>{gateway.eyebrow}</small>
+            <strong>{gateway.label}</strong>
+            {!mobile && <p>{gateway.description}</p>}
+          </div>
+          <ArrowRight aria-hidden="true" />
+        </Link>
+      ))}
     </div>
   );
 }
 
-export function DesktopServicesMenu() {
+export function DesktopServicesMenu({ locale = "en" }: { locale?: Locale }) {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const copy = serviceNavigationCopy[locale];
 
   useEffect(() => {
     const closeFromOutside = (event: PointerEvent) => {
@@ -128,7 +72,7 @@ export function DesktopServicesMenu() {
         onClick={() => setIsOpen((open) => !open)}
         type="button"
       >
-        Services
+        {copy.menuLabel}
         <ChevronDown aria-hidden="true" />
       </button>
       <div
@@ -138,18 +82,18 @@ export function DesktopServicesMenu() {
         onClick={() => setIsOpen(false)}
       >
         <div className="services-mega-intro">
-          <p className="services-menu-kicker">Explore Katty</p>
-          <h2>Find the right service for your hair.</h2>
-          <p>Start with a category or go directly to the service you have in mind.</p>
-          <CategoryGateways />
+          <p className="services-menu-kicker">{copy.kicker}</p>
+          <h2>{copy.title}</h2>
+          <p>{copy.intro}</p>
+          <CategoryGateways locale={locale} />
         </div>
         <div className="services-mega-directory">
-          {serviceGroups.map((group) => (
-            <section className={group.label === "Hair extensions" ? "services-mega-extensions" : undefined} key={group.label}>
+          {copy.groups.map((group, index) => (
+            <section className={index === 3 ? "services-mega-extensions" : undefined} key={group.label}>
               <h3>{group.label}</h3>
               <div>
                 {group.links.map(([label, href]) => (
-                  <Link href={href} key={href}>
+                  <Link href={localizePath(href, locale)} key={href}>
                     {label}
                     <ArrowRight aria-hidden="true" />
                   </Link>
@@ -159,30 +103,32 @@ export function DesktopServicesMenu() {
           ))}
         </div>
         <div className="services-mega-footer">
-          <span>Not sure where to begin? Bring a reference and we’ll help shape the plan.</span>
-          <Link href="/#booking">Request an appointment <ArrowRight aria-hidden="true" /></Link>
+          <span>{copy.footer}</span>
+          <Link href={localizePath("/#booking", locale)}>{copy.request} <ArrowRight aria-hidden="true" /></Link>
         </div>
       </div>
     </div>
   );
 }
 
-export function DrawerServicesMenu() {
+export function DrawerServicesMenu({ locale = "en" }: { locale?: Locale }) {
+  const copy = serviceNavigationCopy[locale];
+
   return (
     <details className="drawer-services">
       <summary>
-        <span>Services</span>
+        <span>{copy.menuLabel}</span>
         <ChevronDown aria-hidden="true" />
       </summary>
       <div className="drawer-services-content">
-        <CategoryGateways mobile />
+        <CategoryGateways locale={locale} mobile />
         <div className="drawer-service-groups">
-          {serviceGroups.map((group) => (
+          {copy.groups.map((group) => (
             <section key={group.label}>
               <h3>{group.label}</h3>
               <div>
                 {group.links.map(([label, href]) => (
-                  <Link href={href} key={href}>{label}</Link>
+                  <Link href={localizePath(href, locale)} key={href}>{label}</Link>
                 ))}
               </div>
             </section>

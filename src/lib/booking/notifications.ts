@@ -1,26 +1,43 @@
-import { formatInTimeZone } from "date-fns-tz";
 import { logNotificationDelivery } from "@/lib/booking/repository";
+import {
+  formatBookingAppointmentWhen,
+  getLocalizedBookingServiceName,
+} from "@/lib/booking/localization";
 import {
   renderClientBookingEmail,
   renderOwnerBookingEmail,
   type BookingEmailDetails,
 } from "@/lib/booking/email-templates";
 
-type BookingNotification = BookingEmailDetails;
+export type BookingNotification = BookingEmailDetails;
 
 function getCancellationUrl(booking: BookingNotification) {
-  const siteUrl = process.env.SITE_URL?.trim();
-  return siteUrl
-    ? `${siteUrl.replace(/\/$/, "")}/booking/cancel?code=${encodeURIComponent(booking.confirmationCode)}&token=${encodeURIComponent(booking.cancellationToken)}`
-    : undefined;
+  const siteUrl =
+    process.env.SITE_URL?.trim() || "https://www.kattyhairstudio.com";
+  const pathname =
+    booking.customerLocale === "es" ? "/es/booking/cancel" : "/booking/cancel";
+  return `${siteUrl.replace(/\/$/, "")}${pathname}?code=${encodeURIComponent(booking.confirmationCode)}&token=${encodeURIComponent(booking.cancellationToken)}`;
 }
 
 function appointmentWhen(booking: BookingNotification) {
-  return formatInTimeZone(
-    new Date(booking.startsAt),
+  return formatBookingAppointmentWhen(
+    booking.startsAt,
     booking.timezone,
-    "EEEE, MMMM d 'at' h:mm a zzz",
+    booking.customerLocale,
   );
+}
+
+export function renderBookingConfirmationSmsBody(booking: BookingNotification) {
+  const cancellationUrl = getCancellationUrl(booking);
+  const serviceName = getLocalizedBookingServiceName(
+    booking.serviceSlug,
+    booking.serviceName,
+    booking.customerLocale,
+  );
+
+  return booking.customerLocale === "es"
+    ? `Katty Hair Studio: ${serviceName}, ${appointmentWhen(booking)}. Confirmación ${booking.confirmationCode}.${cancellationUrl ? ` Cancelar: ${cancellationUrl}` : ""} Responde STOP para dejar de recibir mensajes.`
+    : `Katty Hair Studio: ${serviceName}, ${appointmentWhen(booking)}. Confirmation ${booking.confirmationCode}.${cancellationUrl ? ` Cancel: ${cancellationUrl}` : ""} Reply STOP to opt out.`;
 }
 
 async function sendResendEmail({
@@ -109,9 +126,8 @@ async function sendConfirmationSms(booking: BookingNotification) {
     return;
   }
 
-  const cancellationUrl = getCancellationUrl(booking);
   const form = new URLSearchParams({
-    Body: `Katty Hair Studio: ${booking.serviceName}, ${appointmentWhen(booking)}. Confirmation ${booking.confirmationCode}.${cancellationUrl ? ` Cancel: ${cancellationUrl}` : ""} Reply STOP to opt out.`,
+    Body: renderBookingConfirmationSmsBody(booking),
     MessagingServiceSid: messagingServiceSid,
     To: booking.customerPhone,
   });
