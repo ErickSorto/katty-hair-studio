@@ -1,11 +1,26 @@
 import type { Metadata } from "next";
 import PolicyPage, { type PolicySection } from "@/app/PolicyPage";
-import { localizedAlternates } from "@/app/i18n/config";
+import { absoluteLocalizedUrl, localizedAlternates } from "@/app/i18n/config";
+
+const title = "Terms of Service | Katty Hair Studio";
+const description = "Terms for using Katty Hair Studio's website, online booking experience, appointment communications, and salon services.";
+const canonical = absoluteLocalizedUrl("/terms", "en");
 
 export const metadata: Metadata = {
-  title: "Terms of Service | Katty Hair Studio",
-  description: "Terms for using Katty Hair Studio's website, online booking experience, appointment communications, and salon services.",
+  title,
+  description,
   alternates: localizedAlternates("/terms", "en"),
+  openGraph: {
+    title,
+    description,
+    url: canonical,
+    type: "website",
+    siteName: "Katty Hair Studio",
+    locale: "en_US",
+    alternateLocale: ["es_US"],
+    images: [{ url: "/social/katty-share-preview.webp", width: 1200, height: 630, alt: "Katty Hair Studio in Brentwood, Maryland" }],
+  },
+  twitter: { card: "summary_large_image", title, description, images: ["/social/katty-share-preview.webp"] },
 };
 
 const sections: readonly PolicySection[] = [

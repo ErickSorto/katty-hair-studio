@@ -5,16 +5,30 @@ import BookingSection from "@/app/BookingSection";
 import EditorialPageFrame from "@/app/EditorialPageFrame";
 import EditorialPageHero from "@/app/EditorialPageHero";
 import LocationSection from "@/app/LocationSection";
-import { localizedAlternates } from "@/app/i18n/config";
+import { absoluteLocalizedUrl, localizedAlternates } from "@/app/i18n/config";
 
 const phoneNumber = "+12405826622";
 const phoneDisplay = "(240) 582-6622";
+const title = "Meet Katty | Katty Hair Studio Brentwood, MD";
+const description =
+  "Meet Katty, founder of a full-service, Dominican-owned hair studio in Brentwood offering color, cuts, blowouts, braids, extensions, treatments, and styling.";
+const canonical = absoluteLocalizedUrl("/about", "en");
 
 export const metadata: Metadata = {
-  title: "Meet Katty | Katty Hair Studio Brentwood, MD",
-  description:
-    "Meet Katty, founder of a full-service, Dominican-owned hair studio in Brentwood offering color, cuts, blowouts, braids, extensions, treatments, and styling.",
+  title,
+  description,
   alternates: localizedAlternates("/about", "en"),
+  openGraph: {
+    title,
+    description,
+    url: canonical,
+    type: "website",
+    siteName: "Katty Hair Studio",
+    locale: "en_US",
+    alternateLocale: ["es_US"],
+    images: [{ url: "/social/katty-share-preview.webp", width: 1200, height: 630, alt: "Kathy De la Paz, founder of Katty Hair Studio" }],
+  },
+  twitter: { card: "summary_large_image", title, description, images: ["/social/katty-share-preview.webp"] },
 };
 
 const principles = [

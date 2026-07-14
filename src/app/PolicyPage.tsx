@@ -48,7 +48,7 @@ export default function PolicyPage({
         effective: "Effective July 13, 2026",
         email: "Email the studio",
         index: "On this page",
-        note: "Questions about these terms? Contact the studio directly.",
+        note: "Questions about this information? Contact the studio directly.",
         phone: "Call (240) 582-6622",
         request: "Request an appointment",
         sections: `${title} sections`,

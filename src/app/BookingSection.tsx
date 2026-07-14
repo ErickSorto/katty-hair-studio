@@ -80,6 +80,7 @@ type BookingStep = 1 | 2 | 3;
 
 const directionsUrl =
   "https://www.google.com/maps/search/?api=1&query=3816%20Bladensburg%20Rd%2C%20Brentwood%2C%20MD%2020722";
+const salonTimezone = "America/New_York";
 const defaultPromotions: Record<Locale, Promotion> = {
   en: { amount: 10, label: "Mondays are $10 off all services", weekday: 1 },
   es: { amount: 10, label: "Los lunes ahorras $10 en todos los servicios", weekday: 1 },
@@ -105,11 +106,8 @@ function getServiceIcon(slug: string) {
   return "/booking-icons/cut.png";
 }
 
-function getLocalDateValue(offsetDays = 0) {
-  const date = new Date();
-  date.setDate(date.getDate() + offsetDays);
-  date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
-  return date.toISOString().slice(0, 10);
+function getLocalDateValue() {
+  return formatInTimeZone(new Date(), salonTimezone, "yyyy-MM-dd");
 }
 
 function getInitialBookingDate(today: string) {
@@ -249,7 +247,7 @@ export default function BookingSection({
   const [date, setDate] = useState(initialBookingDate);
   const [slots, setSlots] = useState<Slot[]>([]);
   const [startsAt, setStartsAt] = useState("");
-  const [timezone, setTimezone] = useState("America/New_York");
+  const [timezone, setTimezone] = useState(salonTimezone);
   const [bookingWindowDays, setBookingWindowDays] = useState(90);
   const [promotion, setPromotion] = useState<Promotion>(defaultPromotion);
   const [customerName, setCustomerName] = useState("");
@@ -315,7 +313,7 @@ export default function BookingSection({
         }
 
         setServices(result.services);
-        setTimezone(result.timezone || "America/New_York");
+        setTimezone(result.timezone || salonTimezone);
         setBookingWindowDays(result.bookingWindowDays || 90);
         setPromotion(result.promotion || defaultPromotion);
       } catch (catalogError) {

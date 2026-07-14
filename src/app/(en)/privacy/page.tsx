@@ -1,11 +1,26 @@
 import type { Metadata } from "next";
 import PolicyPage, { type PolicySection } from "@/app/PolicyPage";
-import { localizedAlternates } from "@/app/i18n/config";
+import { absoluteLocalizedUrl, localizedAlternates } from "@/app/i18n/config";
+
+const title = "Privacy Policy | Katty Hair Studio";
+const description = "How Katty Hair Studio collects, uses, protects, and shares information for appointments, communications, and Google Calendar scheduling.";
+const canonical = absoluteLocalizedUrl("/privacy", "en");
 
 export const metadata: Metadata = {
-  title: "Privacy Policy | Katty Hair Studio",
-  description: "How Katty Hair Studio collects, uses, protects, and shares information for appointments, communications, and Google Calendar scheduling.",
+  title,
+  description,
   alternates: localizedAlternates("/privacy", "en"),
+  openGraph: {
+    title,
+    description,
+    url: canonical,
+    type: "website",
+    siteName: "Katty Hair Studio",
+    locale: "en_US",
+    alternateLocale: ["es_US"],
+    images: [{ url: "/social/katty-share-preview.webp", width: 1200, height: 630, alt: "Katty Hair Studio in Brentwood, Maryland" }],
+  },
+  twitter: { card: "summary_large_image", title, description, images: ["/social/katty-share-preview.webp"] },
 };
 
 const sections: readonly PolicySection[] = [

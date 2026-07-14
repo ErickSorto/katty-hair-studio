@@ -20,9 +20,11 @@ function getDocumentTop(element: HTMLElement) {
 export default function BookingScrollLink({
   children,
   className,
+  fallbackHref = `#${targetId}`,
 }: {
   children: ReactNode;
   className: string;
+  fallbackHref?: string;
 }) {
   function scrollToBooking(event: MouseEvent<HTMLAnchorElement>) {
     const target = document.getElementById(targetId);
@@ -50,7 +52,7 @@ export default function BookingScrollLink({
   }
 
   return (
-    <a className={className} href={`#${targetId}`} onClick={scrollToBooking}>
+    <a className={className} href={fallbackHref} onClick={scrollToBooking}>
       {children}
     </a>
   );

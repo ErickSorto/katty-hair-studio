@@ -11,8 +11,16 @@ export const metadata: Metadata = {
     title: hairSalonCategory.title,
     description: hairSalonCategory.description,
     url: hairSalonCategory.canonical,
+    type: "website",
+    siteName: "Katty Hair Studio",
     locale: "en_US",
     alternateLocale: ["es_US"],
+    images: ["/social/katty-share-preview.webp"],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: hairSalonCategory.title,
+    description: hairSalonCategory.description,
     images: ["/social/katty-share-preview.webp"],
   },
 };

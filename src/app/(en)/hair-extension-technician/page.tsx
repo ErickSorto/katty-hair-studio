@@ -13,8 +13,17 @@ export const metadata: Metadata = {
     description:
       "Explore tape-in, sew-in, microlink, K-tip, quick weave, closure, and Brazilian knot services at Katty Hair Studio in Brentwood, Maryland.",
     url: extensionCategory.canonical,
+    type: "website",
+    siteName: "Katty Hair Studio",
     locale: "en_US",
     alternateLocale: ["es_US"],
+    images: ["/social/katty-share-preview.webp"],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Hair Extension Technician in Brentwood, MD | Katty",
+    description:
+      "Explore tape-in, sew-in, microlink, K-tip, quick weave, closure, and Brazilian knot services at Katty Hair Studio in Brentwood, Maryland.",
     images: ["/social/katty-share-preview.webp"],
   },
 };

@@ -12,7 +12,7 @@ const phoneDisplay = "(240) 582-6622";
 const instagramUrl = "https://www.instagram.com/kattyhairstudio_/";
 const title = "Galería de cabello | Katty Hair Studio en Brentwood, MD";
 const description =
-  "Explora blowouts, extensiones, highlights, trenzas, rizos, cortes y acabados pulidos de Katty Hair Studio en Brentwood, Maryland.";
+  "Explora blowouts, extensiones, mechas, trenzas, rizos, cortes y acabados pulidos de Katty Hair Studio en Brentwood, Maryland.";
 const canonical = absoluteLocalizedUrl("/gallery", "es");
 
 export const metadata: Metadata = {
@@ -52,7 +52,7 @@ const galleryItems = [
   { image: "/gallery/katty-sculpted-curls-themed.webp", title: "Rizos esculpidos", alt: "Cabello largo con rizos brillantes y esculpidos", position: "50% center" },
   { image: "/gallery/katty-vintage-curl-set-themed-v2.webp", title: "Peinado de rizos vintage", alt: "Peinado brillante con rizos de estilo vintage", position: "50% 40%" },
   { image: "/services/generated/quick-weave-v2.webp", title: "Bob con quick weave", alt: "Bob liso a la altura de los hombros realizado con quick weave", position: "50% 42%" },
-  { image: "/services/generated/hair-highlighting-v2.webp", title: "Highlights dimensionales", alt: "Highlights cálidos en tonos miel sobre cabello castaño", position: "50% 42%" },
+  { image: "/services/generated/hair-highlighting-v2.webp", title: "Mechas dimensionales", alt: "Mechas cálidas en tonos miel sobre cabello castaño", position: "50% 42%" },
   { image: "/services/generated/twist-braids-v2.webp", title: "Twists de cuerda", alt: "Twists largos y pulidos de dos mechones", position: "50% 38%" },
   { image: "/services/generated/womens-haircuts-v2.webp", title: "Corte en capas", alt: "Corte fresco en capas a la altura de la clavícula", position: "50% 42%" },
   { image: "/services/generated/brazilian-knots-hair-extensions-v2.webp", title: "Largo con textura", alt: "Extensiones largas con textura y mucho volumen", position: "50% 40%" },

@@ -191,7 +191,7 @@ export const bookingUiCopy = {
       email: "Correo electrónico *",
       phone: "Teléfono *",
       notes: "Notas o estilo solicitado",
-      sms: "Envíenme confirmaciones y actualizaciones de mi cita por mensaje de texto. Pueden aplicarse tarifas de mensajes y datos. Responde STOP para cancelar.",
+      sms: "Envíenme confirmaciones y actualizaciones de mi cita por mensaje de texto. Pueden aplicarse tarifas de mensajes y datos. Responde STOP para dejar de recibir mensajes.",
       back: "Atrás",
       reserving: "Reservando…",
       reserve: "Reservar cita",

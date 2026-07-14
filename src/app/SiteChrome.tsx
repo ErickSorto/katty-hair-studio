@@ -12,6 +12,7 @@ import {
   Phone,
 } from "lucide-react";
 import DrawerAutoClose from "./DrawerAutoClose";
+import DrawerToggleButton from "./DrawerToggleButton";
 import BookingScrollLink from "./BookingScrollLink";
 import { DesktopServicesMenu, DrawerServicesMenu } from "./ServiceNavigation";
 import LanguageSwitcher from "./i18n/LanguageSwitcher";
@@ -66,7 +67,7 @@ export function SiteHeader({ locale = "en" }: { locale?: Locale }) {
           <Link className="announcement-pill" href={localizePath("/#prices", locale)}><BadgePercent aria-hidden="true" className="site-icon"/><span className="announcement-copy-long">{copy.announcement.long}</span><span className="announcement-copy-short">{copy.announcement.short}</span></Link>
           <div className="announcement-contact">
             <a className="announcement-center" href={`tel:${phoneNumber}`}><Phone aria-hidden="true"/><span>{copy.call} {phoneDisplay}</span><ChevronRight aria-hidden="true"/></a>
-            <a aria-label={`WhatsApp Katty Hair Studio at ${whatsappDisplay}`} className="announcement-whatsapp" href={whatsappUrl} rel="noreferrer" target="_blank"><SocialIcon platform="whatsapp"/><span>WhatsApp</span></a>
+            <a aria-label={locale === "es" ? `WhatsApp de Katty Hair Studio: ${whatsappDisplay}` : `WhatsApp Katty Hair Studio at ${whatsappDisplay}`} className="announcement-whatsapp" href={whatsappUrl} rel="noreferrer" target="_blank"><SocialIcon platform="whatsapp"/><span>WhatsApp</span></a>
           </div>
           <div className="announcement-utilities">
             <nav aria-label={copy.labels.socialProfiles} className="announcement-socials">{socialLinks.map((social)=><a aria-label={social.label} href={social.href} key={social.platform} rel="noreferrer" target="_blank"><SocialIcon platform={social.platform}/></a>)}</nav>
@@ -77,12 +78,12 @@ export function SiteHeader({ locale = "en" }: { locale?: Locale }) {
         <div className="main-nav">
           <Link aria-label="Katty Hair Studio" className="brand brand-lockup-link" href={localizePath("/", locale)}><HeaderBrandLogo/></Link>
           <nav aria-label={copy.labels.mainNavigation} className="desktop-nav"><DesktopServicesMenu locale={locale} />{copy.nav.map(([label,href])=><Link href={localizePath(href, locale)} key={href}>{label}</Link>)}</nav>
-          <div className="nav-actions"><Link className="nav-cta" href={localizePath("/booking", locale)}><CalendarDays aria-hidden="true"/>{copy.request}</Link><label aria-label={copy.labels.openMenu} className="menu-button" htmlFor="katty-drawer"><span/><span/><span/></label></div>
+          <div className="nav-actions"><Link className="nav-cta" href={localizePath("/booking", locale)}><CalendarDays aria-hidden="true"/>{copy.request}</Link><DrawerToggleButton action="open" label={copy.labels.openMenu} /></div>
         </div>
       </header>
       <label aria-label={copy.labels.closeMenu} className="drawer-backdrop" htmlFor="katty-drawer" />
-      <aside aria-label={copy.labels.mobileNavigation} className="mobile-drawer">
-        <div className="drawer-top"><Link aria-label="Katty Hair Studio" className="brand drawer-brand" href={localizePath("/", locale)}><BrandLogo/></Link><label aria-label={copy.labels.closeMenu} htmlFor="katty-drawer"><span/><span/></label></div>
+      <aside aria-label={copy.labels.mobileNavigation} className="mobile-drawer" id="katty-mobile-drawer">
+        <div className="drawer-top"><Link aria-label="Katty Hair Studio" className="brand drawer-brand" href={localizePath("/", locale)}><BrandLogo/></Link><DrawerToggleButton action="close" label={copy.labels.closeMenu} /></div>
         <div className="drawer-language-row"><span>{copy.labels.language}</span><LanguageSwitcher placement="drawer" /></div>
         <nav aria-label={copy.labels.mobilePageLinks} className="drawer-links"><DrawerServicesMenu locale={locale} />{copy.nav.map(([label,href])=><Link href={localizePath(href, locale)} key={href}>{label}</Link>)}</nav>
         <div className="drawer-card"><span className="drawer-card-icon"><Clock aria-hidden="true" className="site-icon"/></span><div><p>{copy.drawer.today}</p><strong>{copy.drawer.openHours}</strong></div></div>
@@ -125,5 +126,5 @@ export function SiteFooter({ locale = "en" }: { locale?: Locale }) {
 
 export function MobileActionBar({ locale = "en" }: { locale?: Locale }) {
   const copy = sharedCopy[locale];
-  return <nav aria-label={copy.labels.mobileActions} className="mobile-action-bar"><BookingScrollLink className="mobile-action-primary"><CalendarDays aria-hidden="true"/>{copy.requestShort}</BookingScrollLink><a className="mobile-action-secondary" href={`tel:${phoneNumber}`}><Phone aria-hidden="true"/>{copy.call}</a></nav>;
+  return <nav aria-label={copy.labels.mobileActions} className="mobile-action-bar"><BookingScrollLink className="mobile-action-primary" fallbackHref={localizePath("/booking", locale)}><CalendarDays aria-hidden="true"/>{copy.requestShort}</BookingScrollLink><a className="mobile-action-secondary" href={`tel:${phoneNumber}`}><Phone aria-hidden="true"/>{copy.call}</a></nav>;
 }

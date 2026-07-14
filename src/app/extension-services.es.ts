@@ -12,14 +12,14 @@ export const addedExtensionCategorySections: ServiceSection[] = [
     "heading": "Extensiones de Cabello Sew-In",
     "paragraphs": [
       "Un sew-in comienza con una base trenzada diseñada alrededor de la separación deseada, el leave-out, la longitud y la forma final. Las cortinas se aseguran a esa base, haciendo que el tamaño de la trenza, la comodidad del cuero cabelludo y la tensión equilibrada sean centrales para la cita en lugar de ser pensamientos posteriores.",
-      "Los clientes que visitan desde Brentwood, Hyattsville y el corredor de la Ruta 1 pueden discutir los sew-ins tradicionales, los acabados basados en cierres y las necesidades de integración durante una consulta. Confirmamos los requisitos del cabello, el tiempo, el mantenimiento y el retiro antes de que el servicio se coloque en el horario."
+      "Los clientes que visitan desde Brentwood, Hyattsville y el corredor de la Ruta 1 pueden discutir los sew-ins tradicionales, los acabados basados en closures y las necesidades de integración durante una consulta. Confirmamos los requisitos del cabello, el tiempo, el mantenimiento y el retiro antes de que el servicio se coloque en el horario."
     ]
   },
   {
     "heading": "Extensiones de Cabello Microlink",
     "paragraphs": [
-      "Las extensiones microlink se adhieren al cabello de extensión con pequeñas microanillas en lugar de una tira adhesiva. Dado que el cabello natural sostiene cada unión, la elegibilidad depende de la densidad, la resistencia de las hebras, la condición del cuero cabelludo y si hay suficiente cabello disponible para ocultar los enlaces a través del movimiento normal.",
-      "En Katty Hair Studio en Brentwood, la colocación se mapea alrededor del perímetro y las áreas de separación, luego se verifica el espaciado uniforme y la tensión cómoda. Las citas de mantenimiento reposicionan los enlaces a medida que el cabello natural crece, ayudando a que la instalación se mantenga ordenada y reduciendo el tirón evitable."
+      "Las extensiones microlink se adhieren al cabello de extensión con pequeñas microanillas en lugar de una tira adhesiva. Dado que el cabello natural sostiene cada unión, la elegibilidad depende de la densidad, la resistencia de las hebras, la condición del cuero cabelludo y si hay suficiente cabello disponible para ocultar las microanillas a través del movimiento normal.",
+      "En Katty Hair Studio en Brentwood, la colocación se mapea alrededor del perímetro y las áreas de separación, luego se verifica el espaciado uniforme y la tensión cómoda. Las citas de mantenimiento reposicionan las microanillas a medida que el cabello natural crece, ayudando a que la instalación se mantenga ordenada y reduciendo el tirón evitable."
     ]
   },
   {
@@ -33,20 +33,20 @@ export const addedExtensionCategorySections: ServiceSection[] = [
     "heading": "Quick Weave",
     "paragraphs": [
       "Un quick weave crea una forma terminada colocando pistas sobre una base protectora preparada. A menudo se elige para un estilo de corto plazo, un corte definido o un cambio más rápido que una instalación de uniones individuales, pero la base y el retiro aún necesitan ser planificados cuidadosamente.",
-      "En nuestro salón de Bladensburg Road, revisamos la longitud deseada, el leave-out, la cobertura de la tapa, el patrón de pistas y el corte final antes de comenzar. Los clientes de Brentwood y el Condado de Prince George también reciben instrucciones de retiro para que la capa protectora pueda ser liberada sin apresurarse o causar estrés innecesario en el cabello natural."
+      "En nuestro salón de Bladensburg Road, revisamos la longitud deseada, el leave-out, la cobertura del gorro protector, el patrón de pistas y el corte final antes de comenzar. Los clientes de Brentwood y el condado de Prince George también reciben instrucciones de retiro para que la capa protectora pueda ser liberada sin apresurarse o causar estrés innecesario en el cabello natural."
     ]
   },
   {
-    "heading": "Quick Weave con Cierre",
+    "heading": "Quick Weave con Closure",
     "paragraphs": [
-      "Un quick weave con cierre combina una instalación basada en pistas con un cierre de encaje sobre la sección superior, reduciendo o eliminando el cabello natural dejado fuera para la integración. El tamaño del cierre, la ubicación de la separación, el ajuste del encaje, la colocación de la línea del cabello y la dirección de las pistas afectan si el estilo terminado se asienta de manera natural.",
-      "Durante una consulta en Brentwood, comparamos el cierre con la forma de la cabeza del cliente y los paquetes elegidos, luego planificamos el corte y el acabado como un solo servicio. Esta opción es útil para los clientes de Mount Rainier, Colmar Manor y comunidades cercanas que desean una parte superior cubierta con una separación claramente definida."
+      "Un quick weave con closure combina una instalación basada en pistas con un closure de encaje sobre la sección superior, reduciendo o eliminando el cabello natural dejado fuera para la integración. El tamaño del closure, la ubicación de la separación, el ajuste del encaje, la colocación de la línea del cabello y la dirección de las pistas afectan si el estilo terminado se asienta de manera natural.",
+      "Durante una consulta en Brentwood, comparamos el closure con la forma de la cabeza del cliente y los bundles elegidos, luego planificamos el corte y el acabado como un solo servicio. Esta opción es útil para los clientes de Mount Rainier, Colmar Manor y comunidades cercanas que desean una parte superior cubierta con una separación claramente definida."
     ]
   },
   {
     "heading": "Extensiones de Cabello con Nudos Brasileños",
     "paragraphs": [
-      "Los nudos brasileños adjuntan pequeñas secciones de extensión con hilo elástico, permitiendo una colocación detallada de las hebras sin paneles adhesivos o una base de trenza. El método requiere un control cuidadoso del tamaño de las secciones y la tensión, especialmente alrededor de la línea del cabello, la nuca y las áreas donde el cabello natural es más fino.",
+      "Los nudos brasileños sujetan pequeñas secciones de extensión con hilo elástico, permitiendo una colocación detallada de las hebras sin paneles adhesivos o una base de trenza. El método requiere un control cuidadoso del tamaño de las secciones y la tensión, especialmente alrededor de la línea del cabello, la nuca y las áreas donde el cabello natural es más fino.",
       "Katty Hair Studio evalúa la densidad, el historial de quiebre, la longitud deseada y el peinado diario antes de recomendar nudos brasileños. Los clientes que visitan nuestra ubicación en Brentwood reciben un plan de mantenimiento y retiro profesional diseñado en torno al crecimiento natural y el número de secciones instaladas."
     ]
   }
@@ -66,28 +66,28 @@ export const addedExtensionServices: ServicePageData[] = [
       {
         "heading": "Planificación de la colocación de extensiones de cabello tipo tape-in para un acabado plano y oculto",
         "paragraphs": [
-          "Las extensiones de cabello tipo tape-in se instalan como cortinas delgadas que envuelven secciones controladas de cabello natural. En Katty Hair Studio en Bladensburg Road, la planificación comienza con la densidad en la coronilla y los lados, la parte habitual del cliente, el corte de cabello actual y dónde el cabello necesita longitud versus volumen. Esos detalles determinan el ancho de la cortina, el espaciado y cuán cerca se pueden colocar los adjuntos de manera segura al perímetro.",
+          "Las extensiones de cabello tipo tape-in se instalan como cortinas delgadas que envuelven secciones controladas de cabello natural. En Katty Hair Studio en Bladensburg Road, la planificación comienza con la densidad en la coronilla y los lados, la parte habitual del cliente, el corte de cabello actual y dónde el cabello necesita longitud versus volumen. Esos detalles determinan el ancho de la cortina, el espaciado y cuán cerca se pueden colocar las uniones de manera segura al perímetro.",
           "La coincidencia de color también se maneja por zona en lugar de asumir que un solo tono funcionará desde la raíz hasta las puntas. Los clientes de Brentwood, North Brentwood y Mount Rainier pueden traer su cabello de extensión o discutir lo que debe ser pedido, pero la marca, longitud, tono y condición del adhesivo deben confirmarse antes de que se finalice una cita de instalación."
         ]
       },
       {
         "heading": "Qué sucede durante una cita para extensiones tipo tape-in",
         "paragraphs": [
-          "El cabello natural debe llegar lo suficientemente limpio para que el adhesivo se adhiera sin una capa de aceite, mantequilla pesada o silicona en la raíz. El cabello se secciona en filas horizontales limpias, cada panel de cabello natural se mantiene fino y uniforme, y las cortinas de tape se presionan juntas sin pellizcar el cuero cabelludo. Los adjuntos se colocan lo suficientemente lejos de la raíz para moverse cómodamente durante el cepillado y el peinado.",
-          "Después de la colocación, las extensiones se integran en el corte de cabello existente y se peinan para que la densidad final se pueda verificar desde todos los ángulos. Antes de que el cliente se vaya de 3816 Bladensburg Rd, demostramos cómo apoyar el adjunto mientras se cepilla, dónde evitar el acondicionador concentrado y cómo separar las filas en casa."
+          "El cabello natural debe llegar lo suficientemente limpio para que el adhesivo se adhiera sin una capa de aceite, mantecas capilares densas o silicona en la raíz. El cabello se secciona en filas horizontales limpias, cada panel de cabello natural se mantiene fino y uniforme, y las cortinas tape-in se presionan juntas sin pellizcar el cuero cabelludo. Las uniones se colocan lo suficientemente lejos de la raíz para moverse cómodamente durante el cepillado y el peinado.",
+          "Después de la colocación, las extensiones se integran en el corte de cabello existente y se peinan para que la densidad final se pueda verificar desde todos los ángulos. Antes de que el cliente se vaya de 3816 Bladensburg Rd, demostramos cómo sujetar la unión mientras se cepilla, dónde evitar el acondicionador concentrado y cómo separar las filas en casa."
         ]
       },
       {
         "heading": "Mantenimiento de tape-in, reajustes y retiro",
         "paragraphs": [
-          "Las extensiones tipo tape-in crecen alejándose del cuero cabelludo con el cabello natural, por lo que el intervalo correcto para el reajuste depende de la tasa de crecimiento, la caída, el cuidado en casa y cuán separadas se mantengan las filas. Una visita de mantenimiento retira las cortinas con el producto de liberación adecuado, limpia el cabello caído, reemplaza el tape cuando las cortinas siguen siendo reutilizables y restablece la colocación en secciones limpias.",
-          "Intentar despegar el tape o deslizar las cortinas en casa puede dejar residuos de adhesivo y ejercer una fuerza innecesaria sobre el cabello natural. El retiro profesional de tape-in en Brentwood le da al estilista tiempo para liberar cada panel, desenredar la caída retenida, limpiar el cabello y decidir si las mismas cortinas están listas para otra instalación."
+          "Las extensiones tipo tape-in crecen alejándose del cuero cabelludo con el cabello natural, por lo que el intervalo correcto para el reajuste depende de la tasa de crecimiento, el cabello desprendido, el cuidado en casa y cuán separadas se mantengan las filas. Una visita de mantenimiento retira las cortinas con el producto de liberación adecuado, elimina el cabello desprendido que quedó retenido, reemplaza el tape cuando las cortinas siguen siendo reutilizables y restablece la colocación en secciones limpias.",
+          "Intentar despegar el tape o deslizar las cortinas en casa puede dejar residuos de adhesivo y ejercer una fuerza innecesaria sobre el cabello natural. El retiro profesional de tape-in en Brentwood le da al estilista tiempo para liberar cada panel, desenredar el cabello desprendido que quedó retenido, limpiar el cabello y decidir si las mismas cortinas están listas para otra instalación."
         ]
       },
       {
         "heading": "Quién puede ser un buen candidato para extensiones tipo tape-in",
         "paragraphs": [
-          "Las extensiones tipo tape-in pueden funcionar bien para clientes que buscan un adjunto suave y de bajo perfil y suficiente densidad natural para cubrir los paneles. Pueden ser menos adecuadas cuando el área de colocación es muy frágil, hay irritación activa en el cuero cabelludo o el cliente no puede mantener aceites y mascarillas acondicionadoras alejados del tape. Estos puntos se revisan durante la consulta en lugar de después de que se haya comprado el cabello.",
+          "Las extensiones tipo tape-in pueden funcionar bien para clientes que buscan una unión suave y de bajo perfil y suficiente densidad natural para cubrir los paneles. Pueden ser menos adecuadas cuando el área de colocación es muy frágil, hay irritación activa en el cuero cabelludo o el cliente no puede mantener aceites y mascarillas acondicionadoras alejados del tape. Estos puntos se revisan durante la consulta en lugar de después de que se haya comprado el cabello.",
           "Katty Hair Studio atiende a clientes de extensiones en Brentwood y comunidades cercanas del condado de Prince George’s con citas basadas en la condición real del cabello, no en una recomendación de un método que sirva para todos. La consulta confirma la elegibilidad, el conteo estimado de cortinas, el tiempo de mantenimiento, la duración de la instalación y el presupuesto antes de reservar el asiento."
         ]
       }
@@ -95,15 +95,15 @@ export const addedExtensionServices: ServicePageData[] = [
     "faqs": [
       {
         "question": "¿Cuánto tiempo pueden permanecer las extensiones de cabello tipo tape-in antes de un reajuste?",
-        "answer": "El tiempo varía con el crecimiento natural, la caída, el uso de productos y la seguridad del adjunto. Muchos clientes necesitan reposicionar después de varias semanas, pero Katty Hair Studio confirma una ventana de mantenimiento individual después de ver cómo crecen las filas."
+        "answer": "El tiempo varía con el crecimiento natural, la caída, el uso de productos y la seguridad de la unión. Muchos clientes necesitan reposicionar después de varias semanas, pero Katty Hair Studio confirma una ventana de mantenimiento individual después de ver cómo crecen las filas."
       },
       {
         "question": "¿Se pueden reutilizar las extensiones tipo tape-in?",
         "answer": "Las cortinas de calidad pueden ser reutilizables cuando el cabello y las costuras se mantienen en buen estado. El adhesivo viejo debe ser retirado, las cortinas limpiadas adecuadamente y se debe aplicar un nuevo tape de reemplazo antes de reinstalarlas."
       },
       {
-        "question": "¿Qué productos deben evitarse en los adjuntos de tape?",
-        "answer": "Los aceites pesados, las mantequillas y el acondicionador concentrado no deben aplicarse directamente en el área del adhesivo. Los productos aún se pueden usar a lo largo de las longitudes medias y las puntas de acuerdo con el plan de cuidado proporcionado en la cita."
+        "question": "¿Qué productos deben evitarse en las uniones de tape?",
+        "answer": "Los aceites pesados, las mantecas capilares y el acondicionador concentrado no deben aplicarse directamente en el área del adhesivo. Los productos aún se pueden usar a lo largo de las longitudes medias y las puntas de acuerdo con el plan de cuidado proporcionado en la cita."
       },
       {
         "question": "¿Dónde puedo reservar extensiones tipo tape-in cerca de Mount Rainier o Brentwood?",
@@ -145,7 +145,7 @@ export const addedExtensionServices: ServicePageData[] = [
       {
         "heading": "Retiro profesional de extensiones cosidas en Brentwood",
         "paragraphs": [
-          "El retiro requiere una visibilidad clara del hilo de costura y de la trenza natural debajo. Cortar a ciegas a través de una cortina también puede cortar el cabello del cliente, por lo que cada hilo se aísla y se libera antes de levantar la cortina. El cabello desprendido retenido se desenreda gradualmente en lugar de ser tirado de una sola vez.",
+          "El retiro requiere una visibilidad clara del hilo de costura y de la trenza natural debajo. Cortar a ciegas a través de una cortina también puede cortar el cabello del cliente, por lo que cada hilo se aísla y se libera antes de levantar la cortina. El cabello caído que quedó retenido se desenreda gradualmente en lugar de ser tirado de una sola vez.",
           "En 3816 Bladensburg Rd, el retiro de extensiones cosidas puede ser seguido por una limpieza, acondicionamiento y una evaluación del cabello natural antes de considerar otra instalación. La pausa entre servicios, si es necesaria, se basa en la comodidad del cuero cabelludo, la caída, la rotura y la condición del perímetro, no en un horario de ventas preestablecido."
         ]
       }
@@ -161,7 +161,7 @@ export const addedExtensionServices: ServicePageData[] = [
       },
       {
         "question": "¿Qué debo llevar a una consulta para extensiones cosidas?",
-        "answer": "Lleva fotos de referencia y detalles sobre los paquetes o el closure que planeas usar, incluyendo longitud, textura y cantidad. También comparte el historial reciente de trenzado, relajante, color y extensiones para que la base pueda ser planificada de manera responsable."
+        "answer": "Lleva fotos de referencia y detalles sobre los bundles o el closure que planeas usar, incluyendo longitud, textura y cantidad. También comparte el historial reciente de trenzado, alisado químico, coloración y extensiones para que la base pueda ser planificada de manera responsable."
       },
       {
         "question": "¿Es Katty Hair Studio conveniente para extensiones cosidas cerca de Hyattsville?",
@@ -182,7 +182,7 @@ export const addedExtensionServices: ServicePageData[] = [
       {
         "heading": "La elegibilidad para microlinks comienza con la densidad del cabello natural",
         "paragraphs": [
-          "Los microlinks aseguran el cabello de extensión con pequeñas microanillas, por lo que cada unión depende de los mechones naturales del cliente para su soporte. Antes de recomendar el método, revisamos la densidad a través del interior, la fuerza cerca de la raíz, el historial de quiebre y si el cabello natural es lo suficientemente largo como para ocultar las microanillas durante la separación y el movimiento normales.",
+          "Los microlinks sujetan el cabello de extensión con pequeñas microanillas, por lo que cada unión depende de los mechones naturales del cliente para sostenerse. Antes de recomendar el método, revisamos la densidad en toda la zona interior, la fuerza cerca de la raíz, el historial de quiebre y si el cabello natural es lo suficientemente largo para ocultar las microanillas al cambiar la raya y durante el movimiento habitual.",
           "Los clientes con áreas frágiles, preocupaciones activas del cuero cabelludo o cobertura muy escasa pueden necesitar otro plan de extensiones. En Katty Hair Studio en Brentwood, esa decisión se toma antes de ordenar el cabello o reservar una instalación completa, prestando especial atención a la línea del cabello y la nuca donde la ocultación y la tensión pueden ser más difíciles."
         ]
       },
@@ -190,20 +190,20 @@ export const addedExtensionServices: ServicePageData[] = [
         "heading": "Cómo se colocan e integran las extensiones microlink",
         "paragraphs": [
           "Se pasan secciones limpias a través de microanillas de tamaño apropiado, se posiciona el cabello de extensión y cada unión se asegura con suficiente espacio para el movimiento natural en la raíz. Las filas se alternan y se mantienen alejadas de las líneas de separación expuestas. El tamaño constante de las secciones es importante porque una microanilla sobrecargada puede tirar, mientras que una unión subdimensionada puede deslizarse.",
-          "Después de instalar la densidad planificada, el cabello de extensión se da forma al perímetro natural y se peina para verificar la ocultación. En nuestra ubicación de Bladensburg Road, los clientes pueden ver dónde comienzan las uniones y aprender a cepillar entre las filas sin arrastrar un cepillo sobre las uniones."
+          "Después de instalar la densidad planificada, el cabello de extensión se da forma al perímetro natural y se peina para verificar la ocultación. En nuestra ubicación de Bladensburg Road, los clientes pueden ver dónde comienzan las uniones y aprender a cepillar entre las filas sin arrastrar el cepillo sobre las uniones."
         ]
       },
       {
         "heading": "Mantenimiento y reajuste de microlinks",
         "paragraphs": [
-          "A medida que el cabello natural crece, las microanillas se alejan del cuero cabelludo y la sección sobre cada unión se vuelve más propensa a torcerse o enredarse. El mantenimiento implica abrir o retirar la microanilla, limpiar la caída retenida, revisar los mechones soportados y reajustar la extensión en una sección limpia cuando el cabello natural sigue siendo lo suficientemente saludable.",
+          "A medida que el cabello natural crece, las microanillas se alejan del cuero cabelludo y la sección sobre cada unión se vuelve más propensa a torcerse o enredarse. El mantenimiento implica abrir o retirar la microanilla, eliminar el cabello desprendido que quedó retenido, revisar los mechones naturales que sostienen la unión y reajustar la extensión en una sección limpia cuando el cabello natural sigue siendo lo suficientemente saludable.",
           "El intervalo se basa en el crecimiento, el deslizamiento, el cuidado en casa y el número de uniones, no en una fecha de calendario universal. Se anima a los clientes de Brentwood, Mount Rainier y Hyattsville a regresar antes de que las uniones cuelguen notablemente bajas o comiencen a rotar, ya que el mantenimiento retrasado hace que el desenredo sea más difícil."
         ]
       },
       {
         "heading": "Cuidado diario y retiro profesional de microlinks",
         "paragraphs": [
-          "El cuidado de microlinks incluye apoyar la raíz mientras se cepilla, separar las filas regularmente, mantener la acumulación pesada alejada de las microanillas y proteger el cabello durante el sueño. Las herramientas de calor no deben presionarse directamente sobre la unión, y tirar repetidamente hacia estilos ajustados puede ejercer una tensión innecesaria sobre los mechones soportados.",
+          "El cuidado de microlinks incluye sujetar la raíz mientras se cepilla, separar las filas regularmente, mantener la acumulación excesiva de producto alejada de las microanillas y proteger el cabello al dormir. Las herramientas de calor no deben presionarse directamente sobre la unión, y recoger el cabello repetidamente en peinados tirantes puede ejercer tensión innecesaria sobre los mechones naturales que sostienen cada unión.",
           "El retiro utiliza la herramienta correcta para reabrir cada microanilla antes de deslizar la extensión lejos del cabello natural. En Katty Hair Studio, el cabello caído se desenreda después de liberar las uniones y se revisa la condición de cada sección antes de discutir una reinstalación o un método diferente."
         ]
       }
@@ -219,11 +219,11 @@ export const addedExtensionServices: ServicePageData[] = [
       },
       {
         "question": "¿Por qué necesitan reajuste los microlinks?",
-        "answer": "El crecimiento natural aleja la microanilla del cuero cabelludo. El reajuste limpia el cabello caído, revisa la sección soportada y restaura un punto de unión más ordenado antes de que torcerse o enredarse se vuelva difícil de manejar."
+        "answer": "El crecimiento natural aleja la microanilla del cuero cabelludo. El reajuste elimina el cabello desprendido que quedó retenido, revisa la sección soportada y restaura un punto de unión más ordenado antes de que torcerse o enredarse se vuelva difícil de manejar."
       },
       {
         "question": "¿Dónde se ofrecen consultas de microlink en Brentwood?",
-        "answer": "Katty Hair Studio ofrece consultas de extensiones en 3816 Bladensburg Rd, Brentwood, MD 20722, atendiendo a clientes de las comunidades circundantes de la Ruta 1 y el Condado de Prince George."
+        "answer": "Katty Hair Studio ofrece consultas de extensiones en 3816 Bladensburg Rd, Brentwood, MD 20722, atendiendo a clientes de las comunidades circundantes de la Ruta 1 y el condado de Prince George."
       }
     ]
   },
@@ -277,7 +277,7 @@ export const addedExtensionServices: ServicePageData[] = [
       },
       {
         "question": "¿Se pueden quitar las extensiones K-tip en casa?",
-        "answer": "Se recomienda encarecidamente la eliminación profesional. Cada unión necesita el producto de liberación adecuado, presión controlada y un desenredo cuidadoso para que la sección de cabello natural no se tire o corte."
+        "answer": "Se recomienda encarecidamente el retiro profesional. Cada unión necesita el producto de liberación adecuado, presión controlada y un desenredo cuidadoso para que la sección de cabello natural no se tire o corte."
       },
       {
         "question": "¿Ofrece Katty Hair Studio consultas de K-tip cerca de Washington, DC?",
@@ -298,44 +298,44 @@ export const addedExtensionServices: ServicePageData[] = [
       {
         "heading": "Planificando un quick weave alrededor del corte final",
         "paragraphs": [
-          "Un quick weave es un estilo basado en tramos que se instala sobre una base protectora preparada. El mapa de tramos debe diseñarse hacia atrás desde el resultado final: un bob recto, una forma en capas a la altura de los hombros, una parte lateral, una parte central y un estilo largo y más lleno requieren diferentes direcciones y densidades de tramos.",
-          "En Katty Hair Studio en Brentwood, la consulta confirma el leave-out, la cobertura de la capucha, la longitud del paquete, la textura y la cantidad de cabello necesaria. Los clientes deben traer fotos de referencia que muestren la parte y el perímetro, no solo el patrón de rizo, porque la estructura debajo del estilo determina cuán de cerca el acabado puede coincidir con la referencia."
+          "Un quick weave es un estilo basado en pistas que se instala sobre una base protectora preparada. El mapa de pistas debe planificarse a partir del resultado final: un bob recto, un corte en capas a la altura de los hombros, una raya lateral, una raya al centro y un estilo largo con más volumen requieren diferentes direcciones y densidades de pistas.",
+          "En Katty Hair Studio en Brentwood, la consulta confirma el leave-out, la cobertura del gorro protector, la longitud de los bundles, la textura y la cantidad de cabello necesaria. Los clientes deben traer fotos de referencia que muestren la parte y el perímetro, no solo el patrón de rizo, porque la estructura debajo del estilo determina cuán de cerca el acabado puede coincidir con la referencia."
         ]
       },
       {
-        "heading": "Preparación de la base protectora y colocación de tramos",
+        "heading": "Preparación de la base protectora y colocación de pistas",
         "paragraphs": [
-          "El cabello natural se desenreda, se organiza cerca de la cabeza y se cubre de acuerdo con la base planificada antes de colocar los tramos. La barrera protectora necesita cobertura completa en las áreas unidas; el adhesivo no debe ser tratado como un atajo para una preparación descuidada ni aplicado directamente al cabello natural expuesto.",
-          "Los tramos se miden y se superponen para construir la forma sin volumen innecesario. Una vez que la instalación está completa, el cabello de extensión se corta y se peina como parte del servicio. En nuestra ubicación de Bladensburg Road, se revisa el acabado en la parte, las sienes, la nuca y los lados donde la dirección de los tramos es más fácil de notar."
+          "El cabello natural se desenreda, se organiza cerca de la cabeza y se cubre de acuerdo con la base planificada antes de colocar las pistas. La barrera protectora necesita cobertura completa en las áreas adheridas; el adhesivo no debe tratarse como un atajo para una preparación descuidada ni aplicarse directamente al cabello natural expuesto.",
+          "Las pistas se miden y se superponen para construir la forma sin volumen innecesario. Una vez completada la instalación, el cabello de extensión se corta y se peina como parte del servicio. En nuestra ubicación de Bladensburg Road, se revisa el acabado en la raya, las sienes, la nuca y los lados donde la dirección de las pistas es más fácil de notar."
         ]
       },
       {
         "heading": "Cómo mantener un quick weave",
         "paragraphs": [
           "Los quick weaves generalmente se eligen como estilos a corto plazo. El cuidado en casa se centra en proteger el leave-out, prevenir enredos a través del cabello instalado, evitar la saturación que la base cubierta no puede secar fácilmente y envolver la forma terminada por la noche.",
-          "Si la capucha se desplaza, los tramos se levantan, el cuero cabelludo se vuelve incómodo o la base permanece húmeda, el estilo debe ser revisado en lugar de reparado repetidamente en casa. Los clientes de Brentwood pueden llamar al salón para discutir si una pequeña corrección o un retiro completo es el siguiente paso apropiado."
+          "Si el gorro protector se desplaza, las pistas se levantan, el cuero cabelludo presenta molestias o la base permanece húmeda, conviene revisar el estilo en lugar de repararlo repetidamente en casa. Los clientes de Brentwood pueden llamar al salón para saber si corresponde hacer una pequeña corrección o un retiro completo."
         ]
       },
       {
         "heading": "Retirando un quick weave sin apresurar el proceso",
         "paragraphs": [
-          "La eliminación de un quick weave debe suavizar y liberar los tramos unidos de la base protectora antes de levantar la capucha. Tirar de la instalación en una sola pieza puede atrapar el leave-out, los bordes o el cabello natural que se desplazó más allá de la barrera durante el uso.",
-          "La eliminación profesional en 3816 Bladensburg Rd permite que cada área se libere gradualmente, seguida de desenredo, limpieza y una revisión del cabello natural. Esto es especialmente importante antes de otro estilo unido, ya que el adhesivo sobrante o los enredos pueden interferir con la nueva base."
+          "El retiro de un quick weave debe ablandar y liberar las pistas adheridas a la base protectora antes de levantar el gorro. Tirar de la instalación en una sola pieza puede atrapar el leave-out, los bordes o el cabello natural que se desplazó más allá de la barrera durante el uso.",
+          "El retiro profesional en 3816 Bladensburg Rd permite que cada área se libere gradualmente, seguida de desenredo, limpieza y una revisión del cabello natural. Esto es especialmente importante antes de otro estilo adherido, ya que el adhesivo sobrante o los enredos pueden interferir con la nueva base."
         ]
       }
     ],
     "faqs": [
       {
         "question": "¿En qué se diferencia un quick weave de un sew-in?",
-        "answer": "Un quick weave utiliza tramos unidos sobre una base protectora preparada, mientras que un sew-in asegura las cortinas con hilo a una base trenzada. El tiempo de cita, las expectativas de uso, el mantenimiento y la eliminación son diferentes para cada método."
+        "answer": "Un quick weave utiliza pistas adheridas sobre una base protectora preparada, mientras que un sew-in sujeta las cortinas con hilo a una base trenzada. La duración de la cita, el tiempo de uso previsto, el mantenimiento y el retiro son diferentes para cada método."
       },
       {
         "question": "¿Necesito leave-out para un quick weave?",
-        "answer": "Algunos quick weaves utilizan leave-out para crear la parte o cubrir el perímetro. Otros pueden planearse con un closure. La elección depende del acabado deseado, la condición del cabello natural y cuánto blending diario quiera el cliente."
+        "answer": "Algunos quick weaves utilizan leave-out para crear la parte o cubrir el perímetro. Otros pueden planearse con un closure. La elección depende del acabado deseado, la condición del cabello natural y cuánta integración diaria quiera el cliente."
       },
       {
-        "question": "¿Debo traer paquetes a mi consulta de quick weave?",
-        "answer": "Puedes traer el cabello que planeas usar junto con la información del paquete. El estilista necesita confirmar la textura, longitud, cantidad y condición antes de determinar si apoya la forma solicitada."
+        "question": "¿Debo traer los bundles a mi consulta de quick weave?",
+        "answer": "Puedes traer el cabello que planeas usar junto con la información del empaque. El estilista necesita confirmar la textura, longitud, cantidad y condición antes de determinar si apoya la forma solicitada."
       },
       {
         "question": "¿Dónde puedo conseguir un quick weave cerca de Mount Rainier, Maryland?",
@@ -356,28 +356,28 @@ export const addedExtensionServices: ServicePageData[] = [
       {
         "heading": "Igualando la closure con el estilo solicitado",
         "paragraphs": [
-          "Una closure cubre la parte superior de un quick weave y crea la parte visible, por lo que debe coincidir con los bundles en color, textura, brillo y longitud. Las dimensiones de la tela y el área de la parte también deben adaptarse a la forma de la cabeza del cliente y al estilo de referencia; una closure que es demasiado estrecha o diseñada para la parte equivocada limita el resultado final antes de que comience la instalación.",
-          "Durante una consulta en Katty Hair Studio en Brentwood, inspeccionamos la construcción de la closure, la densidad, el estado de la tela y la relación con los bundles seleccionados. Los clientes que vienen de Mount Rainier, Hyattsville o Colmar Manor deben traer todas las piezas de cabello juntas para que se pueda verificar la compatibilidad en una sola visita."
+          "Una closure cubre la parte superior de un quick weave y crea la raya visible, por lo que debe coincidir con los bundles en color, textura, brillo y longitud. Las dimensiones de la pieza y el área de la raya también deben adaptarse a la forma de la cabeza del cliente y al estilo de referencia; una closure demasiado estrecha o diseñada para una raya distinta limita el resultado final antes de comenzar la instalación.",
+          "Durante una consulta en Katty Hair Studio en Brentwood, inspeccionamos la construcción de la closure, la densidad, el estado del encaje y la relación con los bundles seleccionados. Los clientes que vienen de Mount Rainier, Hyattsville o Colmar Manor deben traer todas las piezas de cabello juntas para que se pueda verificar la compatibilidad en una sola visita."
         ]
       },
       {
         "heading": "Construyendo la base del quick weave alrededor de una closure",
         "paragraphs": [
-          "El cabello natural se prepara bajo una base protectora, y se establece la posición de la closure antes de completar el patrón de tramas circundantes. Las closures de parte central, parte lateral y parte libre cambian cómo deben curvarse las tramas y dónde se necesita densidad. La parte superior debe estar lo suficientemente plana para evitar una transición elevada entre la closure y las cortinas.",
-          "Luego se colocan las tramas para soportar la forma planificada, seguidas del corte y peinado que conectan el cabello de la closure con los bundles. En nuestro salón de Bladensburg Road, revisamos el borde frontal, la parte, la corona y el perfil lateral bajo la luz normal antes de que termine la cita."
+          "El cabello natural se prepara bajo una base protectora y se establece la posición de la closure antes de completar el patrón de pistas circundantes. Las closures con raya al centro, de lado o libre cambian la manera en que deben curvarse las pistas y dónde se necesita densidad. La parte superior debe quedar lo suficientemente plana para evitar una transición elevada entre la closure y las cortinas.",
+          "Luego se colocan las pistas para sostener la forma planificada, seguidas del corte y el peinado que integran el cabello de la closure con los bundles. En nuestro salón de Bladensburg Road, revisamos el borde frontal, la raya, la coronilla y el perfil lateral bajo una iluminación normal antes de terminar la cita."
         ]
       },
       {
         "heading": "Cuidado de la closure, mantenimiento de la parte y protección nocturna",
         "paragraphs": [
-          "Una closure debe ser manipulada por la tela en lugar de ser tirada por el cabello. La parte se puede mantener ordenada con un uso ligero y controlado de productos, mientras que se debe evitar la acumulación pesada a lo largo de la tela y la base. El cabello instalado debe desenredarse en secciones y protegerse por la noche de acuerdo con la textura final.",
+          "Una closure debe manipularse por el encaje en lugar de jalarse por el cabello. La raya puede mantenerse ordenada con un uso ligero y controlado de productos, pero debe evitarse la acumulación excesiva a lo largo del encaje y la base. El cabello instalado debe desenredarse por secciones y protegerse por la noche de acuerdo con la textura final.",
           "Los clientes deben contactar al estudio si el borde de la closure se levanta significativamente, la base se desplaza o el área cubierta permanece húmeda después de la limpieza. Agregar repetidamente adhesivo o producto sin verificar la base puede crear acumulación y hacer que el retiro profesional sea más complicado."
         ]
       },
       {
         "heading": "Retiro de quick weave con closure en Brentwood",
         "paragraphs": [
-          "El retiro comienza liberando la closure y las tramas unidas de la base protectora sin arrastrar el adhesivo a lo largo de la línea del cabello. La tapa se ablanda y se levanta gradualmente, prestando atención extra en el perímetro y en cualquier punto donde el cabello natural pueda haberse movido fuera de la barrera.",
+          "El retiro comienza liberando la closure y las pistas unidas de la base protectora sin arrastrar el adhesivo a lo largo de la línea del cabello. El gorro protector se ablanda y se levanta gradualmente, prestando atención extra en el perímetro y en cualquier punto donde el cabello natural pueda haberse movido fuera de la barrera.",
           "Después del retiro en 3816 Bladensburg Rd, el cabello natural se desenreda y se limpia antes de discutir otra instalación. La closure y los bundles también se pueden revisar por separado para determinar si siguen siendo adecuados para reutilizar o necesitan reparación, limpieza o reemplazo."
         ]
       }
@@ -385,7 +385,7 @@ export const addedExtensionServices: ServicePageData[] = [
     "faqs": [
       {
         "question": "¿Cuál es el beneficio de agregar una closure a un quick weave?",
-        "answer": "Una closure puede cubrir la sección superior y reducir o eliminar el cabello natural que se deja fuera. Proporciona la parte visible, pero su tamaño, tela, densidad y textura deben coordinarse con los bundles y el patrón de tramas planificado."
+        "answer": "Una closure puede cubrir la sección superior y reducir o eliminar el cabello natural que se deja fuera. Proporciona la parte visible, pero su tamaño, encaje, densidad y textura deben coordinarse con los bundles y el patrón de pistas planificado."
       },
       {
         "question": "¿Puedo traer mi propia closure y bundles?",
@@ -393,7 +393,7 @@ export const addedExtensionServices: ServicePageData[] = [
       },
       {
         "question": "¿Cómo mantengo un quick weave con closure luciendo plano?",
-        "answer": "Evita tirar de la closure, limita el uso de productos pesados en la tela, envuelve el estilo adecuadamente y contacta al salón cuando la base o el borde de la closure comiencen a desplazarse en lugar de agregar más adhesivo en casa."
+        "answer": "Evita tirar de la closure, limita el uso de productos pesados en el encaje, envuelve el estilo adecuadamente y contacta al salón cuando la base o el borde de la closure comiencen a desplazarse en lugar de agregar más adhesivo en casa."
       },
       {
         "question": "¿Dónde está Katty Hair Studio para quick weaves con closure?",
@@ -422,20 +422,20 @@ export const addedExtensionServices: ServicePageData[] = [
         "heading": "Colocación de nudos brasileños e integración de texturas",
         "paragraphs": [
           "La instalación se realiza en filas dejando espacio alrededor del perímetro, la nuca y las áreas de partición regular. El color y la textura de la extensión pueden utilizar más de un tono o patrón para evitar un bloque de color único. A medida que se añaden secciones, el estilista verifica el movimiento, la cobertura y si la densidad se mantiene equilibrada de lado a lado.",
-          "Después de que se adjunta el número planificado de hebras, las extensiones se cortan en la forma natural y se peinan. Los clientes en nuestra ubicación de Bladensburg Road pueden sentir dónde están las filas y aprender a separarlas durante el cepillado en lugar de peinarse sobre los nudos sin control."
+          "Después de fijar el número planificado de hebras, las extensiones se cortan siguiendo la forma natural y se peinan. Los clientes en nuestra ubicación de Bladensburg Road pueden sentir dónde están las filas y aprender a separarlas durante el cepillado en lugar de pasar el cepillo sobre los nudos sin control."
         ]
       },
       {
         "heading": "Mantenimiento de los nudos brasileños a medida que crece el cabello",
         "paragraphs": [
-          "El crecimiento natural aleja cada nudo del cuero cabelludo, mientras que el cabello que se cae normalmente permanece dentro de la sección adjunta hasta el mantenimiento o el retiro. El cuidado en casa incluye apoyar la raíz mientras se desenreda, separar las filas, evitar acumulaciones pesadas en los nudos y proteger el cabello durante el sueño.",
+          "El crecimiento natural aleja cada nudo del cuero cabelludo, mientras que el cabello que se desprende normalmente permanece dentro de la sección fijada hasta el mantenimiento o el retiro. El cuidado en casa incluye sujetar la raíz mientras se desenreda, separar las filas, evitar la acumulación excesiva de producto en los nudos y proteger el cabello al dormir.",
           "El cronograma de mantenimiento depende del crecimiento, deslizamiento, enredos y el número de secciones instaladas. Los clientes de Brentwood y el condado de Prince George deben programar una revisión antes de que los nudos cuelguen bajo o las secciones vecinas comiencen a enredarse, ya que el mantenimiento retrasado aumenta el tiempo de desenredo."
         ]
       },
       {
         "heading": "Retiro de nudos brasileños y evaluación del cabello natural",
         "paragraphs": [
-          "El retiro requiere cortar el hilo elástico sin cortar la hebra de extensión o la sección de cabello natural debajo de ella. Cada nudo se aísla, se libera el hilo y se desenreda la caída retenida después de que la hebra de extensión se separa. La velocidad nunca debe reemplazar la visibilidad durante este paso.",
+          "El retiro requiere cortar el hilo elástico sin cortar la hebra de extensión ni la sección de cabello natural que está debajo. Cada nudo se aísla, se libera el hilo y se desenreda el cabello desprendido que quedó retenido después de separar la hebra de extensión. En este paso, la rapidez nunca debe anteponerse a una visibilidad clara.",
           "En 3816 Bladensburg Rd, el retiro es seguido por una revisión de la línea del cabello, la nuca, la densidad y cualquier área que haya soportado más tensión. Esa evaluación guía si otro conjunto de nudos brasileños, una densidad más ligera, un método de extensión diferente o un período de cuidado del cabello natural es la próxima cita sensata."
         ]
       }
@@ -443,7 +443,7 @@ export const addedExtensionServices: ServicePageData[] = [
     "faqs": [
       {
         "question": "¿Los nudos brasileños utilizan pegamento o uniones de queratina?",
-        "answer": "Los nudos brasileños utilizan hilo elástico para adjuntar pequeñas secciones de extensiones. No utilizan paneles adhesivos ni puntas de queratina, pero la seccionamiento preciso, la tensión controlada, el mantenimiento y el retiro profesional siguen siendo necesarios."
+        "answer": "Los nudos brasileños utilizan hilo elástico para sujetar pequeñas secciones de extensiones. No utilizan paneles adhesivos ni puntas de queratina, pero la separación precisa, la tensión controlada, el mantenimiento y el retiro profesional siguen siendo necesarios."
       },
       {
         "question": "¿Quién puede no ser un buen candidato para los nudos brasileños?",
@@ -451,7 +451,7 @@ export const addedExtensionServices: ServicePageData[] = [
       },
       {
         "question": "¿Cómo deben cepillarse las extensiones con nudos brasileños?",
-        "answer": "Trabaja en secciones, apoya el cabello natural cerca de la raíz, separa las filas con tus dedos y desenreda las longitudes sin arrastrar un cepillo con fuerza sobre los nudos."
+        "answer": "Trabaja por secciones, sujeta el cabello natural cerca de la raíz, separa las filas con los dedos y desenreda los largos sin arrastrar el cepillo con fuerza sobre los nudos."
       },
       {
         "question": "¿Dónde puedo programar nudos brasileños en Brentwood, Maryland?",

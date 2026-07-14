@@ -5,17 +5,31 @@ import BookingSection from "@/app/BookingSection";
 import EditorialPageFrame from "@/app/EditorialPageFrame";
 import EditorialPageHero from "@/app/EditorialPageHero";
 import LocationSection from "@/app/LocationSection";
-import { localizedAlternates } from "@/app/i18n/config";
+import { absoluteLocalizedUrl, localizedAlternates } from "@/app/i18n/config";
 
 const phoneNumber = "+12405826622";
 const phoneDisplay = "(240) 582-6622";
 const instagramUrl = "https://www.instagram.com/kattyhairstudio_/";
+const title = "Hair Gallery | Katty Hair Studio Brentwood, MD";
+const description =
+  "Explore blowouts, extensions, highlights, braids, curls, cuts, and polished hair finishes from Katty Hair Studio in Brentwood, Maryland.";
+const canonical = absoluteLocalizedUrl("/gallery", "en");
 
 export const metadata: Metadata = {
-  title: "Hair Gallery | Katty Hair Studio Brentwood, MD",
-  description:
-    "Explore blowouts, extensions, highlights, braids, curls, cuts, and polished hair finishes from Katty Hair Studio in Brentwood, Maryland.",
+  title,
+  description,
   alternates: localizedAlternates("/gallery", "en"),
+  openGraph: {
+    title,
+    description,
+    url: canonical,
+    type: "website",
+    siteName: "Katty Hair Studio",
+    locale: "en_US",
+    alternateLocale: ["es_US"],
+    images: [{ url: "/social/katty-share-preview.webp", width: 1200, height: 630, alt: "Hair finishes by Katty Hair Studio" }],
+  },
+  twitter: { card: "summary_large_image", title, description, images: ["/social/katty-share-preview.webp"] },
 };
 
 const galleryItems = [

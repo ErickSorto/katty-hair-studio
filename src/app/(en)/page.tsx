@@ -42,8 +42,11 @@ export const metadata: Metadata = {
     description:
       "Visit our full-service Brentwood hair salon for haircuts, color, Dominican blowouts, braids, extensions, treatments and styling for every texture.",
     url: "https://www.kattyhairstudio.com/",
+    type: "website",
+    siteName: "Katty Hair Studio",
     locale: "en_US",
     alternateLocale: ["es_US"],
+    images: [{ url: "/social/katty-share-preview.webp", width: 1200, height: 630, alt: "Katty Hair Studio founder Kathy De la Paz" }],
   },
 };
 
@@ -117,7 +120,9 @@ function HomeJsonLd({ faqs, locale }: { faqs: readonly { answer: string; questio
       "@id": "https://www.kattyhairstudio.com/#business",
       name: "Katty Hair Studio",
       description:
-        "Full-service hair salon in Brentwood, Maryland offering haircuts, hair color, Dominican blowouts, braids, extensions, treatments, and styling for every texture.",
+        locale === "es"
+          ? "Salón de belleza de servicio completo en Brentwood, Maryland, con cortes, coloración, blowouts dominicanos, trenzas, extensiones, tratamientos y peinados para cada textura."
+          : "Full-service hair salon in Brentwood, Maryland offering haircuts, hair color, Dominican blowouts, braids, extensions, treatments, and styling for every texture.",
       url: "https://www.kattyhairstudio.com/",
       telephone: phoneNumber,
       address: {
@@ -434,7 +439,7 @@ const spanishHomeData = {
     {
       step: "01",
       title: "Muéstranos tu objetivo",
-      detail: "Trae tu foto, el historial de tu textura y lo que no puede faltar.",
+      detail: "Trae tu foto, el historial de tu cabello y lo que no puede faltar.",
       icon: MessageCircle,
       art: "/process/katty-step-1-show-goal.webp",
     },
@@ -494,7 +499,7 @@ const spanishHomeData = {
     },
     {
       name: "Extensiones, pelucas e instalaciones",
-      type: "Servicios de largo",
+      type: "Servicios de extensiones",
       price: "Precio personalizado",
       note: "El método, el cabello, la integración y el tiempo de instalación determinan el precio.",
     },
@@ -557,7 +562,7 @@ const spanishHomeData = {
       icon: BadgePercent,
     },
     {
-      value: "Precio por adelantado",
+      value: "Precio confirmado",
       label: "Antes del servicio",
       icon: ClipboardCheck,
     },
@@ -572,7 +577,7 @@ const spanishHomeData = {
       alt: "Faben Henok sonriendo al aire libre con cabello largo y liso después de visitar Katty Hair Studio",
       quote: "Siempre salgo sintiéndome segura, renovada y bien atendida.",
       highlights: [
-        "Una clienta de 10 años que sigue regresando por un cabello saludable y hermoso.",
+        "Una clienta desde hace 10 años que sigue regresando por un cabello saludable y hermoso.",
         "Consejos honestos, atención cuidadosa y un lavado que se siente como un pequeño momento de spa.",
         "Una relación duradera con su estilista, basada en confianza, constancia y cuidado.",
       ],
@@ -719,7 +724,7 @@ export function HomePage({ locale = "en" }: { locale?: Locale }) {
           title: "Descubre lo que puedes esperar en cada visita.",
           body: "Las reseñas reales de Google repiten los mismos temas: atención cuidadosa, una experiencia relajante y un acabado que se siente como tú.",
           aria: "Aspectos destacados de las reseñas",
-          chips: ["Reseña de 5 estrellas", "Clienta por 10 años", "Corte y peinado"],
+          chips: ["Reseña de 5 estrellas", "Clienta desde hace 10 años", "Corte y peinado"],
         },
         videos: {
           eyebrow: "Escúchalo desde la silla",

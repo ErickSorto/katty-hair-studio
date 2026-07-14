@@ -4,16 +4,30 @@ import BookingSection from "@/app/BookingSection";
 import EditorialPageFrame from "@/app/EditorialPageFrame";
 import EditorialPageHero from "@/app/EditorialPageHero";
 import LocationSection from "@/app/LocationSection";
-import { localizedAlternates } from "@/app/i18n/config";
+import { absoluteLocalizedUrl, localizedAlternates } from "@/app/i18n/config";
 
 const phoneNumber = "+12405826622";
 const phoneDisplay = "(240) 582-6622";
+const title = "Katty Hair Studio Location in Brentwood, MD";
+const description =
+  "Find Katty Hair Studio at 3816 Bladensburg Rd in Brentwood, Maryland. View salon hours, directions, arrival notes, and appointment options.";
+const canonical = absoluteLocalizedUrl("/location", "en");
 
 export const metadata: Metadata = {
-  title: "Katty Hair Studio Location in Brentwood, MD",
-  description:
-    "Find Katty Hair Studio at 3816 Bladensburg Rd in Brentwood, Maryland. View salon hours, directions, arrival notes, and appointment options.",
+  title,
+  description,
   alternates: localizedAlternates("/location", "en"),
+  openGraph: {
+    title,
+    description,
+    url: canonical,
+    type: "website",
+    siteName: "Katty Hair Studio",
+    locale: "en_US",
+    alternateLocale: ["es_US"],
+    images: [{ url: "/social/katty-share-preview.webp", width: 1200, height: 630, alt: "Katty Hair Studio in Brentwood, Maryland" }],
+  },
+  twitter: { card: "summary_large_image", title, description, images: ["/social/katty-share-preview.webp"] },
 };
 
 const visitNotes = [

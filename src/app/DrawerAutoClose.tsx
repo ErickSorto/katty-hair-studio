@@ -19,13 +19,24 @@ export default function DrawerAutoClose() {
 
       if (target.closest(".mobile-drawer a")) {
         drawerToggle.checked = false;
+        drawerToggle.dispatchEvent(new Event("change", { bubbles: true }));
       }
     };
 
+    const closeFromEscape = (event: KeyboardEvent) => {
+      if (event.key !== "Escape" || !drawerToggle.checked) return;
+
+      drawerToggle.checked = false;
+      drawerToggle.dispatchEvent(new Event("change", { bubbles: true }));
+      document.querySelector<HTMLButtonElement>(".menu-button")?.focus();
+    };
+
     document.addEventListener("click", closeDrawer);
+    document.addEventListener("keydown", closeFromEscape);
 
     return () => {
       document.removeEventListener("click", closeDrawer);
+      document.removeEventListener("keydown", closeFromEscape);
     };
   }, []);
 

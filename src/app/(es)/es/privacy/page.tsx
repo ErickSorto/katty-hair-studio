@@ -63,7 +63,7 @@ const sections: readonly PolicySection[] = [
     id: "google-calendar-data",
     title: "Datos de Google Calendar",
     paragraphs: [
-      "Katty Hair Studio Booking se conecta a una cuenta de Google autorizada por la propietaria del salón. La conexión puede leer los metadatos de la lista de calendarios, crear un calendario dedicado a las reservas del salón y ver, crear, modificar o eliminar eventos únicamente en los calendarios creados por esta aplicación.",
+      "Reservas de Katty Hair Studio se conecta a una cuenta de Google autorizada por la propietaria del salón. La conexión puede leer los metadatos de la lista de calendarios, crear un calendario dedicado a las reservas del salón y ver, crear, modificar o eliminar eventos únicamente en los calendarios creados por esta aplicación.",
       "Los datos de Google Calendar se usan únicamente para identificar el calendario de reservas creado por la aplicación, contar la disponibilidad de citas, crear o cancelar eventos de citas y evitar el exceso de reservas. La aplicación no lee los detalles de eventos de calendarios no relacionados ni usa los datos de usuarios de Google para publicidad, elaboración de perfiles o venta.",
       "El token de actualización de Google se cifra antes de almacenarlo. El acceso puede revocarse en cualquier momento desde la configuración de acceso de terceros de la Cuenta de Google conectada o comunicándote con el salón.",
     ],
