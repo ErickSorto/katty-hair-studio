@@ -2,7 +2,9 @@ import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { decryptSecret, encryptSecret } from "@/lib/security/encryption";
 
-type LocalGoogleCalendarConnection = {
+export type LocalGoogleCalendarConnection = {
+  bookingCalendarId?: string;
+  bookingCalendarSummary?: string;
   calendarId: string;
   calendarSummary: string;
   connectedAt: string;
@@ -37,6 +39,37 @@ export async function storeLocalGoogleCalendarConnection(
     ),
     { mode: 0o600 },
   );
+}
+
+export async function storeLocalGoogleBookingCalendar(calendar: {
+  id: string;
+  summary: string;
+}) {
+  const connection = await getLocalGoogleCalendarConnection();
+
+  await storeLocalGoogleCalendarConnection({
+    ...connection,
+    bookingCalendarId: calendar.id,
+    bookingCalendarSummary: calendar.summary,
+  });
+}
+
+export async function getLocalGoogleBookingCalendarId() {
+  try {
+    const connection = await getLocalGoogleCalendarConnection();
+    return connection.bookingCalendarId ?? null;
+  } catch (error) {
+    if (
+      error &&
+      typeof error === "object" &&
+      "code" in error &&
+      error.code === "ENOENT"
+    ) {
+      return null;
+    }
+
+    throw error;
+  }
 }
 
 export async function getLocalGoogleCalendarConnection() {

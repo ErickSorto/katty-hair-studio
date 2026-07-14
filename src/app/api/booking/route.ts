@@ -1,6 +1,6 @@
-import { createHash, randomBytes } from "node:crypto";
+import { createHash, randomBytes, randomUUID } from "node:crypto";
 import type { NextRequest } from "next/server";
-import { NextResponse } from "next/server";
+import { after, NextResponse } from "next/server";
 import { addMinutes } from "date-fns";
 import { formatInTimeZone } from "date-fns-tz";
 import { z } from "zod";
@@ -22,6 +22,7 @@ import {
   createGoogleCalendarEvent,
   deleteGoogleCalendarEvent,
 } from "@/lib/google-calendar/client";
+import { isLocalDevelopmentRuntime } from "@/lib/runtime/environment";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -159,6 +160,44 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    if (isLocalDevelopmentRuntime()) {
+      const code = `LOCAL-${randomBytes(3).toString("hex").toUpperCase()}`;
+      const googleEvent = await createGoogleCalendarEvent({
+        bookingId: `local-${randomUUID()}`,
+        calendarId: settings.bookingCalendarId,
+        description: [
+          "LOCAL TEST BOOKING — no production booking record or notification was created.",
+          `Test confirmation: ${code}`,
+          `Customer: ${parsed.data.customerName}`,
+          `Email entered: ${parsed.data.customerEmail}`,
+          customerPhone ? `Phone entered: ${customerPhone}` : undefined,
+          parsed.data.customerNotes ? `Notes: ${parsed.data.customerNotes}` : undefined,
+        ]
+          .filter(Boolean)
+          .join("\n"),
+        end: selectedSlot.endsAt,
+        location: settings.address,
+        sendUpdates: "none",
+        start: selectedSlot.startsAt,
+        summary: `[LOCAL TEST] ${service.name} — ${parsed.data.customerName}`,
+        timeZone: settings.timezone,
+      });
+
+      return NextResponse.json(
+        {
+          booking: {
+            confirmationCode: code,
+            endsAt: selectedSlot.endsAt,
+            googleEventLink: googleEvent.htmlLink,
+            localTest: true,
+            serviceName: service.name,
+            startsAt: selectedSlot.startsAt,
+          },
+        },
+        { status: 201 },
+      );
+    }
+
     const cancellationToken = randomBytes(32).toString("base64url");
     const cancellationTokenHash = createHash("sha256")
       .update(cancellationToken)
@@ -214,17 +253,30 @@ export async function POST(request: NextRequest) {
       throw error;
     }
 
-    await sendBookingConfirmation({
-      bookingId,
-      cancellationToken,
-      confirmationCode: code,
-      customerEmail: parsed.data.customerEmail,
-      customerName: parsed.data.customerName,
-      customerPhone,
-      serviceName: service.name,
-      smsConsent: parsed.data.smsConsent,
-      startsAt: selectedSlot.startsAt,
-      timezone: settings.timezone,
+    after(async () => {
+      const results = await sendBookingConfirmation({
+        bookingId,
+        cancellationToken,
+        confirmationCode: code,
+        customerEmail: parsed.data.customerEmail,
+        customerName: parsed.data.customerName,
+        customerNotes: parsed.data.customerNotes,
+        customerPhone,
+        endsAt: selectedSlot.endsAt,
+        googleEventLink: googleEvent?.htmlLink,
+        salonAddress: settings.address,
+        salonEmail: settings.email,
+        salonName: settings.salonName,
+        salonPhone: settings.phone,
+        serviceName: service.name,
+        smsConsent: parsed.data.smsConsent,
+        startsAt: selectedSlot.startsAt,
+        timezone: settings.timezone,
+      });
+
+      results.forEach((result) => {
+        if (!result.ok) console.error("Booking notification failed", result.error);
+      });
     });
 
     return NextResponse.json(

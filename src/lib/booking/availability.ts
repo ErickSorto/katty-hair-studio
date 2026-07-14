@@ -10,6 +10,7 @@ import {
   getAvailabilityConfiguration,
 } from "@/lib/booking/repository";
 import type { AvailableSlot, BookingOccupancy } from "@/lib/booking/types";
+import { isLocalDevelopmentRuntime } from "@/lib/runtime/environment";
 
 const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 
@@ -123,9 +124,16 @@ export async function getAvailableSlots(input: { date: string; serviceId: string
   const occupancyStart = addMinutes(dayStart, -team.bufferBeforeMinutes).toISOString();
   const occupancyEnd = addMinutes(dayEnd, team.bufferAfterMinutes).toISOString();
 
-  await expireStaleBookingHolds();
+  const localDevelopment = isLocalDevelopmentRuntime();
+
+  if (!localDevelopment) {
+    await expireStaleBookingHolds();
+  }
+
   const [bookings, googleEvents] = await Promise.all([
-    getActiveBookingOccupancy(occupancyStart, occupancyEnd),
+    localDevelopment
+      ? Promise.resolve([] as BookingOccupancy[])
+      : getActiveBookingOccupancy(occupancyStart, occupancyEnd),
     listGoogleCalendarEvents(bookingCalendarId, occupancyStart, occupancyEnd),
   ]);
   const bookingEventIds = new Set(

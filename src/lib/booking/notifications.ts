@@ -1,32 +1,12 @@
 import { formatInTimeZone } from "date-fns-tz";
 import { logNotificationDelivery } from "@/lib/booking/repository";
+import {
+  renderClientBookingEmail,
+  renderOwnerBookingEmail,
+  type BookingEmailDetails,
+} from "@/lib/booking/email-templates";
 
-type BookingNotification = {
-  bookingId: string;
-  cancellationToken: string;
-  confirmationCode: string;
-  customerEmail: string;
-  customerName: string;
-  customerPhone?: string;
-  serviceName: string;
-  smsConsent: boolean;
-  startsAt: string;
-  timezone: string;
-};
-
-function escapeHtml(value: string) {
-  return value.replace(/[&<>'"]/g, (character) => {
-    const entities: Record<string, string> = {
-      "&": "&amp;",
-      "'": "&#39;",
-      '"': "&quot;",
-      "<": "&lt;",
-      ">": "&gt;",
-    };
-
-    return entities[character];
-  });
-}
+type BookingNotification = BookingEmailDetails;
 
 function getCancellationUrl(booking: BookingNotification) {
   const siteUrl = process.env.SITE_URL?.trim();
@@ -43,7 +23,19 @@ function appointmentWhen(booking: BookingNotification) {
   );
 }
 
-async function sendConfirmationEmail(booking: BookingNotification) {
+async function sendResendEmail({
+  booking,
+  recipient,
+  replyTo,
+  templateKey,
+  email,
+}: {
+  booking: BookingNotification;
+  recipient: string;
+  replyTo: string;
+  templateKey: string;
+  email: { html: string; subject: string; text: string };
+}) {
   const apiKey = process.env.RESEND_API_KEY?.trim();
   const from = process.env.BOOKING_EMAIL_FROM?.trim();
 
@@ -51,30 +43,21 @@ async function sendConfirmationEmail(booking: BookingNotification) {
     return;
   }
 
-  const when = appointmentWhen(booking);
-  const cancellationUrl = getCancellationUrl(booking);
-  const customerName = escapeHtml(booking.customerName);
-  const serviceName = escapeHtml(booking.serviceName);
-  const safeWhen = escapeHtml(when);
-  const safeCode = escapeHtml(booking.confirmationCode);
-  const safeCancellationUrl = cancellationUrl ? escapeHtml(cancellationUrl) : undefined;
   const response = await fetch("https://api.resend.com/emails", {
     body: JSON.stringify({
       from,
-      html: `<h1>Your appointment is confirmed</h1>
-<p>Hi ${customerName},</p>
-<p>${serviceName} at Katty Hair Studio<br />${safeWhen}</p>
-<p>Confirmation: <strong>${safeCode}</strong></p>
-${safeCancellationUrl ? `<p><a href="${safeCancellationUrl}">Cancel this appointment</a></p>` : ""}`,
-      subject: `Appointment confirmed — ${booking.confirmationCode}`,
-      text: `Your ${booking.serviceName} appointment at Katty Hair Studio is confirmed for ${when}. Confirmation: ${booking.confirmationCode}.${cancellationUrl ? ` Cancel: ${cancellationUrl}` : ""}`,
-      to: [booking.customerEmail],
+      html: email.html,
+      reply_to: replyTo,
+      subject: email.subject,
+      text: email.text,
+      to: [recipient],
     }),
     cache: "no-store",
     headers: {
       Authorization: `Bearer ${apiKey}`,
       "Content-Type": "application/json",
-      "Idempotency-Key": `${booking.bookingId}-confirmation-email`,
+      "Idempotency-Key": `${templateKey}/${booking.bookingId}`,
+      "User-Agent": "katty-hair-studio-booking/1.0",
     },
     method: "POST",
   });
@@ -85,9 +68,35 @@ ${safeCancellationUrl ? `<p><a href="${safeCancellationUrl}">Cancel this appoint
     channel: "email",
     errorMessage: response.ok ? undefined : result.message || "Resend rejected the email.",
     providerMessageId: result.id,
-    recipient: booking.customerEmail,
+    recipient,
     status: response.ok ? "sent" : "failed",
-    templateKey: "booking-confirmation",
+    templateKey,
+  });
+
+  if (!response.ok) {
+    throw new Error(result.message || `Resend rejected ${templateKey}.`);
+  }
+}
+
+async function sendClientConfirmationEmail(booking: BookingNotification) {
+  await sendResendEmail({
+    booking,
+    email: renderClientBookingEmail(booking),
+    recipient: booking.customerEmail,
+    replyTo: booking.salonEmail,
+    templateKey: "booking-client-confirmation",
+  });
+}
+
+async function sendOwnerNotificationEmail(booking: BookingNotification) {
+  const ownerEmail = process.env.BOOKING_OWNER_EMAIL?.trim() || booking.salonEmail;
+
+  await sendResendEmail({
+    booking,
+    email: renderOwnerBookingEmail(booking),
+    recipient: ownerEmail,
+    replyTo: booking.customerEmail,
+    templateKey: "booking-owner-notification",
   });
 }
 
@@ -133,7 +142,8 @@ async function sendConfirmationSms(booking: BookingNotification) {
 
 export async function sendBookingConfirmation(booking: BookingNotification) {
   const results = await Promise.allSettled([
-    sendConfirmationEmail(booking),
+    sendClientConfirmationEmail(booking),
+    sendOwnerNotificationEmail(booking),
     sendConfirmationSms(booking),
   ]);
 

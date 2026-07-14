@@ -3,7 +3,9 @@ import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { createGoogleCalendar, getGoogleCalendar } from "@/lib/google-calendar/client";
+import { storeLocalGoogleBookingCalendar } from "@/lib/google-calendar/local-token-store";
 import { getSalonSettings } from "@/lib/booking/repository";
+import { isLocalDevelopmentRuntime } from "@/lib/runtime/environment";
 import { getSupabaseAdmin } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
@@ -87,13 +89,33 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    const database = getSupabaseAdmin();
     const settings = await getSalonSettings();
     const bookingCalendar = await loadOrCreateCalendar(
       settings.bookingCalendarId,
       parsed.data.bookingCalendarName,
       settings.timezone,
     );
+
+    if (isLocalDevelopmentRuntime()) {
+      await storeLocalGoogleBookingCalendar({
+        id: bookingCalendar.id,
+        summary: bookingCalendar.summary,
+      });
+
+      return NextResponse.json({
+        bookingCalendar: {
+          calendarId: bookingCalendar.id,
+          calendarName: bookingCalendar.summary,
+          shareWith: [],
+        },
+        localTesting: true,
+        maxConcurrentBookings: settings.maxConcurrentBookings,
+        scheduleSource: "production-store-hours",
+        scheduleUpdated: false,
+      });
+    }
+
+    const database = getSupabaseAdmin();
     const { error: settingsError } = await database
       .from("salon_settings")
       .update({

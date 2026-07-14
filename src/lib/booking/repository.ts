@@ -1,4 +1,6 @@
 import { getSupabaseAdmin } from "@/lib/supabase/server";
+import { getLocalGoogleBookingCalendarId } from "@/lib/google-calendar/local-token-store";
+import { isLocalDevelopmentRuntime } from "@/lib/runtime/environment";
 import type {
   BookingOccupancy,
   BookingService,
@@ -33,10 +35,13 @@ export async function getSalonSettings(): Promise<SalonSettings> {
     .single();
 
   const settings = requireData(data, error, "Unable to load salon settings");
+  const bookingCalendarId = isLocalDevelopmentRuntime()
+    ? await getLocalGoogleBookingCalendarId()
+    : settings.booking_calendar_id;
 
   return {
     address: settings.address,
-    bookingCalendarId: settings.booking_calendar_id,
+    bookingCalendarId,
     bookingWindowDays: settings.booking_window_days,
     email: settings.email,
     holdMinutes: settings.hold_minutes,

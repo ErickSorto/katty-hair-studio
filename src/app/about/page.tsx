@@ -40,7 +40,7 @@ export default function AboutPage() {
         eyebrow="Full-service · Dominican-owned · Everyone welcome"
         image="/founder/katty-founder-white-suit-editorial.webp"
         imageAlt="Katty, founder of Katty Hair Studio, standing in her pink Brentwood salon"
-        imagePosition="42% center"
+        imagePosition="42% 18%"
         pageLabel="About Katty"
         primaryHref="#katty-story"
         primaryLabel="Read Katty's story"

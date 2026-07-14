@@ -61,6 +61,8 @@ type Promotion = {
 type BookingConfirmation = {
   confirmationCode: string;
   endsAt: string;
+  googleEventLink?: string;
+  localTest?: boolean;
   serviceName: string;
   startsAt: string;
 };
@@ -533,12 +535,22 @@ export default function BookingSection({
             </dl>
             <div className="reservation-message-status">
               <Mail aria-hidden="true" />
-              <span>Email sent to {customerEmail}{smsConsent ? " · Text confirmation sent" : ""}</span>
+              <span>
+                {confirmation.localTest
+                  ? "Local test only · No email or text was sent"
+                  : `Email sent to ${customerEmail}${smsConsent ? " · Text confirmation sent" : ""}`}
+              </span>
             </div>
             <div className="reservation-confirmation-actions">
-              <a className="reservation-primary-action" href={directionsUrl} rel="noreferrer" target="_blank">
-                <MapPin aria-hidden="true" />Get directions
-              </a>
+              {confirmation.localTest && confirmation.googleEventLink ? (
+                <a className="reservation-primary-action" href={confirmation.googleEventLink} rel="noreferrer" target="_blank">
+                  <CalendarDays aria-hidden="true" />Open test calendar event
+                </a>
+              ) : (
+                <a className="reservation-primary-action" href={directionsUrl} rel="noreferrer" target="_blank">
+                  <MapPin aria-hidden="true" />Get directions
+                </a>
+              )}
               <button className="reservation-text-action" onClick={resetBooking} type="button">
                 Book another appointment
               </button>

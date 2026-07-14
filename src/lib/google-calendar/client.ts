@@ -1,6 +1,7 @@
 import { getProductionGoogleCalendarConnection } from "@/lib/google-calendar/connection-store";
 import { getLocalGoogleCalendarConnection } from "@/lib/google-calendar/local-token-store";
 import { getGoogleOAuthConfig } from "@/lib/google-calendar/oauth";
+import { isLocalDevelopmentRuntime } from "@/lib/runtime/environment";
 
 type GoogleApiError = {
   error?: {
@@ -22,7 +23,7 @@ export type GoogleCalendarEvent = {
 };
 
 async function getStoredConnection() {
-  if (process.env.NODE_ENV !== "production" && !process.env.VERCEL) {
+  if (isLocalDevelopmentRuntime()) {
     const localConnection = await getLocalGoogleCalendarConnection();
     return {
       connectedEmail: localConnection.calendarId,
@@ -179,7 +180,7 @@ export async function listGoogleCalendarEvents(
 }
 
 export async function createGoogleCalendarEvent(input: {
-  attendeeEmail: string;
+  attendeeEmail?: string;
   bookingId: string;
   calendarId: string;
   description: string;
@@ -188,14 +189,15 @@ export async function createGoogleCalendarEvent(input: {
   start: string;
   summary: string;
   timeZone: string;
+  sendUpdates?: "all" | "none";
 }) {
-  const query = new URLSearchParams({ sendUpdates: "all" });
+  const query = new URLSearchParams({ sendUpdates: input.sendUpdates ?? "all" });
 
   return googleRequest<{ htmlLink?: string; id: string }>(
     `/calendars/${encodeURIComponent(input.calendarId)}/events?${query}`,
     {
       body: JSON.stringify({
-        attendees: [{ email: input.attendeeEmail }],
+        attendees: input.attendeeEmail ? [{ email: input.attendeeEmail }] : undefined,
         description: input.description,
         end: { dateTime: input.end, timeZone: input.timeZone },
         extendedProperties: {
