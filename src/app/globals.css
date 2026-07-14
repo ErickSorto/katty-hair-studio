@@ -5890,8 +5890,8 @@ section {
     color 160ms ease;
 }
 
-.reservation-calendar-days button:hover:not(:disabled),
-.reservation-calendar-days button:focus-visible {
+.reservation-calendar-days button:not(.is-selected):hover:not(:disabled),
+.reservation-calendar-days button:not(.is-selected):focus-visible {
   border-color: rgba(123, 31, 66, 0.34);
   background: var(--sand);
 }

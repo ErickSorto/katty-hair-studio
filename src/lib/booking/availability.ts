@@ -10,6 +10,7 @@ import {
   getAvailabilityConfiguration,
 } from "@/lib/booking/repository";
 import type { AvailableSlot, BookingOccupancy } from "@/lib/booking/types";
+import { isSalonClosedWeekday } from "@/lib/booking/schedule";
 import { isLocalDevelopmentRuntime } from "@/lib/runtime/environment";
 
 const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
@@ -118,6 +119,10 @@ export async function getAvailableSlots(input: { date: string; serviceId: string
   );
 
   if (input.date < today || input.date > lastBookingDate) {
+    return { slots: [], timezone: settings.timezone };
+  }
+
+  if (isSalonClosedWeekday(dayOfWeek)) {
     return { slots: [], timezone: settings.timezone };
   }
 

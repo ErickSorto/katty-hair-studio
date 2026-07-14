@@ -1,5 +1,6 @@
 import { addMinutes } from "date-fns";
 import { formatInTimeZone, fromZonedTime } from "date-fns-tz";
+import { isSalonClosedWeekday } from "@/lib/booking/schedule";
 import type { AvailableSlot } from "@/lib/booking/types";
 
 const DEMO_TIMEZONE = "America/New_York";
@@ -98,7 +99,7 @@ export function getDemoAvailability(input: { date: string; serviceId: string }) 
   const requestedDate = fromZonedTime(`${input.date}T12:00:00`, DEMO_TIMEZONE);
   const dayOfWeek = Number(formatInTimeZone(requestedDate, DEMO_TIMEZONE, "i")) % 7;
 
-  if (!service || dayOfWeek === 2) {
+  if (!service || isSalonClosedWeekday(dayOfWeek)) {
     return { slots: [] as AvailableSlot[], timezone: DEMO_TIMEZONE };
   }
 

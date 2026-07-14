@@ -18,6 +18,7 @@ import {
   startOfWeek,
 } from "date-fns";
 import { formatInTimeZone } from "date-fns-tz";
+import { isSalonClosedWeekday } from "@/lib/booking/schedule";
 import {
   ArrowLeft,
   ArrowRight,
@@ -129,6 +130,11 @@ function getLocalDateValue(offsetDays = 0) {
   return date.toISOString().slice(0, 10);
 }
 
+function getInitialBookingDate(today: string) {
+  const date = parseISO(today);
+  return format(isSalonClosedWeekday(date.getDay()) ? addDays(date, 1) : date, "yyyy-MM-dd");
+}
+
 function formatPrice(service: Service) {
   return service.requiresQuote ? "Consultation first" : "Price confirmed at salon";
 }
@@ -196,15 +202,19 @@ function MonthCalendar({
       </div>
       <div className="reservation-calendar-days">
         {days.map((day) => {
+          const salonClosed = isSalonClosedWeekday(day.getDay());
           const disabled =
-            !isSameMonth(day, visibleMonth) || isBefore(day, todayDate) || isAfter(day, maximumDate);
+            salonClosed ||
+            !isSameMonth(day, visibleMonth) ||
+            isBefore(day, todayDate) ||
+            isAfter(day, maximumDate);
           const mondayOffer = day.getDay() === promotion.weekday && !disabled;
-          const selected = isSameDay(day, selectedDate);
+          const selected = !disabled && isSameDay(day, selectedDate);
           const dateValue = format(day, "yyyy-MM-dd");
 
           return (
             <button
-              aria-label={`${format(day, "EEEE, MMMM d")}${mondayOffer ? `, save $${promotion.amount}` : ""}`}
+              aria-label={`${format(day, "EEEE, MMMM d")}${salonClosed ? ", salon closed" : mondayOffer ? `, save $${promotion.amount}` : ""}`}
               aria-pressed={selected}
               className={`${selected ? "is-selected" : ""} ${mondayOffer ? "has-offer" : ""}`}
               disabled={disabled}
@@ -236,13 +246,14 @@ export default function BookingSection({
   phoneNumber: string;
 }) {
   const today = getLocalDateValue();
+  const initialBookingDate = getInitialBookingDate(today);
   const demoMode = process.env.NEXT_PUBLIC_BOOKING_DEMO_MODE === "true";
   const confirmationHeadingRef = useRef<HTMLHeadingElement>(null);
   const stepHeadingRef = useRef<HTMLHeadingElement>(null);
   const [step, setStep] = useState<BookingStep>(1);
   const [services, setServices] = useState<Service[]>([]);
   const [serviceId, setServiceId] = useState("");
-  const [date, setDate] = useState(today);
+  const [date, setDate] = useState(initialBookingDate);
   const [slots, setSlots] = useState<Slot[]>([]);
   const [startsAt, setStartsAt] = useState("");
   const [timezone, setTimezone] = useState("America/New_York");
@@ -434,7 +445,7 @@ export default function BookingSection({
   function resetBooking() {
     setStep(1);
     setServiceId("");
-    setDate(today);
+    setDate(initialBookingDate);
     setSlots([]);
     setStartsAt("");
     setCustomerName("");
