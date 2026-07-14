@@ -111,6 +111,7 @@ function JsonLd({ data }: { data: ServicePageData }) {
 export default function ServicePageTemplate({ data }: { data: ServicePageData }) {
   const isCategory = data.pageType === "Category Page";
   const isBrowWaxing = data.slug === "eyebrow-waxing";
+  const categoryServiceLabel = data.slug === "hair-salon" ? "Hair salon service" : "Extension service";
   const related = isCategory
     ? data.sections.map((section) => ({
         name: section.heading,
@@ -190,7 +191,7 @@ export default function ServicePageTemplate({ data }: { data: ServicePageData })
           <section className={`service-editorial ${index % 2 ? "service-editorial-reverse" : ""}`} data-reveal key={section.heading}>
             <div className="service-editorial-index" aria-hidden="true">{String(index + 1).padStart(2, "0")}</div>
             <div className="service-editorial-copy">
-              <p className="eyebrow">{isCategory ? "Extension service" : index === 0 ? "Your visit" : index === 1 ? "The process" : index === 2 ? "When it helps" : "Why Katty"}</p>
+              <p className="eyebrow">{isCategory ? categoryServiceLabel : index === 0 ? "Your visit" : index === 1 ? "The process" : index === 2 ? "When it helps" : "Why Katty"}</p>
               <h2>{section.heading}</h2>
               {section.paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
               {isCategory && related[index] && (

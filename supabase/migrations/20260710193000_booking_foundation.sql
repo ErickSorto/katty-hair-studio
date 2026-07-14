@@ -242,7 +242,7 @@ values
   ('color-highlights', 'Color or highlights', 'Color consultation and customized color service.', 180, 30, true, 20),
   ('extensions-wig', 'Extensions or wig service', 'Consultation-led extensions or wig appointment.', 180, 30, true, 30),
   ('braids', 'Braids', 'Braiding appointment tailored to the requested style.', 180, 30, true, 40),
-  ('cut-barber', 'Cut or barber service', 'Haircut or barber appointment.', 45, 10, true, 50),
+  ('cut-barber', 'Haircut', 'Haircut appointment tailored to the requested style.', 45, 10, true, 50),
   ('beauty-supply', 'Beauty supply question', 'Short product consultation.', 20, 5, false, 60)
 on conflict (slug) do update set
   name = excluded.name,

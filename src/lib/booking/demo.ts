@@ -11,6 +11,7 @@ type DemoService = {
   name: string;
   priceFrom: number | null;
   requiresQuote: boolean;
+  slug: string;
 };
 
 export const demoServices: DemoService[] = [
@@ -18,9 +19,10 @@ export const demoServices: DemoService[] = [
     description: "A smooth, polished finish with movement and shine.",
     durationMinutes: 90,
     id: "11111111-1111-4111-8111-111111111111",
-    name: "Signature blowout",
+    name: "Dominican blowout",
     priceFrom: 65,
     requiresQuote: false,
+    slug: "dominican-blowout",
   },
   {
     description: "Dimensional color planned around your history and hair health.",
@@ -29,6 +31,7 @@ export const demoServices: DemoService[] = [
     name: "Color or highlights",
     priceFrom: 120,
     requiresQuote: true,
+    slug: "color-highlights",
   },
   {
     description: "Install, blending, and styling tailored to your desired finish.",
@@ -37,6 +40,7 @@ export const demoServices: DemoService[] = [
     name: "Extensions or wig service",
     priceFrom: null,
     requiresQuote: true,
+    slug: "extensions-wig",
   },
   {
     description: "Protective styling with a clean, polished finish.",
@@ -45,6 +49,25 @@ export const demoServices: DemoService[] = [
     name: "Braids",
     priceFrom: 140,
     requiresQuote: true,
+    slug: "braids",
+  },
+  {
+    description: "A personalized haircut shaped around your texture and routine.",
+    durationMinutes: 45,
+    id: "55555555-5555-4555-8555-555555555555",
+    name: "Haircut",
+    priceFrom: null,
+    requiresQuote: true,
+    slug: "cut-barber",
+  },
+  {
+    description: "Help choosing extension hair, wigs, or hair-care products.",
+    durationMinutes: 20,
+    id: "66666666-6666-4666-8666-666666666666",
+    name: "Beauty supply",
+    priceFrom: null,
+    requiresQuote: false,
+    slug: "beauty-supply",
   },
 ];
 

@@ -43,6 +43,7 @@ type Service = {
   name: string;
   priceFrom: number | null;
   requiresQuote: boolean;
+  slug: string;
 };
 
 type Slot = {
@@ -74,6 +75,40 @@ const defaultPromotion: Promotion = {
   weekday: 1,
 };
 
+const servicePresentations: Record<string, { included: string[]; title: string }> = {
+  "dominican-blowout": {
+    title: "Dominican blowouts",
+    included: ["Dominican blowout", "Silk press", "Hair blowout"],
+  },
+  "color-highlights": {
+    title: "Hair coloring",
+    included: ["All-over color", "Highlights", "Balayage"],
+  },
+  "extensions-wig": {
+    title: "Extensions & wigs",
+    included: ["Tape-ins", "Sew-ins", "Microlinks", "K-tips", "Quick weaves", "Wig styling"],
+  },
+  braids: {
+    title: "Braids",
+    included: ["Hair braiding", "Twist braids", "Protective styles"],
+  },
+  "cut-barber": {
+    title: "Haircuts",
+    included: ["Women’s haircuts", "Men’s haircuts", "Bang trims"],
+  },
+  "beauty-supply": {
+    title: "Beauty supply",
+    included: ["Extension hair", "Wigs", "Hair-care products"],
+  },
+};
+
+function getServicePresentation(service: Service) {
+  return servicePresentations[service.slug] || {
+    title: service.name,
+    included: ["Personalized service planning"],
+  };
+}
+
 function getServiceIcon(serviceName: string) {
   const name = serviceName.toLowerCase();
 
@@ -93,10 +128,6 @@ function getLocalDateValue(offsetDays = 0) {
 }
 
 function formatPrice(service: Service) {
-  if (service.priceFrom !== null) {
-    return `From $${service.priceFrom.toFixed(0)}`;
-  }
-
   return service.requiresQuote ? "Consultation first" : "Price confirmed at salon";
 }
 
@@ -227,6 +258,9 @@ export default function BookingSection({
   const [confirmation, setConfirmation] = useState<BookingConfirmation | null>(null);
 
   const selectedService = services.find((service) => service.id === serviceId);
+  const selectedServicePresentation = selectedService
+    ? getServicePresentation(selectedService)
+    : null;
   const selectedDateIsMonday = parseISO(date).getDay() === promotion.weekday;
   const uniqueSlots = useMemo(() => {
     const uniqueByStart = new Map<string, Slot>();
@@ -494,7 +528,7 @@ export default function BookingSection({
               We’ll see you {formatInTimeZone(new Date(confirmation.startsAt), timezone, "EEEE, MMMM d 'at' h:mm a")}.
             </p>
             <dl className="reservation-confirmation-details">
-              <div><dt>Service</dt><dd>{confirmation.serviceName}</dd></div>
+              <div><dt>Service</dt><dd>{selectedServicePresentation?.title || confirmation.serviceName}</dd></div>
               <div><dt>Confirmation</dt><dd>{confirmation.confirmationCode}</dd></div>
             </dl>
             <div className="reservation-message-status">
@@ -557,26 +591,50 @@ export default function BookingSection({
                     <div aria-label="Choose a service" className="reservation-service-list" role="radiogroup">
                       {services.map((service) => {
                         const selected = service.id === serviceId;
-                        const serviceIconSrc = getServiceIcon(service.name);
+                        const presentation = getServicePresentation(service);
+                        const serviceIconSrc = getServiceIcon(presentation.title);
+                        const detailsId = `service-details-${service.id}`;
                         return (
-                          <button
-                            aria-checked={selected}
-                            className={selected ? "is-selected" : ""}
+                          <article
+                            className={`reservation-service-option ${selected ? "is-expanded" : ""}`}
                             key={service.id}
-                            onClick={() => chooseService(service.id)}
-                            role="radio"
-                            type="button"
                           >
-                            <span className="reservation-service-icon">
-                              <Image alt="" aria-hidden="true" height={52} src={serviceIconSrc} width={52} />
-                            </span>
-                            <span className="reservation-service-copy">
-                              <strong>{service.name}</strong>
-                              <small>{service.description || "Your service plan is confirmed before the chair."}</small>
-                              <span>{formatDuration(service.durationMinutes)} <i aria-hidden="true" /> {formatPrice(service)}</span>
-                            </span>
-                            <span className="reservation-service-check">{selected ? <Check aria-hidden="true" /> : <ArrowRight aria-hidden="true" />}</span>
-                          </button>
+                            <button
+                              aria-checked={selected}
+                              aria-controls={selected ? detailsId : undefined}
+                              className={selected ? "is-selected" : ""}
+                              onClick={() => chooseService(service.id)}
+                              role="radio"
+                              type="button"
+                            >
+                              <span className="reservation-service-icon">
+                                <Image alt="" aria-hidden="true" height={52} src={serviceIconSrc} width={52} />
+                              </span>
+                              <span className="reservation-service-copy">
+                                <strong>{presentation.title}</strong>
+                                <span>{formatDuration(service.durationMinutes)} <i aria-hidden="true" /> {formatPrice(service)}</span>
+                              </span>
+                              <span className="reservation-service-check">{selected ? <Check aria-hidden="true" /> : <ArrowRight aria-hidden="true" />}</span>
+                            </button>
+                            {selected ? (
+                              <div className="reservation-service-details" id={detailsId}>
+                                <div>
+                                  <p>Services in this category</p>
+                                  <ul>
+                                    {presentation.included.map((item) => <li key={item}>{item}</li>)}
+                                  </ul>
+                                </div>
+                                <button
+                                  className="reservation-service-book"
+                                  onClick={() => moveToStep(2)}
+                                  type="button"
+                                >
+                                  <span><small>Selected</small>Book a time</span>
+                                  <ArrowRight aria-hidden="true" />
+                                </button>
+                              </div>
+                            ) : null}
+                          </article>
                         );
                       })}
                     </div>
@@ -589,18 +647,6 @@ export default function BookingSection({
                     </div>
                   )}
 
-                  {services.length ? (
-                    <div className="reservation-step-actions reservation-step-actions--end">
-                      <button
-                        className="reservation-primary-action"
-                        disabled={!serviceId}
-                        onClick={() => moveToStep(2)}
-                        type="button"
-                      >
-                        Choose a time<ArrowRight aria-hidden="true" />
-                      </button>
-                    </div>
-                  ) : null}
                 </div>
               ) : null}
 
@@ -679,7 +725,7 @@ export default function BookingSection({
                   </div>
 
                   <div className="reservation-selection-summary">
-                    <div><Scissors aria-hidden="true" /><span><small>Service</small><strong>{selectedService?.name}</strong></span></div>
+                    <div><Scissors aria-hidden="true" /><span><small>Service</small><strong>{selectedServicePresentation?.title}</strong></span></div>
                     <div><CalendarDays aria-hidden="true" /><span><small>Date & time</small><strong>{formattedSelection}</strong></span></div>
                     {selectedDateIsMonday ? <p><BadgePercent aria-hidden="true" />Monday savings: ${promotion.amount} off, applied at the salon.</p> : null}
                   </div>

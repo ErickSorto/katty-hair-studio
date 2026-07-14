@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   applicationName: "Katty Hair Studio",
   title: "Katty Hair Studio",
   description:
-    "Katty Hair Studio is an online salon appointment application that lets clients choose a service, view available times, and reserve a visit at our Dominican-owned hair studio in Brentwood, MD.",
+    "Reserve color, cuts, blowouts, braids, extensions, treatments, and styling at our full-service, Dominican-owned hair studio in Brentwood, MD.",
   alternates: {
     canonical: "https://www.kattyhairstudio.com/",
   },
@@ -31,7 +31,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Katty Hair Studio",
     description:
-      "Your texture. Your plan. Your finish. A Dominican-owned studio welcoming every texture in Brentwood, Maryland.",
+      "A full-service, Dominican-owned studio offering color, cuts, blowouts, braids, extensions, treatments, and styling for every texture.",
     type: "website",
     siteName: "Katty Hair Studio",
     images: [
@@ -46,7 +46,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Katty Hair Studio",
-    description: "Dominican-owned and welcoming every texture in Brentwood, Maryland.",
+    description: "Full-service and Dominican-owned, with a wide range of hair services for every texture.",
     images: ["/social/katty-share-preview.webp"],
   },
 };

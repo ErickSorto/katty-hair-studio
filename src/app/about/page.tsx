@@ -12,7 +12,7 @@ const phoneDisplay = "(240) 582-6622";
 export const metadata: Metadata = {
   title: "Meet Katty | Katty Hair Studio Brentwood, MD",
   description:
-    "Meet Katty, founder of a Dominican-owned and all-welcome hair studio in Brentwood, Maryland, serving every texture, background, and style goal.",
+    "Meet Katty, founder of a full-service, Dominican-owned hair studio in Brentwood offering color, cuts, blowouts, braids, extensions, treatments, and styling.",
   alternates: { canonical: "https://www.kattyhairstudio.com/about" },
 };
 
@@ -23,7 +23,7 @@ const principles = [
   },
   {
     title: "Everyone is welcome",
-    detail: "Every background, texture, gender, and style goal belongs here. Dominican-owned describes Katty's roots—not a limit on who can sit in the chair.",
+    detail: "Every background, texture, gender, and style goal belongs here. The studio is Dominican-owned and offers a wide range of hair services for everyone.",
   },
   {
     title: "Explain the plan",
@@ -36,8 +36,8 @@ export default function AboutPage() {
     <EditorialPageFrame className="editorial-about-page">
       <EditorialPageHero
         align="right"
-        description="Dominican-owned and open to everyone, Katty's Brentwood studio welcomes every texture, background, and style goal with personal care."
-        eyebrow="Dominican-owned · Everyone welcome"
+        description="Full-service and open to everyone, Katty's Dominican-owned Brentwood studio offers color, cuts, blowouts, braids, extensions, treatments, and styling."
+        eyebrow="Full-service · Dominican-owned · Everyone welcome"
         image="/founder/katty-founder-white-suit-editorial.webp"
         imageAlt="Katty, founder of Katty Hair Studio, standing in her pink Brentwood salon"
         imagePosition="42% center"
@@ -58,9 +58,9 @@ export default function AboutPage() {
         </div>
         <div className="about-story-copy" data-reveal>
           <p className="eyebrow">Meet Katty</p>
-          <h2>Dominican roots, with a chair for everyone.</h2>
+          <h2>One studio, a full range of services.</h2>
           <p>
-            Katty’s Dominican heritage is part of the studio’s story and the experience she brings to the chair. It reflects her roots, not a requirement for the clients she serves.
+            Katty Hair Studio is Dominican-owned, full-service, and open to everyone. The studio’s identity reflects its ownership, never a limit on the clients, textures, or style goals welcomed here.
           </p>
           <p>
             Clients of every race, culture, texture, and gender are welcome. From blowouts and color to extensions, braids, cuts, wigs, and styling, each appointment starts with your reference, your hair history, and the result you want—not assumptions about who you are.

@@ -5,9 +5,11 @@ import ViewportReveal from "./ViewportReveal";
 export default function EditorialPageFrame({
   children,
   className,
+  showMobileActionBar = true,
 }: {
   children: ReactNode;
   className: string;
+  showMobileActionBar?: boolean;
 }) {
   return (
     <main className={`site-shell editorial-page-shell ${className}`}>
@@ -15,7 +17,7 @@ export default function EditorialPageFrame({
       <SiteHeader />
       {children}
       <SiteFooter />
-      <MobileActionBar />
+      {showMobileActionBar ? <MobileActionBar /> : null}
     </main>
   );
 }

@@ -102,7 +102,7 @@ const homeFaqs = [
     question:
       "Which hair salon services can I discuss with Katty Hair Studio in Brentwood?",
     answer:
-      "You can discuss professional hair care, styling, and barbering services with us in Brentwood, including Dominican blowouts, color, extensions, braids, and cuts at our Bladensburg Rd studio.",
+      "You can discuss professional hair care, styling, and haircut services with us in Brentwood, including Dominican blowouts, color, extensions, braids, and cuts at our Bladensburg Rd studio.",
   },
   {
     question: "How can I decide which hair salon service fits my needs?",
@@ -126,7 +126,7 @@ function HomeJsonLd() {
     {
       "@type": ["HairSalon", "LocalBusiness"],
       "@id": "https://www.kattyhairstudio.com/#business",
-      name: "Dominican Katty Hair Studio and Barber Shop",
+      name: "Katty Hair Studio",
       url: "https://www.kattyhairstudio.com/",
       telephone: phoneNumber,
       address: {
@@ -151,7 +151,7 @@ function HomeJsonLd() {
       "@type": "WebPage",
       "@id": "https://www.kattyhairstudio.com/#webpage",
       url: "https://www.kattyhairstudio.com/",
-      name: "Katty Hair Studio | Dominican-Owned Hair Studio in Brentwood",
+      name: "Katty Hair Studio | Full-Service Hair Salon in Brentwood",
       isPartOf: { "@id": "https://www.kattyhairstudio.com/#website" },
       about: { "@id": "https://www.kattyhairstudio.com/#business" },
     },
@@ -186,7 +186,7 @@ const studioInfo = [
     icon: Award,
   },
   {
-    title: "Dominican technique",
+    title: "Signature technique",
     detail: "You get controlled heat, smooth roots, body, and shine.",
     icon: WandSparkles,
   },
@@ -273,7 +273,7 @@ const priceItems = [
     note: "Your method, hair source, blending, and install time shape the quote.",
   },
   {
-    name: "Braids, cuts, and barber services",
+    name: "Braids, cuts, and styling",
     type: "Shape services",
     price: "Ask stylist",
     note: "Your pattern, shape, and detail level are confirmed before you begin.",
@@ -509,7 +509,7 @@ function BestProsInTownBadge() {
           </div>
           <div id="circletype_v3_brand_name">
             <a
-              aria-label="View Dominican Katty Hair Studio on BestProsInTown"
+              aria-label="View Katty Hair Studio on BestProsInTown"
               className="ahref_emprty_area"
               href={bestProsUrl}
               rel="noreferrer"
@@ -527,7 +527,7 @@ function BestProsInTownBadge() {
                     startOffset="50%"
                     textLength="196"
                   >
-                    Dominican Katty Hair Studio and Barber Shop
+                    Katty Hair Studio
                   </textPath>
                 </text>
               </svg>
@@ -743,7 +743,7 @@ export default function Home() {
         />
         <div className="hero-shade" />
         <div className="hero-content">
-          <p className="eyebrow">Dominican-owned hair studio and beauty supply</p>
+          <p className="eyebrow">Full-service · Dominican-owned · Hair studio and beauty supply</p>
           <h1>
             <span className="hero-title-desktop">Katty Hair Studio</span>
             <span className="hero-title-mobile">
@@ -1183,9 +1183,9 @@ export default function Home() {
           <p className="eyebrow">Meet Katty</p>
           <h2>Your texture deserves a stylist who listens first.</h2>
           <p>
-            Katty Hair Studio is proudly Dominican-owned and open to everyone. From
-            your reference photo to your final care notes, every texture, background,
-            and style goal receives personal, thoughtful care.
+            Katty Hair Studio is proudly Dominican-owned, full-service, and open to
+            everyone. Explore color, cuts, blowouts, braids, extensions, treatments,
+            and styling for every texture and style goal.
           </p>
           <div className="info-card-grid">
             {studioInfo.map((item) => (
@@ -1304,7 +1304,7 @@ export default function Home() {
           <BrandLogo />
         </a>
         <div>
-          <p>Dominican Katty Hair Studio and Barber Shop</p>
+          <p>Katty Hair Studio</p>
           <p>{address}</p>
         </div>
         <div className="footer-links">

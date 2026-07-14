@@ -118,7 +118,7 @@ export const hairSalonCategory: ServicePageData = {
     {
       question: "Where is Katty Hair Studio located?",
       answer:
-        "Katty Hair Studio and Barber Shop is located at 3816 Bladensburg Rd in Brentwood, Maryland. You can request an appointment online or call the studio before visiting.",
+        "Katty Hair Studio is located at 3816 Bladensburg Rd in Brentwood, Maryland. You can request an appointment online or call the studio before visiting.",
     },
   ],
 };

@@ -14,7 +14,10 @@ export const metadata: Metadata = {
 
 export default function BookingPage() {
   return (
-    <EditorialPageFrame className="editorial-booking-page booking-page-focused">
+    <EditorialPageFrame
+      className="editorial-booking-page booking-page-focused"
+      showMobileActionBar={false}
+    >
       <BookingSection mode="page" phoneDisplay={phoneDisplay} phoneNumber={phoneNumber} />
     </EditorialPageFrame>
   );
