@@ -48,11 +48,11 @@ function SocialIcon({ platform }: { platform: SocialPlatform }) {
 }
 
 function BrandLogo() {
-  return <><span className="brand-logo-frame"><Image alt="" aria-hidden="true" height={512} loading="eager" src="/brand/katty-official-crest.png" width={512}/></span><span className="brand-wordmark">Katty<small>Hair Studio</small></span></>;
+  return <><span className="brand-logo-frame"><Image alt="" aria-hidden="true" height={512} quality={60} sizes="64px" src="/brand/katty-official-crest.png" width={512}/></span><span className="brand-wordmark">Katty<small>Hair Studio</small></span></>;
 }
 
 function HeaderBrandLogo() {
-  return <Image alt="" aria-hidden="true" className="brand-lockup-image" height={801} loading="eager" src="/brand/katty-official-lockup.png" width={1080}/>;
+  return <Image alt="" aria-hidden="true" className="brand-lockup-image" height={801} loading="eager" quality={60} sizes="(max-width: 740px) 70px, 90px" src="/brand/katty-official-lockup.png" width={1080}/>;
 }
 
 export function SiteHeader({ locale = "en" }: { locale?: Locale }) {
@@ -97,7 +97,7 @@ export function SiteHeader({ locale = "en" }: { locale?: Locale }) {
 
 export function SiteFinalBanner({ locale = "en" }: { locale?: Locale }) {
   const copy = sharedCopy[locale];
-  return <section className="final-banner" data-reveal><div><p className="eyebrow">{copy.finalBanner.eyebrow}</p><h2>{copy.finalBanner.title}</h2></div><div aria-hidden="true" className="final-brand-mark"><Image alt="" height={801} src="/brand/katty-official-lockup.png" width={1080}/></div><Link className="primary-link" href="#booking"><Heart aria-hidden="true"/>{copy.request}<ArrowRight aria-hidden="true"/></Link></section>;
+  return <section className="final-banner" data-reveal><div><p className="eyebrow">{copy.finalBanner.eyebrow}</p><h2>{copy.finalBanner.title}</h2></div><div aria-hidden="true" className="final-brand-mark"><Image alt="" height={801} quality={60} sizes="(max-width: 740px) 240px, 455px" src="/brand/katty-official-lockup.png" width={1080}/></div><Link className="primary-link" href="#booking"><Heart aria-hidden="true"/>{copy.request}<ArrowRight aria-hidden="true"/></Link></section>;
 }
 
 export function FooterBookingPurpose({ locale = "en" }: { locale?: Locale }) {
@@ -121,7 +121,7 @@ export function FooterBookingPurpose({ locale = "en" }: { locale?: Locale }) {
 
 export function SiteFooter({ locale = "en" }: { locale?: Locale }) {
   const copy = sharedCopy[locale];
-  return <footer className="site-footer" id="site-footer"><Link aria-label="Katty Hair Studio" className="brand" href={localizePath("/", locale)}><BrandLogo/></Link><div className="footer-address"><p>Katty Hair Studio</p><p>{address}</p></div><div className="footer-links"><a href={`tel:${phoneNumber}`}><Phone aria-hidden="true"/>{copy.call}</a><a href={whatsappUrl} rel="noreferrer" target="_blank"><SocialIcon platform="whatsapp"/>WhatsApp</a><a href={directionsUrl} rel="noreferrer" target="_blank"><MapPinned aria-hidden="true"/>{copy.map}</a>{socialLinks.map((social)=><a aria-label={social.label} className="footer-social-link" href={social.href} key={social.platform} rel="noreferrer" target="_blank" title={social.label}><SocialIcon platform={social.platform}/></a>)}</div><FooterBookingPurpose locale={locale}/></footer>;
+  return <footer className="site-footer" id="site-footer"><Link className="brand" href={localizePath("/", locale)}><BrandLogo/></Link><div className="footer-address"><p>Katty Hair Studio</p><p>{address}</p></div><div className="footer-links"><a href={`tel:${phoneNumber}`}><Phone aria-hidden="true"/>{copy.call}</a><a href={whatsappUrl} rel="noreferrer" target="_blank"><SocialIcon platform="whatsapp"/>WhatsApp</a><a href={directionsUrl} rel="noreferrer" target="_blank"><MapPinned aria-hidden="true"/>{copy.map}</a>{socialLinks.map((social)=><a aria-label={social.label} className="footer-social-link" href={social.href} key={social.platform} rel="noreferrer" target="_blank" title={social.label}><SocialIcon platform={social.platform}/></a>)}</div><FooterBookingPurpose locale={locale}/></footer>;
 }
 
 export function MobileActionBar({ locale = "en" }: { locale?: Locale }) {

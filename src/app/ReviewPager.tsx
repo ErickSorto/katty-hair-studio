@@ -26,7 +26,7 @@ type FeaturedReview = {
 
 function Stars({ label = "5 out of 5 stars" }: { label?: string }) {
   return (
-    <div className="stars" aria-label={label}>
+    <div className="stars" aria-label={label} role="img">
       {Array.from({ length: 5 }).map((_, index) => (
         <Star aria-hidden="true" key={index} />
       ))}
@@ -60,7 +60,9 @@ export default function ReviewPager({
   reviews: readonly FeaturedReview[];
 }) {
   const trackRef = useRef<HTMLDivElement>(null);
+  const pagerRef = useRef<HTMLDivElement>(null);
   const [activeSlide, setActiveSlide] = useState(0);
+  const [isNearViewport, setIsNearViewport] = useState(false);
   const slideCount = reviews.length + 1;
   const copy = locale === "es"
     ? {
@@ -122,6 +124,25 @@ export default function ReviewPager({
   };
 
   useEffect(() => {
+    const pager = pagerRef.current;
+
+    if (!pager) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsNearViewport(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "240px 0px" },
+    );
+
+    observer.observe(pager);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
     const track = trackRef.current;
 
     if (!track) {
@@ -146,7 +167,7 @@ export default function ReviewPager({
   }, [slideCount]);
 
   return (
-    <div className="review-pager" aria-label={copy.aria}>
+    <div className="review-pager" aria-label={copy.aria} ref={pagerRef}>
       <div className="review-pager-top">
         <a
           aria-label={copy.fullProfile}
@@ -191,7 +212,7 @@ export default function ReviewPager({
       </p>
 
       <div className="review-track" ref={trackRef}>
-        {reviews.map((review) => (
+        {reviews.map((review, index) => (
           <div
             className="review-slide"
             aria-label={`${copy.featured} ${review.name}`}
@@ -199,12 +220,15 @@ export default function ReviewPager({
           >
             <article className="featured-review-card">
               <div className="featured-review-image">
-                <Image
-                  alt={review.alt}
-                  fill
-                  sizes="(max-width: 900px) 100vw, 28vw"
-                  src={review.image}
-                />
+                {isNearViewport && activeSlide === index ? (
+                  <Image
+                    alt={review.alt}
+                    fill
+                    quality={60}
+                    sizes="(max-width: 900px) calc(100vw - 68px), 28vw"
+                    src={review.image}
+                  />
+                ) : null}
                 <span>
                   <Sparkles aria-hidden="true" />
                   {review.imageBadge}

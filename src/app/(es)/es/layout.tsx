@@ -1,16 +1,10 @@
 import type { Metadata } from "next";
-import { Inter, Playfair_Display } from "next/font/google";
+import { Playfair_Display } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import LanguageSuggestion from "@/app/i18n/LanguageSuggestion";
 import LocaleDocument from "@/app/i18n/LocaleDocument";
 import { localizedAlternates } from "@/app/i18n/config";
 import "@/app/globals.css";
-
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
-  display: "swap",
-});
 
 const playfair = Playfair_Display({
   variable: "--font-display",
@@ -54,7 +48,7 @@ export const metadata: Metadata = {
 export default function SpanishRootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html
-      className={`${inter.variable} ${playfair.variable} antialiased`}
+      className={`${playfair.variable} antialiased`}
       data-locale="es"
       data-scroll-behavior="smooth"
       lang="es"

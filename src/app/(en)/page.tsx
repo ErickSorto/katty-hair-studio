@@ -240,6 +240,7 @@ const videoStories = [
     detail: "A real client shares the feeling behind her finished look.",
     poster: "/video-stories/client-story-best-v1.webp",
     src: "/video-stories/client-story-best-v1.mp4",
+    captions: "/video-stories/client-story-best-v1.es.vtt",
     alt: "Katty Hair Studio client with sleek, long dark hair speaking from her car",
   },
   {
@@ -248,6 +249,7 @@ const videoStories = [
     detail: "Healthy-looking shine, movement, and a shape made for her.",
     poster: "/video-stories/client-story-shine-v1.webp",
     src: "/video-stories/client-story-shine-v1.mp4",
+    captions: "/video-stories/client-story-shine-v1.es.vtt",
     alt: "Katty Hair Studio client showing her glossy shoulder-length blowout",
   },
   {
@@ -256,6 +258,7 @@ const videoStories = [
     detail: "Sleek length and polish, captured right where it happened.",
     poster: "/video-stories/client-story-salon-v1.webp",
     src: "/video-stories/client-story-salon-v1.mp4",
+    captions: "/video-stories/client-story-salon-v1.es.vtt",
     alt: "Katty Hair Studio client showing her long, sleek hair inside the salon",
   },
 ] as const;
@@ -475,6 +478,7 @@ const spanishHomeData = {
       detail: "Una clienta real comparte cómo se siente con su resultado final.",
       poster: "/video-stories/client-story-best-v1.webp",
       src: "/video-stories/client-story-best-v1.mp4",
+      captions: "/video-stories/client-story-best-v1.es.vtt",
       alt: "Clienta de Katty Hair Studio con cabello largo, oscuro y liso hablando desde su automóvil",
     },
     {
@@ -483,6 +487,7 @@ const spanishHomeData = {
       detail: "Brillo saludable, movimiento y una forma creada para ella.",
       poster: "/video-stories/client-story-shine-v1.webp",
       src: "/video-stories/client-story-shine-v1.mp4",
+      captions: "/video-stories/client-story-shine-v1.es.vtt",
       alt: "Clienta de Katty Hair Studio mostrando su blowout brillante a la altura de los hombros",
     },
     {
@@ -491,6 +496,7 @@ const spanishHomeData = {
       detail: "Largo liso y pulido, capturado justo donde sucedió.",
       poster: "/video-stories/client-story-salon-v1.webp",
       src: "/video-stories/client-story-salon-v1.mp4",
+      captions: "/video-stories/client-story-salon-v1.es.vtt",
       alt: "Clienta de Katty Hair Studio mostrando su cabello largo y liso dentro del salón",
     },
   ],
@@ -615,95 +621,17 @@ function Icon({ icon: IconComponent }: { icon: SiteIcon }) {
 
 function BestProsInTownBadge({ locale }: { locale: Locale }) {
   return (
-    <>
-      <link
-        href="https://cdn6.localdatacdn.com/badges/bestprosintown/css/badge-v3.2.css?v=84924"
-        rel="stylesheet"
-      />
-      <div
-        className="bestpros-native-badge"
-        id="circle_v3"
-        style={{ height: "calc(227px * 1)", width: "calc(294px * 1)" }}
-        tabIndex={0}
-      >
-        <div className="rb_flex rb_top">
-          <div className="arc-heading">
-            <svg
-              height="160"
-              viewBox="0 0 150 140"
-              width="160"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <defs>
-                <path d="M 30 80 a 50 50 0 1 1 110 0" id="heading-arc" />
-              </defs>
-              <text
-                className="arc-heading__heading"
-                fill="#000"
-                textAnchor="middle"
-              >
-                <textPath href="#heading-arc" startOffset="50%">
-                  {locale === "es" ? "Recomendado" : "Recommended"}
-                </textPath>
-              </text>
-            </svg>
-          </div>
-          <div id="circletype_v3_brand_name">
-            <a
-              aria-label={locale === "es" ? "Ver Katty Hair Studio en BestProsInTown" : "View Katty Hair Studio on BestProsInTown"}
-              className="ahref_emprty_area"
-              href={bestProsUrl}
-              rel="noreferrer"
-              style={{ fontSize: "12.4px", fontWeight: 700 }}
-              target="_blank"
-            >
-              <svg height="62" width="235" xmlns="http://www.w3.org/2000/svg">
-                <defs>
-                  <path d="M15,40 A110,31 0 0 1 220 40" id="bestpros-brand-path" />
-                </defs>
-                <text className="bestpros-brand-text" textAnchor="middle">
-                  <textPath
-                    href="#bestpros-brand-path"
-                    lengthAdjust="spacingAndGlyphs"
-                    startOffset="50%"
-                    textLength="196"
-                  >
-                    Katty Hair Studio
-                  </textPath>
-                </text>
-              </svg>
-            </a>
-          </div>
-          <div className="arc-heading arc-heading__bottom">
-            <svg
-              height="160"
-              viewBox="0 0 150 150"
-              width="160"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <defs>
-                <path d="M 12 60 a 55 55 0 0 0 140 0" id="subheading-arc" />
-              </defs>
-              <text
-                className="arc-heading__subheading"
-                fill="#000"
-                textAnchor="middle"
-              >
-                <textPath href="#subheading-arc" startOffset="50%">
-                  <a
-                    href="https://www.bestprosintown.com"
-                    rel="noreferrer"
-                    target="_blank"
-                  >
-                    BestProsInTown
-                  </a>
-                </textPath>
-              </text>
-            </svg>
-          </div>
-        </div>
-      </div>
-    </>
+    <a
+      className="bestpros-proof-badge"
+      href={bestProsUrl}
+      rel="noreferrer"
+      target="_blank"
+    >
+      <Award aria-hidden="true" />
+      <span>BestProsInTown</span>
+      <strong>{locale === "es" ? "Recomendado" : "Recommended"}</strong>
+      <small>Katty Hair Studio</small>
+    </a>
   );
 }
 
@@ -928,8 +856,10 @@ export function HomePage({ locale = "en" }: { locale?: Locale }) {
         <Image
           alt={copy.hero.alt}
           className="hero-image"
+          fetchPriority="high"
           fill
-          priority
+          loading="eager"
+          quality={60}
           sizes="100vw"
           src="/hero/katty-salon-interior-hero-clear-pink-v4.webp"
         />
@@ -973,7 +903,6 @@ export function HomePage({ locale = "en" }: { locale?: Locale }) {
 
             return "href" in item ? (
               <a
-                aria-label={item.ariaLabel}
                 className="hero-mobile-signal"
                 href={item.href}
                 key={item.label}
@@ -1004,7 +933,6 @@ export function HomePage({ locale = "en" }: { locale?: Locale }) {
 
           return "href" in item ? (
             <a
-              aria-label={item.ariaLabel}
               className="proof-card"
               href={item.href}
               key={item.label}
@@ -1105,7 +1033,6 @@ export function HomePage({ locale = "en" }: { locale?: Locale }) {
             <Image
               alt={copy.plan.artAlt}
               fill
-              loading="eager"
               sizes="(max-width: 1100px) 100vw, 42vw"
               src="/editorial/katty-reference-chestnut-layers-v4.webp"
             />
