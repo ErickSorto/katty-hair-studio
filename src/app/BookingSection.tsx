@@ -225,11 +225,13 @@ function MonthCalendar({
 export default function BookingSection({
   locale = "en",
   mode = "section",
+  pageHeading,
   phoneDisplay,
   phoneNumber,
 }: {
   locale?: Locale;
   mode?: "page" | "section";
+  pageHeading?: string;
   phoneDisplay: string;
   phoneNumber: string;
 }) {
@@ -521,7 +523,11 @@ export default function BookingSection({
         <div className="reservation-atmosphere-shade" />
         <div className="reservation-atmosphere-copy">
           <p className="eyebrow">{copy.atmosphere.eyebrow}</p>
-          <h2>{copy.atmosphere.title}</h2>
+          {pageHeading ? (
+            <h1 className="reservation-page-title">{pageHeading}</h1>
+          ) : (
+            <h2>{copy.atmosphere.title}</h2>
+          )}
           <p>{copy.atmosphere.body}</p>
           <div className="reservation-atmosphere-notes">
             <span><BadgePercent aria-hidden="true" />{copy.atmosphere.monday}</span>

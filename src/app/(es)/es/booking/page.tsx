@@ -5,7 +5,7 @@ import { absoluteLocalizedUrl, localizedAlternates } from "@/app/i18n/config";
 
 const phoneNumber = "+12405826622";
 const phoneDisplay = "(240) 582-6622";
-const title = "Reserva una cita de cabello en Brentwood, MD | Katty";
+const title = "Reserva tu cita en Brentwood, MD | Katty Hair Studio";
 const description =
   "Elige un servicio de Katty Hair Studio, consulta la disponibilidad del salón en tiempo real y reserva tu cita en Brentwood, Maryland.";
 const canonical = absoluteLocalizedUrl("/booking", "es");
@@ -46,7 +46,13 @@ export default function BookingPage() {
       locale="es"
       showMobileActionBar={false}
     >
-      <BookingSection locale="es" mode="page" phoneDisplay={phoneDisplay} phoneNumber={phoneNumber} />
+      <BookingSection
+        locale="es"
+        mode="page"
+        pageHeading="Reserva una cita de cabello en Brentwood, MD"
+        phoneDisplay={phoneDisplay}
+        phoneNumber={phoneNumber}
+      />
     </EditorialPageFrame>
   );
 }

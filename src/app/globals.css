@@ -5103,7 +5103,8 @@ section {
   background: var(--blush);
 }
 
-.reservation-atmosphere-copy h2 {
+.reservation-atmosphere-copy h2,
+.reservation-atmosphere-copy .reservation-page-title {
   max-width: 8.5ch;
   margin: 14px 0 0;
   color: var(--paper);
@@ -5113,6 +5114,11 @@ section {
   letter-spacing: -0.055em;
   line-height: 0.9;
   text-wrap: balance;
+}
+
+.reservation-atmosphere-copy .reservation-page-title {
+  max-width: 12ch;
+  font-size: clamp(2.8rem, 4.5vw, 5.4rem);
 }
 
 .reservation-atmosphere-copy > p:not(.eyebrow) {
@@ -6413,6 +6419,11 @@ section {
     font-size: clamp(3.2rem, 10vw, 5.7rem);
   }
 
+  .reservation-atmosphere-copy .reservation-page-title {
+    max-width: 13ch;
+    font-size: clamp(2.8rem, 8vw, 4.8rem);
+  }
+
   .reservation-workspace {
     min-height: 720px;
   }
@@ -6442,6 +6453,11 @@ section {
     max-width: 11ch;
     margin-top: 8px;
     font-size: clamp(2.55rem, 12vw, 3.7rem);
+  }
+
+  .reservation-atmosphere-copy .reservation-page-title {
+    max-width: 14ch;
+    font-size: clamp(2.05rem, 9vw, 3rem);
   }
 
   .reservation-atmosphere-copy > p:not(.eyebrow),

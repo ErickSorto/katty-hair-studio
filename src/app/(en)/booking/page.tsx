@@ -5,7 +5,7 @@ import { absoluteLocalizedUrl, localizedAlternates } from "@/app/i18n/config";
 
 const phoneNumber = "+12405826622";
 const phoneDisplay = "(240) 582-6622";
-const title = "Book a Hair Appointment in Brentwood, MD | Katty";
+const title = "Book a Hair Appointment in Brentwood, MD | Katty Hair Studio";
 const description =
   "Choose a Katty Hair Studio service, see live salon availability, and reserve your appointment in Brentwood, Maryland.";
 const canonical = absoluteLocalizedUrl("/booking", "en");
@@ -33,7 +33,12 @@ export default function BookingPage() {
       className="editorial-booking-page booking-page-focused"
       showMobileActionBar={false}
     >
-      <BookingSection mode="page" phoneDisplay={phoneDisplay} phoneNumber={phoneNumber} />
+      <BookingSection
+        mode="page"
+        pageHeading="Book a Hair Appointment in Brentwood, MD"
+        phoneDisplay={phoneDisplay}
+        phoneNumber={phoneNumber}
+      />
     </EditorialPageFrame>
   );
 }

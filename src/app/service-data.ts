@@ -60,6 +60,12 @@ const generatedServicePages = (content as ServicePageData[])
     if (page.slug === "curly-hair") {
       return { ...page, relatedSlugs: ["silk-press", "hairstyling", "blowouts"] };
     }
+    if (page.slug === "hair-extension-blending-and-styling") {
+      return {
+        ...page,
+        title: "Hair Extension Blending in Brentwood, MD | Katty Hair Studio",
+      };
+    }
     return page;
   });
 
