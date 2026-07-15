@@ -31,6 +31,7 @@ const categoryServiceSlugs: Record<string, readonly string[]> = {
     "balayage",
     "braids",
     "blowouts",
+    "silk-press",
     "hair-highlighting",
   ],
   "hair-extension-technician": [
@@ -152,7 +153,12 @@ function JsonLd({ data, locale }: { data: ServicePageData; locale: Locale }) {
       "@id": `${canonical}#webpage`,
       url: canonical,
       name: data.h1,
+      description: data.description,
       inLanguage: locale,
+      primaryImageOfPage: {
+        "@type": "ImageObject",
+        url: `https://www.kattyhairstudio.com${getServiceImage(data.slug)}`,
+      },
       isPartOf: { "@id": "https://www.kattyhairstudio.com/#website" },
       about: { "@id": "https://www.kattyhairstudio.com/#business" },
       breadcrumb: { "@id": `${canonical}#breadcrumb` },
@@ -193,10 +199,14 @@ function JsonLd({ data, locale }: { data: ServicePageData; locale: Locale }) {
       "@id": `${canonical}#service`,
       name: data.name,
       serviceType: data.name,
+      description: data.description,
       url: canonical,
       inLanguage: locale,
       provider: { "@id": "https://www.kattyhairstudio.com/#business" },
-      areaServed: { "@type": "City", name: "Brentwood, Maryland" },
+      areaServed: (data.serviceAreas ?? ["Brentwood, Maryland"]).map((name) => ({
+        "@type": "City",
+        name,
+      })),
     });
   } else {
     graph.push({
@@ -209,6 +219,21 @@ function JsonLd({ data, locale }: { data: ServicePageData; locale: Locale }) {
         position: index + 1,
         name: section.heading,
         url: absoluteLocalizedUrl(`/services/${slugs[index]}`, locale),
+      })),
+    });
+  }
+
+  if (!isCategory && data.faqs.length) {
+    graph.push({
+      "@type": "FAQPage",
+      "@id": `${canonical}#faq`,
+      mainEntity: data.faqs.map((faq) => ({
+        "@type": "Question",
+        name: faq.question,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: faq.answer,
+        },
       })),
     });
   }
@@ -263,7 +288,7 @@ export default function ServicePageTemplate({
 
       <section className="hero service-hero" id="top">
         <Image
-          alt={isBrowWaxing ? copy.browAlt : copy.styledAlt(data.name)}
+          alt={data.heroImageAlt ?? (isBrowWaxing ? copy.browAlt : copy.styledAlt(data.name))}
           className="hero-image service-hero-image"
           fill
           priority
@@ -285,7 +310,9 @@ export default function ServicePageTemplate({
           </nav>
           <p className="eyebrow">{isBrowWaxing ? copy.browKicker : copy.hairKicker}</p>
           <h1>{data.h1}</h1>
-          <p className="hero-copy">{isBrowWaxing ? copy.browHero : copy.hairHero}</p>
+          <p className="hero-copy">
+            {data.heroDescription ?? (isBrowWaxing ? copy.browHero : copy.hairHero)}
+          </p>
           <div className="hero-actions">
             <Link className="primary-link" href={localizePath("/#booking", locale)}>
               {copy.request} <ArrowRight aria-hidden="true" />
@@ -294,7 +321,9 @@ export default function ServicePageTemplate({
               <Phone aria-hidden="true" /> {copy.call}
             </a>
           </div>
-          <p className="hero-trust-line">{isBrowWaxing ? copy.browTrust : copy.hairTrust}</p>
+          <p className="hero-trust-line">
+            {data.heroTrust ?? (isBrowWaxing ? copy.browTrust : copy.hairTrust)}
+          </p>
         </div>
       </section>
 
@@ -310,12 +339,16 @@ export default function ServicePageTemplate({
           ? data.slug === "hair-salon" ? copy.hairSalonCategoryTitle : copy.extensionCategoryTitle
           : copy.detailTitle(data.name)}
         </h2>
-        <p>{isBrowWaxing ? copy.browIntro : copy.hairIntro}</p>
+        <p>{data.intro ?? (isBrowWaxing ? copy.browIntro : copy.hairIntro)}</p>
       </section>
 
       <div className="service-editorial-sections">
         {data.sections.map((section, index) => (
-          <section className={`service-editorial ${index % 2 ? "service-editorial-reverse" : ""}`} data-reveal key={section.heading}>
+          <section
+            className={`service-editorial ${index % 2 ? "service-editorial-reverse" : ""} ${section.media ? "service-editorial-has-media" : ""}`}
+            data-reveal
+            key={section.heading}
+          >
             <div className="service-editorial-index" aria-hidden="true">{String(index + 1).padStart(2, "0")}</div>
             <div className="service-editorial-copy">
               <p className="eyebrow">{isCategory ? categoryServiceLabel : index === 0 ? copy.visit : index === 1 ? copy.process : index === 2 ? copy.helps : copy.why}</p>
@@ -327,6 +360,19 @@ export default function ServicePageTemplate({
                 </Link>
               )}
             </div>
+            {section.media && (
+              <figure className="service-editorial-art">
+                <Image
+                  alt={section.media.alt}
+                  fill
+                  sizes="(max-width: 900px) 100vw, 42vw"
+                  src={section.media.src}
+                  style={{ objectPosition: section.media.position ?? "center" }}
+                  title={section.media.title}
+                />
+                {section.media.caption && <figcaption>{section.media.caption}</figcaption>}
+              </figure>
+            )}
           </section>
         ))}
       </div>

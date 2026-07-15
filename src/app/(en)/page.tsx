@@ -35,12 +35,12 @@ import { localizedAlternates } from "@/app/i18n/config";
 export const metadata: Metadata = {
   title: "Katty Hair Studio | Hair Salon in Brentwood, MD",
   description:
-    "Katty Hair Studio is a full-service hair salon at 3816 Bladensburg Rd, Brentwood, MD, offering haircuts, color, Dominican blowouts, braids and extensions.",
+    "Katty Hair Studio is a full-service hair salon at 3816 Bladensburg Rd, Brentwood, MD, offering silk presses, Dominican blowouts, haircuts, color, braids and extensions.",
   alternates: localizedAlternates("/", "en"),
   openGraph: {
     title: "Katty Hair Studio | Hair Salon in Brentwood, MD",
     description:
-      "Visit our full-service Brentwood hair salon for haircuts, color, Dominican blowouts, braids, extensions, treatments and styling for every texture.",
+      "Visit our full-service Brentwood hair salon for silk presses, Dominican blowouts, haircuts, color, braids, extensions, treatments and styling for every texture.",
     url: "https://www.kattyhairstudio.com/",
     type: "website",
     siteName: "Katty Hair Studio",
@@ -67,8 +67,8 @@ const bestProsUrl =
 
 const services = [
   {
-    title: "Dominican blowouts",
-    detail: "You get smooth roots, soft body, and brushed shine.",
+    title: "Silk presses and Dominican blowouts",
+    detail: "Compare the smooth finish, body, heat plan, and upkeep that fit your hair.",
     icon: Sparkles,
   },
   {
@@ -93,7 +93,7 @@ const homeFaqs = [
     question:
       "Which hair salon services can I discuss with Katty Hair Studio in Brentwood?",
     answer:
-      "You can discuss professional hair care, styling, and haircut services with us in Brentwood, including Dominican blowouts, color, extensions, braids, and cuts at our Bladensburg Rd studio.",
+      "You can discuss professional hair care, styling, and haircut services with us in Brentwood, including silk presses, Dominican blowouts, color, extensions, braids, and cuts at our Bladensburg Rd studio.",
   },
   {
     question: "How can I decide which hair salon service fits my needs?",
@@ -122,7 +122,7 @@ function HomeJsonLd({ faqs, locale }: { faqs: readonly { answer: string; questio
       description:
         locale === "es"
           ? "Salón de belleza de servicio completo en Brentwood, Maryland, con cortes, coloración, blowouts dominicanos, trenzas, extensiones, tratamientos y peinados para cada textura."
-          : "Full-service hair salon in Brentwood, Maryland offering haircuts, hair color, Dominican blowouts, braids, extensions, treatments, and styling for every texture.",
+          : "Full-service hair salon in Brentwood, Maryland offering silk presses, Dominican blowouts, haircuts, hair color, braids, extensions, treatments, and styling for every texture.",
       url: "https://www.kattyhairstudio.com/",
       telephone: phoneNumber,
       address: {
@@ -375,8 +375,8 @@ const featuredReviews = [
 const spanishHomeData = {
   services: [
     {
-      title: "Blowouts dominicanos",
-      detail: "Obtén raíces lisas, volumen suave y un brillo pulido.",
+      title: "Silk press y blowouts dominicanos",
+      detail: "Compara el acabado liso, el volumen, el plan de calor y el cuidado ideal para tu cabello.",
       icon: Sparkles,
     },
     {
@@ -398,7 +398,7 @@ const spanishHomeData = {
   homeFaqs: [
     {
       question: "¿Qué servicios de salón puedo consultar con Katty Hair Studio en Brentwood?",
-      answer: "Puedes consultar servicios profesionales de cuidado, peinado y corte de cabello en nuestro salón de Bladensburg Rd en Brentwood, incluidos blowouts dominicanos, color, extensiones, trenzas y cortes.",
+      answer: "Puedes consultar servicios profesionales de cuidado, peinado y corte de cabello en nuestro salón de Bladensburg Rd en Brentwood, incluidos silk press, blowouts dominicanos, color, extensiones, trenzas y cortes.",
     },
     {
       question: "¿Cómo puedo decidir qué servicio es adecuado para mi cabello?",
@@ -763,13 +763,14 @@ export function HomePage({ locale = "en" }: { locale?: Locale }) {
           primaryAlt: "Interior rosado y cálido de Katty Hair Studio con sillas de estilismo y espejos",
           primaryLabel: "Categoría principal",
           primaryTitle: "Salón de belleza en Brentwood, MD",
-          primaryBody: "Explora color personalizado, blowouts dominicanos, trenzas, cortes, tratamientos y peinados adaptados a tu textura, rutina y acabado deseado.",
+          primaryBody: "Explora silk press, color personalizado, blowouts dominicanos, trenzas, cortes, tratamientos y peinados adaptados a tu textura, rutina y acabado deseado.",
           primaryLink: "Explorar servicios de salón",
           secondaryAlt: "Clienta de Katty Hair Studio con extensiones largas, negras y brillantes integradas con rizos suaves",
           secondaryLabel: "Categoría especializada",
           secondaryTitle: "Especialista en extensiones de cabello en Brentwood, MD",
           secondaryBody: "Compara consultas, instalaciones, integración, mantenimiento y retiro cuidadoso, siempre priorizando la salud de tu cabello natural.",
           secondaryLink: "Explorar servicios de extensiones",
+          allServices: "Ver el directorio completo de servicios",
         },
         process: {
           eyebrow: "Tu cita",
@@ -861,13 +862,14 @@ export function HomePage({ locale = "en" }: { locale?: Locale }) {
           primaryAlt: "Warm baby-pink Katty Hair Studio interior with styling chairs and mirrors",
           primaryLabel: "Primary category",
           primaryTitle: "Hair salon in Brentwood, MD",
-          primaryBody: "Explore personalized color, Dominican blowouts, braids, cuts, treatments, and styling shaped around your texture, routine, and desired finish.",
+          primaryBody: "Explore silk presses, personalized color, Dominican blowouts, braids, cuts, treatments, and styling shaped around your texture, routine, and desired finish.",
           primaryLink: "Explore hair salon services",
           secondaryAlt: "Client with long glossy black extension blend and soft curls at Katty Hair Studio",
           secondaryLabel: "Specialist category",
           secondaryTitle: "Hair extension technician in Brentwood, MD",
           secondaryBody: "Compare consultations, installation, blending, maintenance, and careful removal with your natural-hair health guiding every recommendation.",
           secondaryLink: "Explore extension services",
+          allServices: "View the complete service directory",
         },
         process: {
           eyebrow: "Your appointment",
@@ -1157,6 +1159,9 @@ export function HomePage({ locale = "en" }: { locale?: Locale }) {
             <p className="eyebrow">{copy.categories.eyebrow}</p>
             <h2 id="category-architecture-heading">{copy.categories.title}</h2>
             <p>{copy.categories.body}</p>
+            <Link className="category-hub-all-services" href={localizePath("/services", locale)}>
+              {copy.categories.allServices}<ArrowRight aria-hidden="true" />
+            </Link>
           </div>
 
           <div className="category-cards">

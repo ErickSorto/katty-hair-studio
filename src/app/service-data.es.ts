@@ -5,15 +5,28 @@ import {
 } from "./extension-services.es";
 import { extensionServiceSlugs, getServiceImage } from "./service-data";
 import type { ServicePageData } from "./service-data";
+import { silkPressServiceEs } from "./silk-press-service.es";
 
-export type { ServiceFaq, ServicePageData, ServiceSection } from "./service-data";
+export type { ServiceFaq, ServicePageData, ServiceSection, ServiceSectionMedia } from "./service-data";
 export { extensionServiceSlugs, getServiceImage };
 
-const generatedServicePages = content as ServicePageData[];
+const generatedServicePages = (content as ServicePageData[]).map((page) => {
+  if (page.slug === "blowouts") {
+    return { ...page, relatedSlugs: ["silk-press", "hair-blowouts", "hair-straightening"] };
+  }
+  if (page.slug === "hair-straightening") {
+    return { ...page, relatedSlugs: ["silk-press", "blowouts", "smoothing-hair-treatment"] };
+  }
+  if (page.slug === "curly-hair") {
+    return { ...page, relatedSlugs: ["silk-press", "hairstyling", "blowouts"] };
+  }
+  return page;
+});
 
 export const servicePages: ServicePageData[] = [
   ...generatedServicePages,
   ...addedExtensionServices,
+  silkPressServiceEs,
 ];
 
 const generatedExtensionCategory = generatedServicePages.find(
@@ -35,7 +48,7 @@ export const hairSalonCategory: ServicePageData = {
   "h1": "Salón de belleza en Brentwood, MD",
   "name": "Salón de belleza",
   "title": "Salón de belleza en Brentwood, MD | Katty Hair Studio",
-  "description": "Explora coloración, mechas, balayage, blowouts, trenzas, cortes, tratamientos y peinados personalizados en Katty Hair Studio en Brentwood, MD.",
+  "description": "Explora silk press, coloración, mechas, balayage, blowouts, trenzas, cortes, tratamientos y peinados personalizados en Katty Hair Studio en Brentwood, MD.",
   "canonical": "https://www.kattyhairstudio.com/es/hair-salon",
   "sections": [
     {
@@ -74,6 +87,13 @@ export const hairSalonCategory: ServicePageData = {
       ]
     },
     {
+      "heading": "Silk press",
+      "paragraphs": [
+        "Un silk press crea un acabado liso temporal para cabello natural y texturizado sin usar un alisador químico. La consulta cubre la densidad, el historial de calor, la condición actual, el movimiento deseado y el mantenimiento que se adapta a tu rutina.",
+        "Explora la página dedicada al silk press para comparar el proceso con un blowout dominicano, saber qué confirmar sobre acondicionamiento y corte, y planificar para la humedad de DC y Maryland antes de solicitar tu cita."
+      ]
+    },
+    {
       "heading": "Mechas",
       "paragraphs": [
         "La colocación de mechas se planifica en función de tu color actual, el marco de tu rostro, el brillo preferido y el mantenimiento futuro. Tu historial capilar ayuda a determinar una dirección realista y saludable.",
@@ -84,7 +104,7 @@ export const hairSalonCategory: ServicePageData = {
   "faqs": [
     {
       "question": "¿Qué servicios de salón de belleza puedo explorar desde esta página de categoría?",
-      "answer": "Puedes explorar color, mechas, balayage, blowouts, trenzas, cortes, tratamientos alisadores, tratamientos suavizantes, pelucas y peinados disponibles a través de Katty Hair Studio en Brentwood."
+      "answer": "Puedes explorar silk press, color, mechas, balayage, blowouts, trenzas, cortes, tratamientos alisadores, tratamientos suavizantes, pelucas y peinados disponibles a través de Katty Hair Studio en Brentwood."
     },
     {
       "question": "¿Cómo elijo el servicio de salón de belleza adecuado para mi objetivo?",
@@ -110,6 +130,12 @@ export function getServicePage(slug: string) {
 }
 
 export function getRelatedServices(page: ServicePageData) {
+  if (page.relatedSlugs?.length) {
+    return page.relatedSlugs
+      .map((slug) => brentwoodServices.find((item) => item.slug === slug))
+      .filter((item): item is ServicePageData => Boolean(item));
+  }
+
   const pool = extensionServiceSlugs.has(page.slug)
     ? brentwoodServices.filter((item) => extensionServiceSlugs.has(item.slug))
     : brentwoodServices.filter((item) => !extensionServiceSlugs.has(item.slug));

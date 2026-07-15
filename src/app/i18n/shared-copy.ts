@@ -95,7 +95,7 @@ export const serviceNavigationCopy = {
   en: {
     categoryGateways: [
       {
-        description: "Color, cuts, blowouts, braids, treatments, and styling.",
+        description: "Color, cuts, silk presses, blowouts, braids, treatments, and styling.",
         eyebrow: "Primary category",
         href: "/hair-salon",
         label: "Hair salon",
@@ -121,6 +121,7 @@ export const serviceNavigationCopy = {
       {
         label: "Blowouts & styling",
         links: [
+          ["Silk press", "/services/silk-press"],
           ["Dominican blowouts", "/services/blowouts"],
           ["Hair blowouts", "/services/hair-blowouts"],
           ["Curly hair", "/services/curly-hair"],
@@ -166,11 +167,12 @@ export const serviceNavigationCopy = {
     menuLabel: "Services",
     request: "Request an appointment",
     title: "Find the right service for your hair.",
+    viewAll: "View all services",
   },
   es: {
     categoryGateways: [
       {
-        description: "Color, cortes, blowouts, trenzas, tratamientos y peinados.",
+        description: "Color, cortes, silk press, blowouts, trenzas, tratamientos y peinados.",
         eyebrow: "Categoría principal",
         href: "/hair-salon",
         label: "Salón de belleza",
@@ -196,6 +198,7 @@ export const serviceNavigationCopy = {
       {
         label: "Blowouts y peinados",
         links: [
+          ["Silk press", "/services/silk-press"],
           ["Blowouts dominicanos", "/services/blowouts"],
           ["Blowouts", "/services/hair-blowouts"],
           ["Cabello rizado", "/services/curly-hair"],
@@ -241,5 +244,6 @@ export const serviceNavigationCopy = {
     menuLabel: "Servicios",
     request: "Solicitar una cita",
     title: "Encuentra el servicio indicado para tu cabello.",
+    viewAll: "Ver todos los servicios",
   },
 } as const satisfies Record<Locale, unknown>;

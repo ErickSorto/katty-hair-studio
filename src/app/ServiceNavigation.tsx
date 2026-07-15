@@ -104,7 +104,10 @@ export function DesktopServicesMenu({ locale = "en" }: { locale?: Locale }) {
         </div>
         <div className="services-mega-footer">
           <span>{copy.footer}</span>
-          <Link href={localizePath("/#booking", locale)}>{copy.request} <ArrowRight aria-hidden="true" /></Link>
+          <div className="services-mega-footer-links">
+            <Link href={localizePath("/services", locale)}>{copy.viewAll} <ArrowRight aria-hidden="true" /></Link>
+            <Link href={localizePath("/booking", locale)}>{copy.request} <ArrowRight aria-hidden="true" /></Link>
+          </div>
         </div>
       </div>
     </div>
@@ -121,6 +124,9 @@ export function DrawerServicesMenu({ locale = "en" }: { locale?: Locale }) {
         <ChevronDown aria-hidden="true" />
       </summary>
       <div className="drawer-services-content">
+        <Link className="drawer-all-services-link" href={localizePath("/services", locale)}>
+          {copy.viewAll}<ArrowRight aria-hidden="true" />
+        </Link>
         <CategoryGateways locale={locale} mobile />
         <div className="drawer-service-groups">
           {copy.groups.map((group) => (

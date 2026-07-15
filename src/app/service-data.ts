@@ -1,9 +1,19 @@
 import content from "./service-content.generated.json";
 import { addedExtensionCategorySections, addedExtensionServices } from "./extension-services";
+import { silkPressService } from "./silk-press-service";
+
+export type ServiceSectionMedia = {
+  src: string;
+  alt: string;
+  title: string;
+  caption?: string;
+  position?: string;
+};
 
 export type ServiceSection = {
   heading: string;
   paragraphs: string[];
+  media?: ServiceSectionMedia;
 };
 
 export type ServiceFaq = {
@@ -20,15 +30,34 @@ export type ServicePageData = {
   title: string;
   description: string;
   canonical: string;
+  heroDescription?: string;
+  heroImageAlt?: string;
+  heroTrust?: string;
+  intro?: string;
+  relatedSlugs?: string[];
+  serviceAreas?: string[];
+  socialImage?: string;
   sections: ServiceSection[];
   faqs: ServiceFaq[];
 };
 
-const generatedServicePages = content as ServicePageData[];
+const generatedServicePages = (content as ServicePageData[]).map((page) => {
+  if (page.slug === "blowouts") {
+    return { ...page, relatedSlugs: ["silk-press", "hair-blowouts", "hair-straightening"] };
+  }
+  if (page.slug === "hair-straightening") {
+    return { ...page, relatedSlugs: ["silk-press", "blowouts", "smoothing-hair-treatment"] };
+  }
+  if (page.slug === "curly-hair") {
+    return { ...page, relatedSlugs: ["silk-press", "hairstyling", "blowouts"] };
+  }
+  return page;
+});
 
 export const servicePages: ServicePageData[] = [
   ...generatedServicePages,
   ...addedExtensionServices,
+  silkPressService,
 ];
 
 const generatedExtensionCategory = generatedServicePages.find(
@@ -53,7 +82,7 @@ export const hairSalonCategory: ServicePageData = {
   name: "Hair salon",
   title: "Hair Salon in Brentwood, MD | Katty Hair Studio",
   description:
-    "Explore blowouts, color, highlights, braids, cuts, styling, and personalized hair care at Katty Hair Studio in Brentwood, MD.",
+    "Explore silk presses, blowouts, color, highlights, braids, cuts, styling, and personalized hair care at Katty Hair Studio in Brentwood, MD.",
   canonical: "https://www.kattyhairstudio.com/hair-salon",
   sections: [
     {
@@ -92,6 +121,13 @@ export const hairSalonCategory: ServicePageData = {
       ],
     },
     {
+      heading: "Silk press",
+      paragraphs: [
+        "A silk press creates a temporary smooth finish for natural and textured hair without using a chemical straightener. Your consultation covers density, heat history, current condition, desired movement, and the amount of maintenance that fits your routine.",
+        "Explore the dedicated silk press page to compare the process with a Dominican blowout, understand what to confirm about conditioning and trims, and plan for DC and Maryland humidity before requesting your appointment.",
+      ],
+    },
+    {
       heading: "Hair highlighting",
       paragraphs: [
         "Highlight placement is planned around your current color, face framing, preferred brightness, and future maintenance. Your hair history helps determine a realistic and healthy direction.",
@@ -103,7 +139,7 @@ export const hairSalonCategory: ServicePageData = {
     {
       question: "Which hair salon services can I explore from this category page?",
       answer:
-        "You can explore color, highlights, balayage, blowouts, braids, cuts, straightening, smoothing treatments, wigs, and hairstyling available through Katty Hair Studio in Brentwood.",
+        "You can explore silk presses, color, highlights, balayage, blowouts, braids, cuts, straightening, smoothing treatments, wigs, and hairstyling available through Katty Hair Studio in Brentwood.",
     },
     {
       question: "How do I choose the right hair salon service for my goal?",
@@ -172,6 +208,7 @@ const serviceImages: Record<string, string> = {
   "brazilian-knots-hair-extensions": "/services/generated/brazilian-knots-hair-extensions-v2.webp",
   "hair-highlighting": "/services/generated/hair-highlighting-v2.webp",
   "hair-straightening": "/services/generated/hair-straightening-v2.webp",
+  "silk-press": "/services/generated/silk-press-hero-v1.webp",
   "hair-stylist": "/services/generated/hair-stylist-v2.webp",
   hairstyling: "/gallery/katty-vintage-curl-set-themed-v2.webp",
   "mens-haircuts": "/services/generated/mens-haircuts-v2.webp",
@@ -187,6 +224,12 @@ export function getServiceImage(slug: string) {
 }
 
 export function getRelatedServices(page: ServicePageData) {
+  if (page.relatedSlugs?.length) {
+    return page.relatedSlugs
+      .map((slug) => brentwoodServices.find((item) => item.slug === slug))
+      .filter((item): item is ServicePageData => Boolean(item));
+  }
+
   const pool = extensionServiceSlugs.has(page.slug)
     ? brentwoodServices.filter((item) => extensionServiceSlugs.has(item.slug))
     : brentwoodServices.filter((item) => !extensionServiceSlugs.has(item.slug));

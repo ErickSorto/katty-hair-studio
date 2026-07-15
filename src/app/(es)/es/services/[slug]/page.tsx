@@ -24,6 +24,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!page) return {};
 
   const canonical = absoluteLocalizedUrl(page.url, "es");
+  const socialImage = page.socialImage ?? "/social/katty-share-preview.webp";
 
   return {
     title: page.title,
@@ -38,17 +39,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       locale: "es_US",
       alternateLocale: ["en_US"],
       images: [{
-        url: "/social/katty-share-preview.webp",
-        width: 1200,
-        height: 630,
-        alt: `${page.name} en Katty Hair Studio`,
+        url: socialImage,
+        alt: page.heroImageAlt ?? `${page.name} en Katty Hair Studio`,
       }],
     },
     twitter: {
       card: "summary_large_image",
       title: page.title,
       description: page.description,
-      images: ["/social/katty-share-preview.webp"],
+      images: [socialImage],
     },
   };
 }

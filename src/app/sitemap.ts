@@ -17,6 +17,7 @@ const staticRoutes: readonly RouteSpec[] = [
   { path: "/booking", changeFrequency: "weekly", priority: 0.9 },
   { path: "/gallery", changeFrequency: "weekly", priority: 0.8 },
   { path: "/location", changeFrequency: "monthly", priority: 0.8 },
+  { path: "/services", changeFrequency: "weekly", priority: 0.95 },
   {
     path: hairSalonCategory.url,
     changeFrequency: "monthly",
@@ -45,7 +46,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const serviceRoutes: RouteSpec[] = servicePages.map((page) => ({
     path: page.url,
     changeFrequency: "monthly",
-    priority: page.pageType === "Category Page" ? 0.9 : 0.8,
+    priority: page.slug === "silk-press" || page.pageType === "Category Page" ? 0.9 : 0.8,
   }));
 
   return [...staticRoutes, ...serviceRoutes].flatMap(localizedEntries);

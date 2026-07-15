@@ -15,6 +15,7 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const page = getServicePage((await params).slug);
   if (!page) return {};
+  const socialImage = page.socialImage ?? "/social/katty-share-preview.webp";
 
   return {
     title: page.title,
@@ -28,13 +29,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       siteName: "Katty Hair Studio",
       locale: "en_US",
       alternateLocale: ["es_US"],
-      images: ["/social/katty-share-preview.webp"],
+      images: [{ url: socialImage, alt: page.heroImageAlt ?? `${page.name} at Katty Hair Studio` }],
     },
     twitter: {
       card: "summary_large_image",
       title: page.title,
       description: page.description,
-      images: ["/social/katty-share-preview.webp"],
+      images: [socialImage],
     },
   };
 }
