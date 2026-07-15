@@ -25,10 +25,6 @@ export const metadata: Metadata = {
   description:
     "Katty Hair Studio is a full-service hair salon at 3816 Bladensburg Rd, Brentwood, MD, offering haircuts, color, Dominican blowouts, braids and extensions.",
   alternates: localizedAlternates("/", "en"),
-  icons: {
-    icon: [{ url: "/icon.png", type: "image/png" }],
-    apple: [{ url: "/icon.png", type: "image/png" }],
-  },
   openGraph: {
     title: "Katty Hair Studio | Hair Salon in Brentwood, MD",
     description:

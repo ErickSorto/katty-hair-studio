@@ -25,10 +25,6 @@ export const metadata: Metadata = {
   description:
     "Reserva color, cortes, blowouts dominicanos, trenzas, extensiones, tratamientos y peinados en nuestro salón dominicano de servicio completo en Brentwood, MD.",
   alternates: localizedAlternates("/", "es"),
-  icons: {
-    icon: [{ url: "/icon.png", type: "image/png" }],
-    apple: [{ url: "/icon.png", type: "image/png" }],
-  },
   openGraph: {
     title: "Katty Hair Studio | Salón de belleza en Brentwood, MD",
     description:
@@ -72,4 +68,3 @@ export default function SpanishRootLayout({ children }: Readonly<{ children: Rea
     </html>
   );
 }
-
