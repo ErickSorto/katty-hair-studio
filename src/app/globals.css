@@ -9258,6 +9258,23 @@ section {
   max-width: 880px;
 }
 
+@media (min-width: 901px) {
+  .services-hub-page .editorial-page-hero-content {
+    width: min(1180px, 100%);
+  }
+
+  .services-hub-page .editorial-page-hero h1 {
+    max-width: 1000px;
+    font-size: clamp(4rem, 5.2vw, 5.75rem);
+    line-height: 0.92;
+    text-wrap: wrap;
+  }
+
+  .services-hub-page .editorial-page-hero-copy {
+    max-width: 720px;
+  }
+}
+
 .services-hub-categories,
 .services-hub-directory {
   padding: clamp(84px, 9vw, 136px) var(--page-gutter);
