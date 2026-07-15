@@ -13,7 +13,7 @@ export const topPriorityServices = [
   },
   {
     href: "/services/braids",
-    label: { en: "Hair braiding", es: "Trenzado de cabello" },
+    label: { en: "Hair Braiding Services", es: "Trenzado de cabello" },
   },
   {
     href: "/services/hair-extension-consultation",

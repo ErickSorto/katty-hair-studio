@@ -117,7 +117,7 @@ export const hairSalonCategory: ServicePageData = {
       ],
     },
     {
-      heading: "Braids",
+      heading: "Hair Braiding Services",
       paragraphs: [
         "Braiding starts with a conversation about the pattern, size, length, tension, and daily routine you need the style to support. Clean preparation and comfortable sectioning guide the service.",
         "We focus on a neat finish and practical upkeep so your braids feel intentional, secure, and manageable.",

@@ -4,9 +4,9 @@ export const braidsService: ServicePageData = {
   slug: "braids",
   url: "/services/braids",
   pageType: "Service Page",
-  h1: "Braids in Brentwood, MD",
-  name: "Hair braiding",
-  title: "Hair Braiding in Brentwood, MD | Katty Hair Studio",
+  h1: "Hair Braiding Services in Brentwood, MD",
+  name: "Hair Braiding Services",
+  title: "Hair Braiding Services in Brentwood, MD | Katty Hair Studio",
   description:
     "Plan braids in Brentwood, MD, with your reference, braid size, length, added hair, scalp comfort, preparation, maintenance, timing, and quote discussed first.",
   canonical: "https://www.kattyhairstudio.com/services/braids",

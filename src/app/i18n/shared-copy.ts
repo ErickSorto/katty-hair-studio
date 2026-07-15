@@ -137,7 +137,7 @@ export const serviceNavigationCopy = {
           ["Bang trim", "/services/bang-trim"],
           ["Women’s haircuts", "/services/womens-haircuts"],
           ["Men’s haircuts", "/services/mens-haircuts"],
-          ["Hair braiding", "/services/braids"],
+          ["Hair Braiding Services", "/services/braids"],
           ["Twist braids", "/services/twist-braids"],
           ["Wigs", "/services/wigs"],
           ["Eyebrow waxing", "/services/eyebrow-waxing"],
