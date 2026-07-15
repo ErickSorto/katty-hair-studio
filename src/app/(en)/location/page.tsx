@@ -4,11 +4,12 @@ import BookingSection from "@/app/BookingSection";
 import EditorialPageFrame from "@/app/EditorialPageFrame";
 import EditorialPageHero from "@/app/EditorialPageHero";
 import LocationSection from "@/app/LocationSection";
+import StorefrontArrival from "@/app/StorefrontArrival";
 import { absoluteLocalizedUrl, localizedAlternates } from "@/app/i18n/config";
 
 const phoneNumber = "+12405826622";
 const phoneDisplay = "(240) 582-6622";
-const title = "Katty Hair Studio Location in Brentwood, MD";
+const title = "Hair Salon Location in Brentwood, MD | Katty Hair Studio";
 const description =
   "Find Katty Hair Studio at 3816 Bladensburg Rd in Brentwood, Maryland. View salon hours, directions, arrival notes, and appointment options.";
 const canonical = absoluteLocalizedUrl("/location", "en");
@@ -82,6 +83,7 @@ export default function LocationPage() {
         </div>
       </section>
 
+      <StorefrontArrival />
       <LocationSection />
       <BookingSection phoneDisplay={phoneDisplay} phoneNumber={phoneNumber} />
     </EditorialPageFrame>

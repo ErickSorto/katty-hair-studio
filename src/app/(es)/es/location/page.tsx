@@ -4,11 +4,12 @@ import BookingSection from "@/app/BookingSection";
 import EditorialPageFrame from "@/app/EditorialPageFrame";
 import EditorialPageHero from "@/app/EditorialPageHero";
 import LocationSection from "@/app/LocationSection";
+import StorefrontArrival from "@/app/StorefrontArrival";
 import { absoluteLocalizedUrl, localizedAlternates } from "@/app/i18n/config";
 
 const phoneNumber = "+12405826622";
 const phoneDisplay = "(240) 582-6622";
-const title = "Ubicación de Katty Hair Studio en Brentwood, MD";
+const title = "Ubicación del salón en Brentwood, MD | Katty Hair Studio";
 const description =
   "Encuentra Katty Hair Studio en 3816 Bladensburg Rd, Brentwood, Maryland. Consulta el horario, cómo llegar, recomendaciones para tu visita y opciones de citas.";
 const canonical = absoluteLocalizedUrl("/location", "es");
@@ -95,6 +96,7 @@ export default function LocationPage() {
         </div>
       </section>
 
+      <StorefrontArrival locale="es" />
       <LocationSection locale="es" />
       <BookingSection locale="es" phoneDisplay={phoneDisplay} phoneNumber={phoneNumber} />
     </EditorialPageFrame>
