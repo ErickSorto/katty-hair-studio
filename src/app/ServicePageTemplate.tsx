@@ -14,6 +14,7 @@ import BookingSection from "./BookingSection";
 import LocationSection from "./LocationSection";
 import ViewportReveal from "./ViewportReveal";
 import { absoluteLocalizedUrl, localizePath, type Locale } from "./i18n/config";
+import { localServiceAreaSchema } from "./local-market";
 import {
   extensionServiceSlugs,
   getRelatedServices,
@@ -203,10 +204,9 @@ function JsonLd({ data, locale }: { data: ServicePageData; locale: Locale }) {
       url: canonical,
       inLanguage: locale,
       provider: { "@id": "https://www.kattyhairstudio.com/#business" },
-      areaServed: (data.serviceAreas ?? ["Brentwood, Maryland"]).map((name) => ({
-        "@type": "City",
-        name,
-      })),
+      areaServed: data.serviceAreas
+        ? data.serviceAreas.map((name) => ({ "@type": "Place", name }))
+        : localServiceAreaSchema(),
     });
   } else {
     graph.push({

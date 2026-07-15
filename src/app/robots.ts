@@ -5,7 +5,7 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: "*",
       allow: "/",
-      disallow: ["/api/", "/booking/cancel", "/es/booking/cancel"],
+      disallow: ["/api/"],
     },
     sitemap: "https://www.kattyhairstudio.com/sitemap.xml",
   };

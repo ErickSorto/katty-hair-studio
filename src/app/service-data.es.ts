@@ -1,4 +1,5 @@
 import content from "./service-content.es.generated.json";
+import { braidsServiceEs } from "./braids-service.es";
 import {
   addedExtensionCategorySections,
   addedExtensionServices,
@@ -10,22 +11,31 @@ import { silkPressServiceEs } from "./silk-press-service.es";
 export type { ServiceFaq, ServicePageData, ServiceSection, ServiceSectionMedia } from "./service-data";
 export { extensionServiceSlugs, getServiceImage };
 
-const generatedServicePages = (content as ServicePageData[]).map((page) => {
-  if (page.slug === "blowouts") {
-    return { ...page, relatedSlugs: ["silk-press", "hair-blowouts", "hair-straightening"] };
-  }
-  if (page.slug === "hair-straightening") {
-    return { ...page, relatedSlugs: ["silk-press", "blowouts", "smoothing-hair-treatment"] };
-  }
-  if (page.slug === "curly-hair") {
-    return { ...page, relatedSlugs: ["silk-press", "hairstyling", "blowouts"] };
-  }
-  return page;
-});
+const generatedServicePages = (content as ServicePageData[])
+  .filter((page) => !["braids", "hair-braiding-services"].includes(page.slug))
+  .map((page) => {
+    if (page.slug === "blowouts") {
+      return {
+        ...page,
+        relatedSlugs: ["silk-press", "hair-blowouts", "hair-straightening"],
+      };
+    }
+    if (page.slug === "hair-straightening") {
+      return {
+        ...page,
+        relatedSlugs: ["silk-press", "blowouts", "smoothing-hair-treatment"],
+      };
+    }
+    if (page.slug === "curly-hair") {
+      return { ...page, relatedSlugs: ["silk-press", "hairstyling", "blowouts"] };
+    }
+    return page;
+  });
 
 export const servicePages: ServicePageData[] = [
   ...generatedServicePages,
   ...addedExtensionServices,
+  braidsServiceEs,
   silkPressServiceEs,
 ];
 

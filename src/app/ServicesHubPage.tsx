@@ -7,6 +7,8 @@ import EditorialPageHero from "./EditorialPageHero";
 import LocationSection from "./LocationSection";
 import { absoluteLocalizedUrl, localizePath, type Locale } from "./i18n/config";
 import { serviceNavigationCopy } from "./i18n/shared-copy";
+import { localServiceAreaSchema } from "./local-market";
+import { topPriorityServices } from "./service-priority";
 
 const phoneNumber = "+12405826622";
 const phoneDisplay = "(240) 582-6622";
@@ -40,6 +42,12 @@ const hubCopy = {
       ],
       serviceLabel: "View service guide",
       title: "Find the service you have in mind.",
+    },
+    priority: {
+      body: "These pages match the clearest local booking intent around Brentwood and the DMV. Start here, then compare related options in the full directory.",
+      eyebrow: "Highest-intent service paths",
+      linkLabel: "Explore service",
+      title: "Start with the services clients actively look for.",
     },
     decision: {
       body: "Bring a reference photo and share your hair history, current condition, routine, and desired upkeep. Katty will help narrow the options and confirm the plan, timing, and quote before the service begins.",
@@ -83,6 +91,12 @@ const hubCopy = {
       serviceLabel: "Ver guía del servicio",
       title: "Encuentra el servicio que tienes en mente.",
     },
+    priority: {
+      body: "Estas páginas corresponden a las búsquedas con intención de reserva más clara en Brentwood y el DMV. Empieza aquí y luego compara opciones relacionadas en el directorio completo.",
+      eyebrow: "Servicios con mayor intención",
+      linkLabel: "Explorar servicio",
+      title: "Comienza con los servicios que las clientas buscan activamente.",
+    },
     decision: {
       body: "Trae una foto de referencia y comparte el historial, estado actual, rutina y mantenimiento deseado para tu cabello. Katty te ayudará a reducir las opciones y confirmará el plan, el tiempo y el precio antes de comenzar.",
       call: "Llamar al salón",
@@ -102,11 +116,18 @@ function ServicesHubJsonLd({ locale }: { locale: Locale }) {
   const copy = hubCopy[locale];
   const navigation = serviceNavigationCopy[locale];
   const canonical = absoluteLocalizedUrl("/services", locale);
+  const allServiceItems = navigation.groups.flatMap((group) =>
+    group.links.map(([name, href]) => ({ name, href })),
+  );
+  const priorityItems = topPriorityServices.map((service) => ({
+    name: service.label[locale],
+    href: service.href,
+  }));
+  const priorityHrefs = new Set<string>(priorityItems.map((item) => item.href));
   const itemList = [
     ...navigation.categoryGateways.map((item) => ({ name: item.label, href: item.href })),
-    ...navigation.groups.flatMap((group) =>
-      group.links.map(([name, href]) => ({ name, href })),
-    ),
+    ...priorityItems,
+    ...allServiceItems.filter((item) => !priorityHrefs.has(item.href)),
   ];
   const graph = [
     {
@@ -118,6 +139,7 @@ function ServicesHubJsonLd({ locale }: { locale: Locale }) {
       inLanguage: locale === "es" ? "es-US" : "en-US",
       isPartOf: { "@id": "https://www.kattyhairstudio.com/#website" },
       about: { "@id": "https://www.kattyhairstudio.com/#business" },
+      spatialCoverage: localServiceAreaSchema(),
       mainEntity: { "@id": `${canonical}#service-list` },
       breadcrumb: { "@id": `${canonical}#breadcrumb` },
     },
@@ -243,6 +265,24 @@ export default function ServicesHubPage({ locale = "en" }: { locale?: Locale }) 
             </article>
           ))}
         </div>
+      </section>
+
+      <section aria-labelledby="priority-services-heading" className="services-hub-priority">
+        <div className="services-hub-priority-heading" data-reveal>
+          <p className="eyebrow">{copy.priority.eyebrow}</p>
+          <h2 id="priority-services-heading">{copy.priority.title}</h2>
+          <p>{copy.priority.body}</p>
+        </div>
+        <nav aria-label={copy.priority.title} className="services-hub-priority-links" data-reveal>
+          {topPriorityServices.map((service, index) => (
+            <Link href={localizePath(service.href, locale)} key={service.href}>
+              <span aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
+              <strong>{service.label[locale]}</strong>
+              <small>{copy.priority.linkLabel}</small>
+              <ArrowRight aria-hidden="true" />
+            </Link>
+          ))}
+        </nav>
       </section>
 
       <section aria-labelledby="service-directory-heading" className="services-hub-directory">

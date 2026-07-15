@@ -13,6 +13,16 @@ const nextConfig: NextConfig = {
         permanent: true,
         source: "/es/services/eyebrow-threading",
       },
+      {
+        destination: "/services/braids",
+        permanent: true,
+        source: "/services/hair-braiding-services",
+      },
+      {
+        destination: "/es/services/braids",
+        permanent: true,
+        source: "/es/services/hair-braiding-services",
+      },
     ];
   },
   turbopack: {

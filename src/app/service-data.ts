@@ -1,5 +1,6 @@
 import content from "./service-content.generated.json";
 import { addedExtensionCategorySections, addedExtensionServices } from "./extension-services";
+import { braidsService } from "./braids-service";
 import { silkPressService } from "./silk-press-service";
 
 export type ServiceSectionMedia = {
@@ -41,22 +42,31 @@ export type ServicePageData = {
   faqs: ServiceFaq[];
 };
 
-const generatedServicePages = (content as ServicePageData[]).map((page) => {
-  if (page.slug === "blowouts") {
-    return { ...page, relatedSlugs: ["silk-press", "hair-blowouts", "hair-straightening"] };
-  }
-  if (page.slug === "hair-straightening") {
-    return { ...page, relatedSlugs: ["silk-press", "blowouts", "smoothing-hair-treatment"] };
-  }
-  if (page.slug === "curly-hair") {
-    return { ...page, relatedSlugs: ["silk-press", "hairstyling", "blowouts"] };
-  }
-  return page;
-});
+const generatedServicePages = (content as ServicePageData[])
+  .filter((page) => !["braids", "hair-braiding-services"].includes(page.slug))
+  .map((page) => {
+    if (page.slug === "blowouts") {
+      return {
+        ...page,
+        relatedSlugs: ["silk-press", "hair-blowouts", "hair-straightening"],
+      };
+    }
+    if (page.slug === "hair-straightening") {
+      return {
+        ...page,
+        relatedSlugs: ["silk-press", "blowouts", "smoothing-hair-treatment"],
+      };
+    }
+    if (page.slug === "curly-hair") {
+      return { ...page, relatedSlugs: ["silk-press", "hairstyling", "blowouts"] };
+    }
+    return page;
+  });
 
 export const servicePages: ServicePageData[] = [
   ...generatedServicePages,
   ...addedExtensionServices,
+  braidsService,
   silkPressService,
 ];
 

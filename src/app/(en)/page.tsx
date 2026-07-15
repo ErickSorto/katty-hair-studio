@@ -31,6 +31,7 @@ import VideoStoryStack from "@/app/VideoStoryStack";
 import ViewportReveal from "@/app/ViewportReveal";
 import { localizePath, type Locale } from "@/app/i18n/config";
 import { localizedAlternates } from "@/app/i18n/config";
+import { localServiceAreaSchema } from "@/app/local-market";
 
 export const metadata: Metadata = {
   title: "Katty Hair Studio | Hair Salon in Brentwood, MD",
@@ -69,21 +70,25 @@ const services = [
   {
     title: "Silk presses and Dominican blowouts",
     detail: "Compare the smooth finish, body, heat plan, and upkeep that fit your hair.",
+    href: "/services/silk-press",
     icon: Sparkles,
   },
   {
     title: "Color and highlights",
     detail: "Your history and hair health guide every gloss, highlight, and lift.",
+    href: "/services/hair-coloring",
     icon: Palette,
   },
   {
     title: "Extensions and wigs",
     detail: "Your install is prepped, blended, styled, and explained for easy upkeep.",
+    href: "/hair-extension-technician",
     icon: Gem,
   },
   {
     title: "Braids, cuts, and styling",
     detail: "You choose the shape, detail, or event finish that fits your look.",
+    href: "/services/braids",
     icon: Scissors,
   },
 ] as const;
@@ -133,6 +138,7 @@ function HomeJsonLd({ faqs, locale }: { faqs: readonly { answer: string; questio
         postalCode: "20722",
         addressCountry: "US",
       },
+      areaServed: localServiceAreaSchema(),
       image: "https://www.kattyhairstudio.com/social/katty-share-preview.webp",
       sameAs: [instagramUrl, facebookUrl, youtubeUrl, xUrl, tiktokUrl],
     },
@@ -377,21 +383,25 @@ const spanishHomeData = {
     {
       title: "Silk press y blowouts dominicanos",
       detail: "Compara el acabado liso, el volumen, el plan de calor y el cuidado ideal para tu cabello.",
+      href: "/services/silk-press",
       icon: Sparkles,
     },
     {
       title: "Color y mechas",
       detail: "Tu historial y la salud de tu cabello guían cada baño de color, mecha y aclarado.",
+      href: "/services/hair-coloring",
       icon: Palette,
     },
     {
       title: "Extensiones y pelucas",
       detail: "Preparamos, integramos y peinamos tu instalación, y te explicamos cómo cuidarla en casa.",
+      href: "/hair-extension-technician",
       icon: Gem,
     },
     {
       title: "Trenzas, cortes y peinados",
       detail: "Elige la forma, el detalle o el acabado para un evento que mejor se adapte a tu estilo.",
+      href: "/services/braids",
       icon: Scissors,
     },
   ],
@@ -1134,7 +1144,12 @@ export function HomePage({ locale = "en" }: { locale?: Locale }) {
           <p>{copy.services.body}</p>
           <div className="service-list">
             {localizedServices.map((service) => (
-              <article className="service-item" key={service.title}>
+              <Link
+                aria-label={`${service.title}: ${service.detail}`}
+                className="service-item"
+                href={localizePath(service.href, locale)}
+                key={service.title}
+              >
                 <span>
                   <Icon icon={service.icon} />
                 </span>
@@ -1142,7 +1157,8 @@ export function HomePage({ locale = "en" }: { locale?: Locale }) {
                   <h3>{service.title}</h3>
                   <p>{service.detail}</p>
                 </div>
-              </article>
+                <ArrowRight aria-hidden="true" className="service-item-arrow" />
+              </Link>
             ))}
           </div>
         </div>
