@@ -7144,8 +7144,8 @@ section {
 .home-faq-section {
   display: grid;
   grid-template-columns: minmax(0, 0.72fr) minmax(420px, 1.28fr);
-  gap: clamp(52px, 8vw, 130px);
-  padding: clamp(92px, 11vw, 156px) var(--page-gutter);
+  gap: clamp(44px, 6vw, 96px);
+  padding: clamp(76px, 8vw, 112px) var(--page-gutter);
   background: var(--paper);
 }
 
@@ -7156,7 +7156,8 @@ section {
 }
 
 .home-faq-heading h2 {
-  font-size: clamp(2.8rem, 5vw, 5rem);
+  font-size: clamp(2.5rem, 3.5vw, 3.75rem);
+  line-height: 1.01;
 }
 
 .home-faq-list details {
@@ -7169,7 +7170,7 @@ section {
 
 .home-faq-list summary {
   display: grid;
-  min-height: 96px;
+  min-height: 88px;
   cursor: pointer;
   grid-template-columns: 1fr auto;
   align-items: center;
@@ -7451,7 +7452,6 @@ section {
 
 .service-intro h2,
 .service-related h2,
-.service-faq h2,
 .service-final-cta h2 {
   margin: 14px 0 20px;
   font-family: var(--font-display), Georgia, serif;
@@ -7618,9 +7618,9 @@ section {
 
 .service-faq {
   display: grid;
-  grid-template-columns: minmax(0, 0.72fr) minmax(420px, 1.28fr);
-  gap: clamp(52px, 8vw, 130px);
-  padding: clamp(92px, 11vw, 156px) var(--page-gutter);
+  grid-template-columns: minmax(340px, 0.88fr) minmax(480px, 1.12fr);
+  gap: clamp(44px, 6vw, 96px);
+  padding: clamp(76px, 8vw, 112px) var(--page-gutter);
   background: var(--paper);
 }
 
@@ -7628,6 +7628,17 @@ section {
   position: sticky;
   top: 34px;
   align-self: start;
+}
+
+.service-faq-heading h2 {
+  max-width: 16ch;
+  margin: 14px 0 18px;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: clamp(2.5rem, 3.5vw, 3.75rem);
+  font-weight: 520;
+  letter-spacing: -0.045em;
+  line-height: 1.01;
+  text-wrap: balance;
 }
 
 .service-faq-heading > p:last-child {
@@ -7645,7 +7656,7 @@ section {
 
 .service-faq-list summary {
   display: grid;
-  min-height: 92px;
+  min-height: 88px;
   cursor: pointer;
   grid-template-columns: 1fr auto;
   align-items: center;
@@ -7745,6 +7756,24 @@ section {
 @keyframes service-copy-arrive {
   from { opacity: 0; transform: translateY(26px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 1180px) {
+  .home-faq-section,
+  .service-faq {
+    grid-template-columns: 1fr;
+    gap: 44px;
+  }
+
+  .home-faq-heading,
+  .service-faq-heading {
+    position: static;
+    max-width: 760px;
+  }
+
+  .service-faq-heading h2 {
+    max-width: 18ch;
+  }
 }
 
 @media (max-width: 900px) {
@@ -7953,13 +7982,25 @@ section {
   }
 
   .service-related h2,
-  .service-faq h2,
   .service-final-cta h2 {
     font-size: clamp(2.4rem, 11vw, 3.4rem);
   }
 
+  .home-faq-section,
+  .service-faq {
+    gap: 36px;
+    padding-top: 64px;
+    padding-bottom: 72px;
+  }
+
+  .home-faq-heading h2,
+  .service-faq-heading h2 {
+    font-size: clamp(2.2rem, 7.5vw, 2.6rem);
+    line-height: 1.04;
+  }
+
   .service-faq-list summary {
-    min-height: 82px;
+    min-height: 78px;
     gap: 14px;
   }
 

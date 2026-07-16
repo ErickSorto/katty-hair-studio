@@ -398,10 +398,10 @@ export default function ServicePageTemplate({
       <LocationSection locale={locale} />
       <BookingSection locale={locale} phoneDisplay={phoneDisplay} phoneNumber={phoneNumber} />
 
-      <section className="service-faq" data-reveal>
+      <section aria-labelledby="service-faq-heading" className="service-faq" data-reveal id="faq">
         <div className="service-faq-heading">
           <p className="eyebrow">{copy.faqKicker}</p>
-          <h2>{copy.faqTitle(data.name)}</h2>
+          <h2 id="service-faq-heading">{copy.faqTitle(data.name)}</h2>
           <p>{copy.faqIntro}</p>
         </div>
         <div className="service-faq-list">
