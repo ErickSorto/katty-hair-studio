@@ -1405,6 +1405,13 @@ svg {
   animation: hero-reveal 700ms 180ms cubic-bezier(0.2, 0.84, 0.22, 1) both;
 }
 
+@media (min-width: 1280px) {
+  .hero-model {
+    right: clamp(88px, 6vw, 112px);
+    width: clamp(540px, 36vw, 640px);
+  }
+}
+
 .hero::before {
   position: absolute;
   inset: 0;
