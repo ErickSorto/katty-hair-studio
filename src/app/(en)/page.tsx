@@ -1285,7 +1285,7 @@ export function HomePage({ locale = "en" }: { locale?: Locale }) {
           <Image
             alt={copy.info.alt}
             fill
-            sizes="(max-width: 900px) 100vw, 42vw"
+            sizes="(max-width: 740px) 100vw, (max-width: 900px) 62vw, (max-width: 1100px) 40vw, 42vw"
             src="/founder/katty-founder-original-portrait-v5.webp"
           />
           <span>
