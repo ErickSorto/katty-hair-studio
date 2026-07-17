@@ -867,12 +867,12 @@ export function HomePage({ locale = "en" }: { locale?: Locale }) {
         <Image
           alt={copy.hero.alt}
           className="hero-model"
-          height={1472}
+          height={1698}
           loading="eager"
           quality={75}
           sizes="(max-width: 740px) 100vw, (max-width: 1100px) 42vw, 510px"
-          src="/hero/katty-red-hair-model-cutout-v6.webp"
-          width={677}
+          src="/hero/katty-red-hair-model-cutout-v8.webp"
+          width={667}
         />
         <div className="hero-shade" />
         <div className="hero-content">
