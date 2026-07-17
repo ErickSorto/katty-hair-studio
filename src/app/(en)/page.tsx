@@ -649,7 +649,7 @@ export function HomePage({ locale = "en" }: { locale?: Locale }) {
   const copy = isSpanish
     ? {
         hero: {
-          alt: "Interior moderno y acogedor de Katty Hair Studio con pisos de mármol, sillas negras, detalles rosados y dorados",
+          alt: "Clienta posando para mostrar sus rizos largos, brillantes y rojos dentro de Katty Hair Studio",
           eyebrow: "Servicio completo · Propiedad dominicana · Salón y tienda de productos de belleza",
           body: "Trae tu textura y tu referencia. Adaptaremos el servicio a ti.",
           request: "Solicitar cita",
@@ -748,7 +748,7 @@ export function HomePage({ locale = "en" }: { locale?: Locale }) {
       }
     : {
         hero: {
-          alt: "Warm modern salon interior with marble floors, black styling chairs, blush accents, and gold details",
+          alt: "Client posing to showcase long, glossy red curls inside Katty Hair Studio",
           eyebrow: "Full-service · Dominican-owned · Hair studio and beauty supply",
           body: "Bring your texture and reference. We’ll shape the service around you.",
           request: "Request appointment",
@@ -854,7 +854,8 @@ export function HomePage({ locale = "en" }: { locale?: Locale }) {
 
       <section className="hero" id="home">
         <Image
-          alt={copy.hero.alt}
+          alt=""
+          aria-hidden="true"
           className="hero-image"
           fetchPriority="high"
           fill
@@ -862,6 +863,16 @@ export function HomePage({ locale = "en" }: { locale?: Locale }) {
           quality={60}
           sizes="100vw"
           src="/hero/katty-salon-interior-hero-clear-pink-v4.webp"
+        />
+        <Image
+          alt={copy.hero.alt}
+          className="hero-model"
+          height={1472}
+          loading="eager"
+          quality={75}
+          sizes="(max-width: 740px) 100vw, (max-width: 1100px) 42vw, 510px"
+          src="/hero/katty-red-hair-model-cutout-v6.webp"
+          width={677}
         />
         <div className="hero-shade" />
         <div className="hero-content">

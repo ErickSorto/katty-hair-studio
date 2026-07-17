@@ -183,6 +183,7 @@ export async function createGoogleCalendarEvent(input: {
   attendeeEmail?: string;
   bookingId: string;
   calendarId: string;
+  colorId?: string;
   description: string;
   end: string;
   location: string;
@@ -198,6 +199,7 @@ export async function createGoogleCalendarEvent(input: {
     {
       body: JSON.stringify({
         attendees: input.attendeeEmail ? [{ email: input.attendeeEmail }] : undefined,
+        colorId: input.colorId,
         description: input.description,
         end: { dateTime: input.end, timeZone: input.timeZone },
         extendedProperties: {

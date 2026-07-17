@@ -5,6 +5,7 @@ import { addMinutes } from "date-fns";
 import { formatInTimeZone } from "date-fns-tz";
 import { z } from "zod";
 import { getAvailableSlots } from "@/lib/booking/availability";
+import { getBookingEventColorId } from "@/lib/booking/calendar-colors";
 import {
   demoServices,
   getDemoAvailability,
@@ -152,6 +153,10 @@ export async function POST(request: NextRequest) {
 
   const customerLocale = parsed.data.customerLocale;
 
+  if (new Date(parsed.data.startsAt).getTime() <= Date.now()) {
+    return bookingErrorResponse(customerLocale, "SLOT_UNAVAILABLE", 409);
+  }
+
   let customerPhone: string | undefined;
 
   try {
@@ -251,6 +256,7 @@ export async function POST(request: NextRequest) {
       const googleEvent = await createGoogleCalendarEvent({
         bookingId: `local-${randomUUID()}`,
         calendarId: settings.bookingCalendarId,
+        colorId: getBookingEventColorId(service.slug),
         description: eventContent.description,
         end: selectedSlot.endsAt,
         location: settings.address,
@@ -318,6 +324,7 @@ export async function POST(request: NextRequest) {
         attendeeEmail: parsed.data.customerEmail,
         bookingId,
         calendarId: settings.bookingCalendarId,
+        colorId: getBookingEventColorId(service.slug),
         description: eventContent.description,
         end: selectedSlot.endsAt,
         location: settings.address,

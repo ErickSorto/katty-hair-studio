@@ -38,6 +38,7 @@ export const bookingUiCopy = {
       availability: "Unable to check availability.",
       incomplete: "Complete your name, email, and phone number to reserve this appointment.",
       submit: "Unable to reserve the appointment.",
+      timePassed: "That time has passed. Choose another available time.",
     },
     price: { consultation: "Consultation first", confirmed: "Price confirmed at salon", hour: "hr" },
     atmosphere: {
@@ -89,6 +90,7 @@ export const bookingUiCopy = {
       tryAnother: "Try another day.",
       back: "Back",
       continue: "Your details",
+      passed: "time has passed",
     },
     detailsStep: {
       step: "Step 3 of 3",
@@ -128,6 +130,7 @@ export const bookingUiCopy = {
       availability: "No pudimos consultar la disponibilidad.",
       incomplete: "Completa tu nombre, correo electrónico y teléfono para reservar esta cita.",
       submit: "No pudimos reservar la cita.",
+      timePassed: "Ese horario ya pasó. Elige otro horario disponible.",
     },
     price: { consultation: "Consulta primero", confirmed: "Precio confirmado en el salón", hour: "h" },
     atmosphere: {
@@ -179,6 +182,7 @@ export const bookingUiCopy = {
       tryAnother: "Prueba otro día.",
       back: "Atrás",
       continue: "Tus datos",
+      passed: "el horario ya pasó",
     },
     detailsStep: {
       step: "Paso 3 de 3",

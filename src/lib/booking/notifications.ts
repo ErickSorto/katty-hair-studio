@@ -40,6 +40,17 @@ export function renderBookingConfirmationSmsBody(booking: BookingNotification) {
     : `Katty Hair Studio: ${serviceName}, ${appointmentWhen(booking)}. Confirmation ${booking.confirmationCode}.${cancellationUrl ? ` Cancel: ${cancellationUrl}` : ""} Reply STOP to opt out.`;
 }
 
+export function renderOwnerBookingSmsBody(booking: BookingNotification) {
+  const when = formatBookingAppointmentWhen(
+    booking.startsAt,
+    booking.timezone,
+    "en",
+  );
+  const phone = booking.customerPhone || "No phone provided";
+
+  return `New Katty Hair Studio booking: ${booking.customerName} — ${booking.serviceName}, ${when}. Client: ${phone}. Confirmation ${booking.confirmationCode}. Check Google Calendar for details.`;
+}
+
 async function sendResendEmail({
   booking,
   recipient,
@@ -117,20 +128,41 @@ async function sendOwnerNotificationEmail(booking: BookingNotification) {
   });
 }
 
-async function sendConfirmationSms(booking: BookingNotification) {
+async function sendTwilioSms({
+  booking,
+  body,
+  recipient,
+  templateKey,
+}: {
+  booking: BookingNotification;
+  body: string;
+  recipient: string;
+  templateKey: string;
+}) {
   const accountSid = process.env.TWILIO_ACCOUNT_SID?.trim();
   const authToken = process.env.TWILIO_AUTH_TOKEN?.trim();
   const messagingServiceSid = process.env.TWILIO_MESSAGING_SERVICE_SID?.trim();
+  const phoneNumber = process.env.TWILIO_PHONE_NUMBER?.trim();
 
-  if (!booking.smsConsent || !booking.customerPhone || !accountSid || !authToken || !messagingServiceSid) {
+  if (
+    !accountSid ||
+    !authToken ||
+    (!messagingServiceSid && !phoneNumber)
+  ) {
     return;
   }
 
   const form = new URLSearchParams({
-    Body: renderBookingConfirmationSmsBody(booking),
-    MessagingServiceSid: messagingServiceSid,
-    To: booking.customerPhone,
+    Body: body,
+    To: recipient,
   });
+
+  if (messagingServiceSid) {
+    form.set("MessagingServiceSid", messagingServiceSid);
+  } else if (phoneNumber) {
+    form.set("From", phoneNumber);
+  }
+
   const response = await fetch(
     `https://api.twilio.com/2010-04-01/Accounts/${encodeURIComponent(accountSid)}/Messages.json`,
     {
@@ -150,9 +182,41 @@ async function sendConfirmationSms(booking: BookingNotification) {
     channel: "sms",
     errorMessage: response.ok ? undefined : result.message || "Twilio rejected the SMS.",
     providerMessageId: result.sid,
-    recipient: booking.customerPhone,
+    recipient,
     status: response.ok ? "sent" : "failed",
-    templateKey: "booking-confirmation",
+    templateKey,
+  });
+
+  if (!response.ok) {
+    throw new Error(result.message || "Twilio rejected the booking confirmation SMS.");
+  }
+}
+
+async function sendClientConfirmationSms(booking: BookingNotification) {
+  if (!booking.smsConsent || !booking.customerPhone) {
+    return;
+  }
+
+  await sendTwilioSms({
+    booking,
+    body: renderBookingConfirmationSmsBody(booking),
+    recipient: booking.customerPhone,
+    templateKey: "booking-client-confirmation",
+  });
+}
+
+async function sendOwnerNotificationSms(booking: BookingNotification) {
+  const ownerPhone = process.env.BOOKING_OWNER_PHONE?.trim();
+
+  if (!ownerPhone) {
+    return;
+  }
+
+  await sendTwilioSms({
+    booking,
+    body: renderOwnerBookingSmsBody(booking),
+    recipient: ownerPhone,
+    templateKey: "booking-owner-notification",
   });
 }
 
@@ -160,7 +224,8 @@ export async function sendBookingConfirmation(booking: BookingNotification) {
   const results = await Promise.allSettled([
     sendClientConfirmationEmail(booking),
     sendOwnerNotificationEmail(booking),
-    sendConfirmationSms(booking),
+    sendClientConfirmationSms(booking),
+    sendOwnerNotificationSms(booking),
   ]);
 
   return results.map((result) =>

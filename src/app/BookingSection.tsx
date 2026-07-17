@@ -110,6 +110,10 @@ function getLocalDateValue() {
   return formatInTimeZone(new Date(), salonTimezone, "yyyy-MM-dd");
 }
 
+function hasBookingTimePassed(startsAt: string, currentTime: number | null) {
+  return currentTime !== null && new Date(startsAt).getTime() <= currentTime;
+}
+
 function getInitialBookingDate(today: string) {
   const date = parseISO(today);
   return format(isSalonClosedWeekday(date.getDay()) ? addDays(date, 1) : date, "yyyy-MM-dd");
@@ -262,6 +266,10 @@ export default function BookingSection({
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [confirmation, setConfirmation] = useState<BookingConfirmation | null>(null);
+  const [currentTime, setCurrentTime] = useState<number | null>(null);
+  const selectedTimeHasPassed = startsAt
+    ? hasBookingTimePassed(startsAt, currentTime)
+    : false;
 
   const selectedService = services.find((service) => service.id === serviceId);
   const selectedServicePresentation = selectedService
@@ -290,6 +298,17 @@ export default function BookingSection({
     }
     return periods;
   }, [timezone, uniqueSlots]);
+
+  useEffect(() => {
+    function refreshCurrentTime() {
+      setCurrentTime(Date.now());
+    }
+
+    refreshCurrentTime();
+    const timer = window.setInterval(refreshCurrentTime, 30_000);
+
+    return () => window.clearInterval(timer);
+  }, []);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -454,6 +473,12 @@ export default function BookingSection({
 
   async function submitBooking(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+
+    if (startsAt && hasBookingTimePassed(startsAt, Date.now())) {
+      setError(copy.errors.timePassed);
+      setStep(2);
+      return;
+    }
 
     if (!serviceId || !startsAt || !customerName || !customerEmail || !customerPhone) {
       setError(copy.errors.incomplete);
@@ -707,17 +732,25 @@ export default function BookingSection({
                               <div key={period}>
                                 <p>{copy.periods[period]}</p>
                                 <div>
-                                  {slotsByPeriod[period].map((slot) => (
-                                    <button
-                                      aria-pressed={startsAt === slot.startsAt}
-                                      className={startsAt === slot.startsAt ? "is-selected" : ""}
-                                      key={slot.startsAt}
-                                      onClick={() => setStartsAt(slot.startsAt)}
-                                      type="button"
-                                    >
-                                      {formatBookingSlotTime(slot.startsAt, timezone, locale)}
-                                    </button>
-                                  ))}
+                                  {slotsByPeriod[period].map((slot) => {
+                                    const timeLabel = formatBookingSlotTime(slot.startsAt, timezone, locale);
+                                    const timePassed = hasBookingTimePassed(slot.startsAt, currentTime);
+
+                                    return (
+                                      <button
+                                        aria-label={`${timeLabel}${timePassed ? `, ${copy.scheduleStep.passed}` : ""}`}
+                                        aria-pressed={!timePassed && startsAt === slot.startsAt}
+                                        className={!timePassed && startsAt === slot.startsAt ? "is-selected" : ""}
+                                        disabled={timePassed}
+                                        key={slot.startsAt}
+                                        onClick={() => setStartsAt(slot.startsAt)}
+                                        title={timePassed ? copy.scheduleStep.passed : undefined}
+                                        type="button"
+                                      >
+                                        {timeLabel}
+                                      </button>
+                                    );
+                                  })}
                                 </div>
                               </div>
                             ) : null,
@@ -736,7 +769,7 @@ export default function BookingSection({
                   {error ? <p className="reservation-error" role="alert">{error}</p> : null}
                   <div className="reservation-step-actions">
                     <button className="reservation-back-action" onClick={() => moveToStep(1)} type="button"><ArrowLeft aria-hidden="true" />{copy.scheduleStep.back}</button>
-                    <button className="reservation-primary-action" disabled={!startsAt} onClick={() => moveToStep(3)} type="button">{copy.scheduleStep.continue}<ArrowRight aria-hidden="true" /></button>
+                    <button className="reservation-primary-action" disabled={!startsAt || selectedTimeHasPassed} onClick={() => moveToStep(3)} type="button">{copy.scheduleStep.continue}<ArrowRight aria-hidden="true" /></button>
                   </div>
                 </div>
               ) : null}
