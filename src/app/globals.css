@@ -6341,9 +6341,21 @@ section {
   accent-color: var(--wine);
 }
 
-.reservation-sms-consent span {
+.reservation-sms-consent label {
   color: var(--ink-soft) !important;
   font-weight: 500 !important;
+}
+
+.reservation-sms-consent a {
+  color: var(--wine);
+  font-weight: 750;
+  text-decoration: underline;
+  text-decoration-color: rgba(123, 31, 66, 0.35);
+  text-underline-offset: 2px;
+}
+
+.reservation-sms-consent a:hover {
+  text-decoration-color: currentColor;
 }
 
 .reservation-submit-note {

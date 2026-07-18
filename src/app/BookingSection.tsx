@@ -793,10 +793,15 @@ export default function BookingSection({
                     <label><span>{copy.detailsStep.email}</span><input autoComplete="email" onChange={(event) => setCustomerEmail(event.target.value)} required type="email" value={customerEmail} /></label>
                     <label><span>{copy.detailsStep.phone}</span><input autoComplete="tel" inputMode="tel" onChange={(event) => setCustomerPhone(event.target.value)} required type="tel" value={customerPhone} /></label>
                     <label className="reservation-contact-wide"><span>{copy.detailsStep.notes}</span><textarea maxLength={1000} onChange={(event) => setCustomerNotes(event.target.value)} rows={3} value={customerNotes} /></label>
-                    <label className="reservation-sms-consent reservation-contact-wide">
-                      <input checked={smsConsent} onChange={(event) => setSmsConsent(event.target.checked)} type="checkbox" />
-                      <span>{copy.detailsStep.sms}</span>
-                    </label>
+                    <div className="reservation-sms-consent reservation-contact-wide">
+                      <input checked={smsConsent} id={`sms-consent-${locale}`} onChange={(event) => setSmsConsent(event.target.checked)} type="checkbox" />
+                      <label htmlFor={`sms-consent-${locale}`}>
+                        {copy.detailsStep.sms}{" "}
+                        <Link href={localizePath("/terms", locale)}>{copy.detailsStep.smsTerms}</Link>{" "}
+                        {copy.detailsStep.smsAnd}{" "}
+                        <Link href={localizePath("/privacy", locale)}>{copy.detailsStep.smsPrivacy}</Link>.
+                      </label>
+                    </div>
                   </div>
 
                   {error ? <p className="reservation-error" role="alert">{error}</p> : null}
