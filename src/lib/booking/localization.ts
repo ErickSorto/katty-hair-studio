@@ -38,7 +38,7 @@ const bookingErrorMessages: Record<BookingLocale, Record<BookingErrorCode, strin
     CANCELLATION_UNAVAILABLE:
       "This appointment can no longer be cancelled online. Please call the salon.",
     CATALOG_UNAVAILABLE:
-      "Online booking is being prepared. Please call the salon for an appointment.",
+      "Booking is temporarily unavailable. Please try again or call the salon.",
     INVALID_BOOKING_DETAILS: "Review the appointment and contact details.",
     INVALID_CANCELLATION_LINK: "This cancellation link is invalid.",
     INVALID_PHONE: "Enter a valid 10-digit US phone number.",
@@ -65,7 +65,7 @@ const bookingErrorMessages: Record<BookingLocale, Record<BookingErrorCode, strin
     CANCELLATION_UNAVAILABLE:
       "Esta cita ya no se puede cancelar en línea. Llama al salón.",
     CATALOG_UNAVAILABLE:
-      "Estamos preparando las reservas en línea. Llama al salón para programar una cita.",
+      "Las reservas no están disponibles temporalmente. Inténtalo de nuevo o llama al salón.",
     INVALID_BOOKING_DETAILS:
       "Revisa los datos de la cita y tu información de contacto.",
     INVALID_CANCELLATION_LINK: "Este enlace de cancelación no es válido.",

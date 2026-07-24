@@ -77,8 +77,9 @@ export const bookingUiCopy = {
       category: "Services in this category",
       selected: "Selected",
       book: "Book a time",
-      unavailable: "Online booking is being prepared.",
-      unavailableBody: "Call the salon and we’ll help plan your appointment.",
+      unavailable: "Booking is temporarily unavailable.",
+      unavailableBody: "Try again now, or call the salon and we’ll help plan your appointment.",
+      retry: "Try again",
       fallback: "Personalized service planning",
     },
     scheduleStep: {
@@ -172,8 +173,9 @@ export const bookingUiCopy = {
       category: "Servicios incluidos en esta categoría",
       selected: "Seleccionado",
       book: "Elegir horario",
-      unavailable: "Estamos preparando las reservas en línea.",
-      unavailableBody: "Llama al salón y te ayudaremos a planificar tu cita.",
+      unavailable: "Las reservas no están disponibles temporalmente.",
+      unavailableBody: "Inténtalo de nuevo ahora o llama al salón y te ayudaremos a planificar tu cita.",
+      retry: "Intentar de nuevo",
       fallback: "Plan personalizado para tu servicio",
     },
     scheduleStep: {

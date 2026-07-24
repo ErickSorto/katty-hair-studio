@@ -21,6 +21,10 @@ import { enUS, es as esLocale } from "date-fns/locale";
 import { formatInTimeZone } from "date-fns-tz";
 import { isSalonClosedWeekday } from "@/lib/booking/schedule";
 import { formatBookingSlotTime } from "@/lib/booking/localization";
+import {
+  RetryableBookingReadError,
+  withTransientBookingReadRetry,
+} from "@/lib/booking/read-retry";
 import { localizePath, type Locale } from "@/app/i18n/config";
 import {
   bookingServicePresentations,
@@ -262,6 +266,7 @@ export default function BookingSection({
   const [customerNotes, setCustomerNotes] = useState("");
   const [smsConsent, setSmsConsent] = useState(false);
   const [catalogLoading, setCatalogLoading] = useState(true);
+  const [catalogReloadKey, setCatalogReloadKey] = useState(0);
   const [availabilityLoading, setAvailabilityLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
@@ -314,24 +319,42 @@ export default function BookingSection({
     const controller = new AbortController();
 
     async function loadCatalog() {
+      setCatalogLoading(true);
+      setError("");
+
       try {
         const query = new URLSearchParams({ locale });
         if (demoMode) query.set("demo", "1");
-        const response = await fetch(`/api/booking/catalog?${query}`, {
-          cache: "no-store",
-          signal: controller.signal,
-        });
-        const result = (await response.json()) as {
-          bookingWindowDays?: number;
-          error?: string;
-          promotion?: Promotion;
-          services?: Service[];
-          timezone?: string;
-        };
+        const result = await withTransientBookingReadRetry(
+          async () => {
+            const response = await fetch(`/api/booking/catalog?${query}`, {
+              signal: controller.signal,
+            });
+            const body = (await response.json()) as {
+              bookingWindowDays?: number;
+              error?: string;
+              promotion?: Promotion;
+              services?: Service[];
+              timezone?: string;
+            };
 
-        if (!response.ok || !result.services) {
-          throw new Error(result.error || copy.errors.catalog);
-        }
+            if (!response.ok || !body.services) {
+              const message = body.error || copy.errors.catalog;
+
+              if (response.status === 429 || response.status >= 500) {
+                throw new RetryableBookingReadError(message);
+              }
+
+              throw new Error(message);
+            }
+
+            return { ...body, services: body.services };
+          },
+          {
+            delaysMs: [500, 1_500],
+            signal: controller.signal,
+          },
+        );
 
         setServices(result.services);
         setTimezone(result.timezone || salonTimezone);
@@ -354,7 +377,7 @@ export default function BookingSection({
 
     loadCatalog();
     return () => controller.abort();
-  }, [copy.errors.catalog, defaultPromotion, demoMode, locale]);
+  }, [catalogReloadKey, copy.errors.catalog, defaultPromotion, demoMode, locale]);
 
   useEffect(() => {
     if (step < 2 || !serviceId || !date) {
@@ -692,6 +715,12 @@ export default function BookingSection({
                       <Sparkles aria-hidden="true" />
                       <h3>{copy.serviceStep.unavailable}</h3>
                       <p>{error || copy.serviceStep.unavailableBody}</p>
+                      <button
+                        onClick={() => setCatalogReloadKey((value) => value + 1)}
+                        type="button"
+                      >
+                        {copy.serviceStep.retry}
+                      </button>
                       <a href={`tel:${phoneNumber}`}>{copy.workspace.call} {phoneDisplay}</a>
                     </div>
                   )}

@@ -8,6 +8,7 @@ import {
   getBookingErrorMessage,
   normalizeBookingLocale,
 } from "@/lib/booking/localization";
+import { withTransientBookingReadRetry } from "@/lib/booking/read-retry";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -41,7 +42,9 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const result = await getAvailableSlots(parsed.data);
+    const result = await withTransientBookingReadRetry(() =>
+      getAvailableSlots(parsed.data),
+    );
     return NextResponse.json(
       {
         ...result,

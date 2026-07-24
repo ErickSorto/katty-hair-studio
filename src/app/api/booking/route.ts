@@ -19,6 +19,7 @@ import {
   type BookingErrorCode,
   type BookingLocale,
 } from "@/lib/booking/localization";
+import { withTransientBookingReadRetry } from "@/lib/booking/read-retry";
 import {
   BookingCapacityError,
   confirmBooking,
@@ -208,9 +209,9 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const configuration = await getAvailabilityConfiguration(parsed.data.serviceId).catch(
-    (error) => ({ error }),
-  );
+  const configuration = await withTransientBookingReadRetry(() =>
+    getAvailabilityConfiguration(parsed.data.serviceId),
+  ).catch((error) => ({ error }));
 
   if ("error" in configuration) {
     console.error("Booking configuration unavailable", configuration.error);
@@ -231,7 +232,9 @@ export async function POST(request: NextRequest) {
 
   try {
     await expireStaleBookingHolds();
-    const availability = await getAvailableSlots({ date, serviceId: service.id });
+    const availability = await withTransientBookingReadRetry(() =>
+      getAvailableSlots({ date, serviceId: service.id }),
+    );
     const selectedSlot = availability.slots.find(
       (slot) => slot.startsAt === parsed.data.startsAt,
     );

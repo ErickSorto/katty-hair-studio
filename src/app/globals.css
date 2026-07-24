@@ -5773,12 +5773,22 @@ section {
   line-height: 1.55;
 }
 
-.reservation-unavailable a {
+.reservation-unavailable a,
+.reservation-unavailable button {
   min-height: 44px;
   border-bottom: 1px solid var(--wine);
   padding-top: 10px;
   color: var(--wine);
   font-weight: 820;
+}
+
+.reservation-unavailable button {
+  border-top: 0;
+  border-right: 0;
+  border-left: 0;
+  background: transparent;
+  cursor: pointer;
+  font: inherit;
 }
 
 .reservation-step-actions {
