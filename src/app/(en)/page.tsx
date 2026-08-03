@@ -17,6 +17,7 @@ import {
   PlayCircle,
   Quote,
   Scissors,
+  ShoppingBag,
   Sparkles,
   Star,
   Store,
@@ -710,6 +711,18 @@ export function HomePage({ locale = "en" }: { locale?: Locale }) {
           secondaryLink: "Explorar servicios de extensiones",
           allServices: "Ver el directorio completo de servicios",
         },
+        retail: {
+          eyebrow: "Productos para llevar",
+          title: "Olaplex No. 7 y extensiones que se sienten como tuyas.",
+          body: "Llévate el brillo con Olaplex No. 7 Bonding Oil y pregunta por extensiones de cabello hispano e indio a precios accesibles. Te ayudaremos a comparar textura, largo y el plan adecuado antes de comprar.",
+          product: "Olaplex No. 7 Bonding Oil",
+          productDetail: "Un toque ligero de brillo y apoyo contra el calor para terminar tu rutina.",
+          extensions: "Cabello hispano + indio",
+          extensionsDetail: "Opciones de extensiones para distintos objetivos, con ayuda para encontrar la textura y el largo.",
+          price: "Precios accesibles en el salón",
+          link: "Explorar productos y extensiones",
+          imageAlt: "Productos profesionales de cuidado capilar en una mesa de estilismo en tonos rosados",
+        },
         process: {
           eyebrow: "Tu cita",
           title: "Siempre sabrás qué sigue.",
@@ -736,6 +749,7 @@ export function HomePage({ locale = "en" }: { locale?: Locale }) {
           eyebrow: "Conoce a Katty",
           title: "Tu textura merece una estilista que escuche primero.",
           body: "Katty Hair Studio es un salón orgullosamente dominicano, de servicio completo y abierto a todas las personas. Explora color, cortes, blowouts, trenzas, extensiones, tratamientos y peinados para cada textura y objetivo.",
+          aboutLink: "Conoce la historia de Katty y el salón",
           quote: "Trae el estilo que deseas. Adaptamos tu cita al acabado con el que quieres salir.",
           local: "Recomendada localmente",
           profile: "Ver perfil",
@@ -809,6 +823,18 @@ export function HomePage({ locale = "en" }: { locale?: Locale }) {
           secondaryLink: "Explore extension services",
           allServices: "View the complete service directory",
         },
+        retail: {
+          eyebrow: "Take-home care",
+          title: "Olaplex No. 7 and extensions that feel like you.",
+          body: "Take the shine home with Olaplex No. 7 Bonding Oil, then ask about low-priced Hispanic and Indian hair extensions. We’ll help you compare texture, length, and the right plan before you buy.",
+          product: "Olaplex No. 7 Bonding Oil",
+          productDetail: "A lightweight shine and heat-supporting finish for your routine.",
+          extensions: "Hispanic + Indian hair",
+          extensionsDetail: "Hair extension options for different goals, with help matching texture and length.",
+          price: "Low prices in the studio",
+          link: "Explore products + extensions",
+          imageAlt: "Professional hair-care products arranged on a rose-toned styling counter",
+        },
         process: {
           eyebrow: "Your appointment",
           title: "You’ll always know what happens next.",
@@ -835,6 +861,7 @@ export function HomePage({ locale = "en" }: { locale?: Locale }) {
           eyebrow: "Meet Katty",
           title: "Your texture deserves a stylist who listens first.",
           body: "Katty Hair Studio is proudly Dominican-owned, full-service, and open to everyone. Explore color, cuts, blowouts, braids, extensions, treatments, and styling for every texture and style goal.",
+          aboutLink: "Meet Katty and learn about the studio",
           quote: "Bring the look you want. Your appointment is shaped around the finish you want to leave with.",
           local: "Recommended locally",
           profile: "View profile",
@@ -1171,6 +1198,42 @@ export function HomePage({ locale = "en" }: { locale?: Locale }) {
         </div>
       </section>
 
+      <section className="retail-supply-section" data-reveal id="products-and-extensions">
+        <div className="retail-supply-art">
+          <Image
+            alt={copy.retail.imageAlt}
+            fill
+            sizes="(max-width: 900px) 100vw, 46vw"
+            src="/editorial/katty-olaplex-no7-bonding-oil-v1.webp"
+          />
+          <div className="retail-supply-art-label">
+            <ShoppingBag aria-hidden="true" />
+            {copy.retail.price}
+          </div>
+        </div>
+        <div className="retail-supply-copy">
+          <p className="eyebrow">{copy.retail.eyebrow}</p>
+          <h2>{copy.retail.title}</h2>
+          <p>{copy.retail.body}</p>
+          <div className="retail-supply-list">
+            <div>
+              <span>01</span>
+              <h3>{copy.retail.product}</h3>
+              <p>{copy.retail.productDetail}</p>
+            </div>
+            <div>
+              <span>02</span>
+              <h3>{copy.retail.extensions}</h3>
+              <p>{copy.retail.extensionsDetail}</p>
+            </div>
+          </div>
+          <Link className="retail-supply-link" href={localizePath("/olaplex-hair-extensions", locale)}>
+            {copy.retail.link}
+            <ArrowRight aria-hidden="true" />
+          </Link>
+        </div>
+      </section>
+
       <section className="process-section" id="process">
         <div className="process-heading centered" data-reveal>
           <p className="eyebrow">{copy.process.eyebrow}</p>
@@ -1297,6 +1360,10 @@ export function HomePage({ locale = "en" }: { locale?: Locale }) {
           <p className="eyebrow">{copy.info.eyebrow}</p>
           <h2>{copy.info.title}</h2>
           <p>{copy.info.body}</p>
+          <Link className="info-about-link" href={localizePath("/about", locale)}>
+            {copy.info.aboutLink}
+            <ArrowRight aria-hidden="true" />
+          </Link>
           <div className="info-card-grid">
             {localizedStudioInfo.map((item) => (
               <article className="info-card" key={item.title}>

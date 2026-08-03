@@ -12,12 +12,24 @@ export const topPriorityServices = [
     label: { en: "Hair coloring", es: "Coloración del cabello" },
   },
   {
+    href: "/services/balayage",
+    label: { en: "Balayage", es: "Balayage" },
+  },
+  {
     href: "/services/braids",
     label: { en: "Hair Braiding Services", es: "Trenzado de cabello" },
   },
   {
+    href: "/services/wigs",
+    label: { en: "Wigs", es: "Pelucas" },
+  },
+  {
     href: "/services/hair-extension-consultation",
     label: { en: "Extension consultation", es: "Consulta de extensiones" },
+  },
+  {
+    href: "/services/hair-extension-installation",
+    label: { en: "Extension installation", es: "Instalación de extensiones" },
   },
   {
     href: "/services/sew-in-hair-extensions",

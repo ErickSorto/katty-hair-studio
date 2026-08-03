@@ -21,6 +21,7 @@ import { enUS, es as esLocale } from "date-fns/locale";
 import { formatInTimeZone } from "date-fns-tz";
 import { isSalonClosedWeekday } from "@/lib/booking/schedule";
 import { formatBookingSlotTime } from "@/lib/booking/localization";
+import { findDefaultBookingAvailability } from "@/lib/booking/default-availability";
 import {
   RetryableBookingReadError,
   withTransientBookingReadRetry,
@@ -251,11 +252,13 @@ export default function BookingSection({
   const demoMode = process.env.NEXT_PUBLIC_BOOKING_DEMO_MODE === "true";
   const confirmationHeadingRef = useRef<HTMLHeadingElement>(null);
   const stepHeadingRef = useRef<HTMLHeadingElement>(null);
+  const shouldFindDefaultAvailabilityRef = useRef(true);
   const [step, setStep] = useState<BookingStep>(1);
   const [services, setServices] = useState<Service[]>([]);
   const [serviceId, setServiceId] = useState("");
   const [date, setDate] = useState(initialBookingDate);
   const [slots, setSlots] = useState<Slot[]>([]);
+  const [slotsDate, setSlotsDate] = useState("");
   const [startsAt, setStartsAt] = useState("");
   const [timezone, setTimezone] = useState(salonTimezone);
   const [bookingWindowDays, setBookingWindowDays] = useState(90);
@@ -380,7 +383,7 @@ export default function BookingSection({
   }, [catalogReloadKey, copy.errors.catalog, defaultPromotion, demoMode, locale]);
 
   useEffect(() => {
-    if (step < 2 || !serviceId || !date) {
+    if (step < 2 || !serviceId || !date || slotsDate === date) {
       return;
     }
 
@@ -391,23 +394,50 @@ export default function BookingSection({
       setError("");
 
       try {
-        const query = new URLSearchParams({ date, locale, serviceId });
-        if (demoMode) query.set("demo", "1");
+        async function requestAvailability(requestedDate: string) {
+          const query = new URLSearchParams({ date: requestedDate, locale, serviceId });
+          if (demoMode) query.set("demo", "1");
 
-        const response = await fetch(`/api/booking/availability?${query}`, {
-          cache: "no-store",
-          signal: controller.signal,
-        });
-        const result = (await response.json()) as { error?: string; slots?: Slot[] };
+          const response = await fetch(`/api/booking/availability?${query}`, {
+            cache: "no-store",
+            signal: controller.signal,
+          });
+          const result = (await response.json()) as {
+            error?: string;
+            slots?: Slot[];
+            timezone?: string;
+          };
 
-        if (!response.ok || !result.slots) {
-          throw new Error(result.error || copy.errors.availability);
+          if (!response.ok || !result.slots) {
+            throw new Error(result.error || copy.errors.availability);
+          }
+
+          return { slots: result.slots, timezone: result.timezone };
         }
 
-        setSlots(result.slots);
+        const resolved = shouldFindDefaultAvailabilityRef.current
+          ? await findDefaultBookingAvailability({
+              bookingWindowDays,
+              date,
+              loadAvailability: requestAvailability,
+              today,
+            })
+          : { availability: await requestAvailability(date), date };
+
+        if (!controller.signal.aborted) {
+          shouldFindDefaultAvailabilityRef.current = false;
+          setDate(resolved.date);
+          setSlots(resolved.availability.slots);
+          setSlotsDate(resolved.date);
+          if (resolved.availability.timezone) {
+            setTimezone(resolved.availability.timezone);
+          }
+        }
       } catch (availabilityError) {
         if (!controller.signal.aborted) {
+          shouldFindDefaultAvailabilityRef.current = false;
           setSlots([]);
+          setSlotsDate(date);
           setError(
             availabilityError instanceof Error
               ? availabilityError.message
@@ -423,7 +453,17 @@ export default function BookingSection({
 
     loadAvailability();
     return () => controller.abort();
-  }, [copy.errors.availability, date, demoMode, locale, serviceId, step]);
+  }, [
+    bookingWindowDays,
+    copy.errors.availability,
+    date,
+    demoMode,
+    locale,
+    serviceId,
+    slotsDate,
+    step,
+    today,
+  ]);
 
   useEffect(() => {
     if (!confirmation) {
@@ -467,23 +507,30 @@ export default function BookingSection({
   }
 
   function chooseService(id: string) {
+    shouldFindDefaultAvailabilityRef.current = true;
     setServiceId(id);
+    setDate(initialBookingDate);
     setStartsAt("");
     setSlots([]);
+    setSlotsDate("");
     setError("");
   }
 
   function chooseDate(nextDate: string) {
+    shouldFindDefaultAvailabilityRef.current = false;
     setDate(nextDate);
     setStartsAt("");
     setSlots([]);
+    setSlotsDate("");
   }
 
   function resetBooking() {
+    shouldFindDefaultAvailabilityRef.current = true;
     setStep(1);
     setServiceId("");
     setDate(initialBookingDate);
     setSlots([]);
+    setSlotsDate("");
     setStartsAt("");
     setCustomerName("");
     setCustomerEmail("");

@@ -12,6 +12,7 @@ type SitemapEntry = MetadataRoute.Sitemap[number];
 type RouteSpec = {
   changeFrequency: NonNullable<SitemapEntry["changeFrequency"]>;
   images?: readonly string[];
+  lastModified: string;
   path: string;
   priority: number;
 };
@@ -20,6 +21,7 @@ const staticRoutes: readonly RouteSpec[] = [
   {
     path: "/",
     changeFrequency: "weekly",
+    lastModified: "2026-07-27",
     priority: 1,
     images: [
       "/hero/katty-salon-interior-hero-clear-pink-v4.webp",
@@ -29,6 +31,7 @@ const staticRoutes: readonly RouteSpec[] = [
   {
     path: "/services",
     changeFrequency: "weekly",
+    lastModified: "2026-07-27",
     priority: 0.95,
     images: [
       "/hero/katty-salon-interior-hero-clear-pink-v4.webp",
@@ -38,24 +41,35 @@ const staticRoutes: readonly RouteSpec[] = [
   {
     path: "/location",
     changeFrequency: "monthly",
+    lastModified: "2026-07-15",
     priority: 0.9,
     images: ["/hero/katty-salon-interior-hero-clear-pink-v4.webp"],
   },
   {
     path: hairSalonCategory.url,
     changeFrequency: "monthly",
+    lastModified: "2026-07-15",
     priority: 0.9,
     images: [getServiceImage(hairSalonCategory.slug)],
   },
   {
     path: extensionCategory.url,
     changeFrequency: "monthly",
+    lastModified: "2026-07-15",
     priority: 0.9,
     images: [getServiceImage(extensionCategory.slug)],
   },
   {
+    path: "/olaplex-hair-extensions",
+    changeFrequency: "monthly",
+    lastModified: "2026-08-03",
+    priority: 0.85,
+    images: ["/editorial/katty-olaplex-no7-bonding-oil-v1.webp"],
+  },
+  {
     path: "/about",
     changeFrequency: "monthly",
+    lastModified: "2026-07-15",
     priority: 0.75,
     images: ["/founder/katty-founder-white-suit-editorial.webp"],
   },
@@ -64,6 +78,7 @@ const staticRoutes: readonly RouteSpec[] = [
 function primaryEntry({
   changeFrequency,
   images,
+  lastModified,
   path,
   priority,
 }: RouteSpec): SitemapEntry {
@@ -79,6 +94,7 @@ function primaryEntry({
     url: english,
     changeFrequency,
     images: images?.map((image) => `${siteOrigin}${image}`),
+    lastModified,
     priority,
     alternates: { languages },
   };
@@ -92,6 +108,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     .map((page) => ({
       path: page.url,
       changeFrequency: "monthly",
+      lastModified: "2026-07-15",
       priority: page.slug === "silk-press" || page.slug === "blowouts" ? 0.9 : 0.8,
       images: [getServiceImage(page.slug)],
     }));
