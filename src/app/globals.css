@@ -7485,11 +7485,19 @@ section {
 .retail-extension-section { display: grid; grid-template-columns: minmax(320px, 0.87fr) minmax(0, 0.8fr); gap: clamp(44px, 8vw, 132px); align-items: center; padding-top: clamp(80px, 10vw, 144px); padding-bottom: clamp(80px, 10vw, 144px); }
 .retail-product-section { background: linear-gradient(135deg, #f4d8dd, #fffafa); }
 .retail-product-image { min-height: clamp(510px, 58vw, 770px); }
+.olaplex-range-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 28px; }
+.olaplex-range-grid > div { display: grid; min-height: 106px; align-content: space-between; gap: 12px; border: 1px solid var(--line); border-radius: var(--radius); padding: 13px; background: rgba(255, 255, 255, 0.66); box-shadow: 0 12px 26px rgba(79, 14, 14, 0.06); }
+.olaplex-range-grid strong { color: var(--rose-warm); font-family: var(--font-display), Georgia, serif; font-size: 1.6rem; font-weight: 560; line-height: 1; }
+.olaplex-range-grid span { color: var(--ink); font-size: 0.72rem; font-weight: 760; line-height: 1.35; }
 .retail-extension-section { grid-template-columns: minmax(0, 0.8fr) minmax(320px, 0.87fr); background: #5a1535; color: var(--paper); }
 .retail-extension-copy .eyebrow { color: var(--blush-bright); }
 .retail-extension-copy > p:not(.eyebrow) { color: rgba(255, 255, 255, 0.77); }
 .retail-extension-art img { object-position: 50% 38%; }
 .retail-extension-copy .primary-link { margin-top: 30px; }
+.extension-origin-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 30px; }
+.extension-origin-grid > div { min-height: 126px; border-top: 1px solid rgba(255, 255, 255, 0.34); padding-top: 14px; }
+.extension-origin-grid h3 { margin: 0 0 8px; color: var(--blush-bright); font-family: var(--font-display), Georgia, serif; font-size: 1.35rem; font-weight: 560; line-height: 1; }
+.extension-origin-grid p { margin: 0; color: rgba(255, 255, 255, 0.68); font-size: 0.82rem; line-height: 1.55; }
 
 .retail-contact-section { display: flex; min-height: 390px; align-items: center; justify-content: space-between; gap: 42px; padding-top: clamp(74px, 9vw, 120px); padding-bottom: clamp(74px, 9vw, 120px); background: linear-gradient(110deg, rgba(76, 16, 43, 0.96), rgba(160, 41, 76, 0.9)), url("/patterns/katty-hairline-pattern.webp") center / 480px; color: var(--paper); }
 .retail-contact-section .eyebrow { color: var(--blush-bright); }
@@ -7523,6 +7531,7 @@ section {
   .retail-extension-art { grid-area: art; }
   .retail-extension-copy { grid-area: copy; }
   .retail-contact-section { align-items: flex-start; flex-direction: column; }
+  .olaplex-range-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 
 @media (max-width: 740px) {
@@ -7542,6 +7551,10 @@ section {
   .retail-faq-section { gap: 36px; padding-top: 64px; padding-bottom: 72px; }
   .retail-contact-section { min-height: 0; padding-top: 70px; padding-bottom: 70px; }
   .retail-contact-actions { width: 100%; }
+  .olaplex-range-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .olaplex-range-grid > div { min-height: 98px; }
+  .extension-origin-grid { grid-template-columns: 1fr; gap: 2px; }
+  .extension-origin-grid > div { min-height: auto; padding: 14px 0; }
   .retail-faq-list summary { min-height: 76px; font-size: 0.98rem; }
   .retail-faq-list details p { margin-right: 12px; }
 }

@@ -713,12 +713,12 @@ export function HomePage({ locale = "en" }: { locale?: Locale }) {
         },
         retail: {
           eyebrow: "Productos para llevar",
-          title: "Olaplex No. 7 y extensiones que se sienten como tuyas.",
-          body: "Llévate el brillo con Olaplex No. 7 Bonding Oil y pregunta por extensiones de cabello hispano e indio a precios accesibles. Te ayudaremos a comparar textura, largo y el plan adecuado antes de comprar.",
-          product: "Olaplex No. 7 Bonding Oil",
-          productDetail: "Un toque ligero de brillo y apoyo contra el calor para terminar tu rutina.",
-          extensions: "Cabello hispano + indio",
-          extensionsDetail: "Opciones de extensiones para distintos objetivos, con ayuda para encontrar la textura y el largo.",
+          title: "La línea Olaplex + cabello para extensiones, en un solo lugar.",
+          body: "Pregunta por los productos Olaplex No. 0, 3, 4, 4P, 5 y 7, y compara cabello indio, brasileño, camboyano y malasio para extensiones a precios accesibles.",
+          product: "Línea Olaplex No. 0–7",
+          productDetail: "Tratamiento, champú, matizante, acondicionador y aceite de acabado para crear tu rutina.",
+          extensions: "Indio · brasileño · camboyano · malasio",
+          extensionsDetail: "Opciones para comparar textura, largo, volumen y el plan de instalación adecuado.",
           price: "Precios accesibles en el salón",
           link: "Explorar productos y extensiones",
           imageAlt: "Productos profesionales de cuidado capilar en una mesa de estilismo en tonos rosados",
@@ -825,12 +825,12 @@ export function HomePage({ locale = "en" }: { locale?: Locale }) {
         },
         retail: {
           eyebrow: "Take-home care",
-          title: "Olaplex No. 7 and extensions that feel like you.",
-          body: "Take the shine home with Olaplex No. 7 Bonding Oil, then ask about low-priced Hispanic and Indian hair extensions. We’ll help you compare texture, length, and the right plan before you buy.",
-          product: "Olaplex No. 7 Bonding Oil",
-          productDetail: "A lightweight shine and heat-supporting finish for your routine.",
-          extensions: "Hispanic + Indian hair",
-          extensionsDetail: "Hair extension options for different goals, with help matching texture and length.",
+          title: "The Olaplex range + extension hair, in one place.",
+          body: "Ask about Olaplex No. 0, 3, 4, 4P, 5, and 7, then compare Indian, Brazilian, Cambodian, and Malaysian extension hair at low prices.",
+          product: "Olaplex No. 0–7 range",
+          productDetail: "Treatment, shampoo, toning, conditioner, and finishing oil to build your routine.",
+          extensions: "Indian · Brazilian · Cambodian · Malaysian",
+          extensionsDetail: "Options to compare texture, length, fullness, and the right install plan.",
           price: "Low prices in the studio",
           link: "Explore products + extensions",
           imageAlt: "Professional hair-care products arranged on a rose-toned styling counter",
@@ -1204,7 +1204,7 @@ export function HomePage({ locale = "en" }: { locale?: Locale }) {
             alt={copy.retail.imageAlt}
             fill
             sizes="(max-width: 900px) 100vw, 46vw"
-            src="/editorial/katty-olaplex-no7-bonding-oil-v1.webp"
+            src="/editorial/katty-olaplex-range-extension-hair-v1.webp"
           />
           <div className="retail-supply-art-label">
             <ShoppingBag aria-hidden="true" />
