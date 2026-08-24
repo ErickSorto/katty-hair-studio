@@ -40,10 +40,14 @@ export const sharedCopy = {
       ["Gallery", "/gallery"],
       ["About", "/about"],
       ["Location", "/location"],
-      ["Booking", "/booking"],
     ],
     request: "Request appointment",
     requestShort: "Request",
+    shop: {
+      detail: "Shampoos, color, extensions & more",
+      eyebrow: "In-studio shop",
+      label: "Beauty Supply",
+    },
   },
   es: {
     announcement: {
@@ -84,10 +88,14 @@ export const sharedCopy = {
       ["Galería", "/gallery"],
       ["Sobre Katty", "/about"],
       ["Ubicación", "/location"],
-      ["Reservar", "/booking"],
     ],
     request: "Solicitar cita",
     requestShort: "Reservar",
+    shop: {
+      detail: "Champús, tintes, extensiones y más",
+      eyebrow: "Tienda en el salón",
+      label: "Productos",
+    },
   },
 } as const satisfies Record<Locale, unknown>;
 

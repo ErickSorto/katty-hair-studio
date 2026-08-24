@@ -10,6 +10,7 @@ import {
   MapPin,
   MapPinned,
   Phone,
+  ShoppingBag,
 } from "lucide-react";
 import DrawerAutoClose from "./DrawerAutoClose";
 import DrawerToggleButton from "./DrawerToggleButton";
@@ -77,7 +78,15 @@ export function SiteHeader({ locale = "en" }: { locale?: Locale }) {
         </div>
         <div className="main-nav">
           <Link aria-label="Katty Hair Studio" className="brand brand-lockup-link" href={localizePath("/", locale)}><HeaderBrandLogo/></Link>
-          <nav aria-label={copy.labels.mainNavigation} className="desktop-nav"><DesktopServicesMenu locale={locale} />{copy.nav.map(([label,href])=><Link href={localizePath(href, locale)} key={href}>{label}</Link>)}</nav>
+          <nav aria-label={copy.labels.mainNavigation} className="desktop-nav">
+            <DesktopServicesMenu locale={locale} />
+            {copy.nav.slice(0, 2).map(([label, href]) => <Link href={localizePath(href, locale)} key={href}>{label}</Link>)}
+            <Link className="desktop-shop-link" href={localizePath("/olaplex-hair-extensions", locale)}>
+              <ShoppingBag aria-hidden="true" />
+              {copy.shop.label}
+            </Link>
+            {copy.nav.slice(2).map(([label, href]) => <Link href={localizePath(href, locale)} key={href}>{label}</Link>)}
+          </nav>
           <div className="nav-actions"><Link className="nav-cta" href={localizePath("/booking", locale)}><CalendarDays aria-hidden="true"/>{copy.request}</Link><DrawerToggleButton action="open" label={copy.labels.openMenu} /></div>
         </div>
       </header>
@@ -85,7 +94,19 @@ export function SiteHeader({ locale = "en" }: { locale?: Locale }) {
       <aside aria-label={copy.labels.mobileNavigation} className="mobile-drawer" id="katty-mobile-drawer">
         <div className="drawer-top"><Link aria-label="Katty Hair Studio" className="brand drawer-brand" href={localizePath("/", locale)}><BrandLogo/></Link><DrawerToggleButton action="close" label={copy.labels.closeMenu} /></div>
         <div className="drawer-language-row"><span>{copy.labels.language}</span><LanguageSwitcher placement="drawer" /></div>
-        <nav aria-label={copy.labels.mobilePageLinks} className="drawer-links"><DrawerServicesMenu locale={locale} />{copy.nav.map(([label,href])=><Link href={localizePath(href, locale)} key={href}>{label}</Link>)}</nav>
+        <nav aria-label={copy.labels.mobilePageLinks} className="drawer-links">
+          <DrawerServicesMenu locale={locale} />
+          <Link className="drawer-shop-link" href={localizePath("/olaplex-hair-extensions", locale)}>
+            <span className="drawer-shop-icon"><ShoppingBag aria-hidden="true" /></span>
+            <span className="drawer-shop-copy">
+              <small>{copy.shop.eyebrow}</small>
+              <strong>{copy.shop.label}</strong>
+              <span>{copy.shop.detail}</span>
+            </span>
+            <ArrowRight aria-hidden="true" className="drawer-shop-arrow" />
+          </Link>
+          {copy.nav.map(([label, href]) => <Link href={localizePath(href, locale)} key={href}>{label}</Link>)}
+        </nav>
         <div className="drawer-card"><span className="drawer-card-icon"><Clock aria-hidden="true" className="site-icon"/></span><div><p>{copy.drawer.today}</p><strong>{copy.drawer.openHours}</strong></div></div>
         <div className="drawer-card"><span className="drawer-card-icon"><MapPinned aria-hidden="true" className="site-icon"/></span><div><p>{copy.drawer.studio}</p><strong>3816 Bladensburg Rd</strong></div></div>
         <Link className="drawer-cta" href={localizePath("/booking", locale)}><CalendarDays aria-hidden="true" className="site-icon"/>{copy.request}</Link>
