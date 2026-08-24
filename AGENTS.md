@@ -226,9 +226,10 @@ At `1440x900`, the current rendered baselines are: header `130px`; hero top `130
 - Drawer state uses the hidden checkbox `#katty-drawer`; do not replace it without preserving open/close, Escape, focus transfer, link auto-close, backdrop close, and body scroll lock.
 - Open button: `.menu-button`; close button: `.drawer-close-button`; backdrop: `.drawer-backdrop`; panel: `#katty-mobile-drawer.mobile-drawer`.
 - Drawer width is `min(88vw, 382px)`, height and max-height are `100dvh`, and `overflow-y: auto`. It slides from the right and keeps `overscroll-behavior: contain`.
-- The drawer order is fixed: brand/close, language row, navigation with expandable Services, today/hours card, address card, full-width request CTA, call/WhatsApp, then five social buttons.
-- At `390x560`, the drawer must be internally scrollable. Current baseline: drawer `clientHeight 560`, `scrollHeight 599`, body overflow `hidden`, booking CTA top near `412px`, call row top near `491px`.
-- At heights below `700px`, `.drawer-links` becomes two columns; gaps and card padding shrink; the request, call, and WhatsApp controls remain at least `40px` high.
+- The drawer order is fixed: brand/close, language row, six stacked full-width destination rows (expandable Services, Beauty Supply, Prices, Gallery, About, Location), today/hours card, address card, full-width request CTA, call/WhatsApp, then five social buttons.
+- Services opens a compact nested directory with `View all services`, `Hair salon`, and `Hair extensions`; do not restore the full individual-service list inside the drawer.
+- At `390x560`, the drawer must be internally scrollable. Current closed-services baseline: drawer `clientHeight 560`, `scrollHeight 819`, body overflow `hidden`, booking CTA offset top near `632px`, and contact row offset top near `711px`.
+- At heights below `700px`, destination descriptions hide and gaps/card padding shrink, but all six destination rows remain stacked and full width. The request, call, and WhatsApp controls remain at least `40px` high.
 - Language buttons must remain independent links. Activating EN or ES must never trigger `tel:` or WhatsApp navigation.
 - Services may expand the drawer beyond one viewport; the last service link, booking CTA, and social links must remain reachable by scrolling.
 
@@ -311,7 +312,7 @@ Run these checks before claiming the homepage has been reproduced or changed:
 7. Capture the Spanish homepage at `1440x900` and `390x844`.
 8. At `1440x900`, verify fixed header height near `130px`, hero height near `770px`, both hero CTAs in the first viewport, model face unobscured, and model bottom visually grounded.
 9. At `390x844`, verify header height near `116px`, hero height near `664px`, three-line H1, both hero CTAs, all three trust cells, and fixed request/call bar.
-10. At `390x560`, open the drawer. Verify body scroll lock, internal drawer scrolling, close button, language row, two-column nav, address, booking CTA, call, WhatsApp, and social buttons.
+10. At `390x560`, open the drawer. Verify body scroll lock, internal drawer scrolling, close button, language row, six stacked full-width destination rows, compact Services submenu, address, booking CTA, call, WhatsApp, and social buttons.
 11. In the drawer, switch EN to ES and ES to EN. Verify the path changes correctly and neither action navigates to `tel:` or WhatsApp.
 12. Review section: verify three chips, two real client slides plus summary slide, five horizontal stars, previous/next disabled states, swipe, three dots, and active-dot movement.
 13. Video section: verify three cards, 9:16 ratio, stacked offsets, poster load near viewport, one user-triggered playback, native controls during playback, Spanish captions, next/previous controls, and no eager loading of all MP4 sources.

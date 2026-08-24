@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, ChevronDown } from "lucide-react";
+import { ArrowRight, ChevronDown, Scissors } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { localizePath, type Locale } from "./i18n/config";
 import { serviceNavigationCopy } from "./i18n/shared-copy";
@@ -119,27 +119,19 @@ export function DrawerServicesMenu({ locale = "en" }: { locale?: Locale }) {
 
   return (
     <details className="drawer-services">
-      <summary>
-        <span>{copy.menuLabel}</span>
-        <ChevronDown aria-hidden="true" />
+      <summary className="drawer-destination-row">
+        <span className="drawer-destination-icon"><Scissors aria-hidden="true" /></span>
+        <span className="drawer-destination-copy">
+          <strong>{copy.menuLabel}</strong>
+          <span>{copy.menuDetail}</span>
+        </span>
+        <ChevronDown aria-hidden="true" className="drawer-destination-arrow" />
       </summary>
       <div className="drawer-services-content">
         <Link className="drawer-all-services-link" href={localizePath("/services", locale)}>
           {copy.viewAll}<ArrowRight aria-hidden="true" />
         </Link>
         <CategoryGateways locale={locale} mobile />
-        <div className="drawer-service-groups">
-          {copy.groups.map((group) => (
-            <section key={group.label}>
-              <h3>{group.label}</h3>
-              <div>
-                {group.links.map(([label, href]) => (
-                  <Link href={localizePath(href, locale)} key={href}>{label}</Link>
-                ))}
-              </div>
-            </section>
-          ))}
-        </div>
       </div>
     </details>
   );

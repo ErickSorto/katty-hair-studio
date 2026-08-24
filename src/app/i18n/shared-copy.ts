@@ -13,6 +13,12 @@ export const sharedCopy = {
       studio: "Studio",
       today: "Today",
     },
+    drawerNavDetails: {
+      "/#prices": "Service pricing & quotes",
+      "/gallery": "See finished hair",
+      "/about": "Meet Katty & the studio",
+      "/location": "Hours, map & directions",
+    },
     finalBanner: {
       eyebrow: "Ready when you are",
       title: "Bring your reference. Leave with a clear plan.",
@@ -59,6 +65,12 @@ export const sharedCopy = {
       openHours: "Abierto según el horario publicado",
       studio: "Salón",
       today: "Hoy",
+    },
+    drawerNavDetails: {
+      "/#prices": "Precios y cotizaciones",
+      "/gallery": "Mira los resultados",
+      "/about": "Conoce a Katty y el salón",
+      "/location": "Horario, mapa y dirección",
     },
     finalBanner: {
       eyebrow: "Cuando quieras",
@@ -170,6 +182,7 @@ export const serviceNavigationCopy = {
     intro: "Start with a category or go directly to the service you have in mind.",
     kicker: "Explore Katty",
     menuLabel: "Services",
+    menuDetail: "Browse salon services",
     request: "Request an appointment",
     title: "Find the right service for your hair.",
     viewAll: "View all services",
@@ -246,6 +259,7 @@ export const serviceNavigationCopy = {
     intro: "Empieza con una categoría o ve directamente al servicio que tienes en mente.",
     kicker: "Descubre Katty",
     menuLabel: "Servicios",
+    menuDetail: "Explora los servicios del salón",
     request: "Solicitar una cita",
     title: "Encuentra el servicio indicado para tu cabello.",
     viewAll: "Ver todos los servicios",

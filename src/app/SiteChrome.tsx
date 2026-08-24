@@ -5,12 +5,15 @@ import {
   BadgePercent,
   CalendarDays,
   ChevronRight,
+  CircleDollarSign,
   Clock,
   Heart,
+  Images,
   MapPin,
   MapPinned,
   Phone,
   ShoppingBag,
+  UserRound,
 } from "lucide-react";
 import DrawerAutoClose from "./DrawerAutoClose";
 import DrawerToggleButton from "./DrawerToggleButton";
@@ -37,6 +40,13 @@ const socialLinks = [
   { label: "X", href: "https://x.com/DominicanKatty", platform: "x" },
   { label: "TikTok", href: "https://www.tiktok.com/@dominicankattyhairstudio", platform: "tiktok" },
 ] as const;
+
+const drawerNavIcons = {
+  "/#prices": CircleDollarSign,
+  "/gallery": Images,
+  "/about": UserRound,
+  "/location": MapPinned,
+} as const;
 
 type SocialPlatform = (typeof socialLinks)[number]["platform"] | "whatsapp";
 
@@ -98,15 +108,28 @@ export function SiteHeader({ locale = "en" }: { locale?: Locale }) {
         <div className="drawer-language-row"><span>{copy.labels.language}</span><LanguageSwitcher placement="drawer" /></div>
         <nav aria-label={copy.labels.mobilePageLinks} className="drawer-links">
           <DrawerServicesMenu locale={locale} />
-          <Link className="drawer-shop-link" href={localizePath("/olaplex-hair-extensions", locale)}>
-            <span className="drawer-shop-icon"><ShoppingBag aria-hidden="true" /></span>
-            <span className="drawer-shop-copy">
+          <Link className="drawer-destination-row drawer-shop-link" href={localizePath("/olaplex-hair-extensions", locale)}>
+            <span className="drawer-destination-icon"><ShoppingBag aria-hidden="true" /></span>
+            <span className="drawer-destination-copy">
               <strong>{copy.shop.label}</strong>
               <span>{copy.shop.detail}</span>
             </span>
-            <ArrowRight aria-hidden="true" className="drawer-shop-arrow" />
+            <ArrowRight aria-hidden="true" className="drawer-destination-arrow" />
           </Link>
-          {copy.nav.map(([label, href]) => <Link href={localizePath(href, locale)} key={href}>{label}</Link>)}
+          {copy.nav.map(([label, href]) => {
+            const Icon = drawerNavIcons[href];
+
+            return (
+              <Link className="drawer-destination-row drawer-nav-link" href={localizePath(href, locale)} key={href}>
+                <span className="drawer-destination-icon"><Icon aria-hidden="true" /></span>
+                <span className="drawer-destination-copy">
+                  <strong>{label}</strong>
+                  <span>{copy.drawerNavDetails[href]}</span>
+                </span>
+                <ArrowRight aria-hidden="true" className="drawer-destination-arrow" />
+              </Link>
+            );
+          })}
         </nav>
         <div className="drawer-card"><span className="drawer-card-icon"><Clock aria-hidden="true" className="site-icon"/></span><div><p>{copy.drawer.today}</p><strong>{copy.drawer.openHours}</strong></div></div>
         <div className="drawer-card"><span className="drawer-card-icon"><MapPinned aria-hidden="true" className="site-icon"/></span><div><p>{copy.drawer.studio}</p><strong>3816 Bladensburg Rd</strong></div></div>
