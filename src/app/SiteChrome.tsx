@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import DrawerAutoClose from "./DrawerAutoClose";
 import DrawerToggleButton from "./DrawerToggleButton";
-import BookingScrollLink from "./BookingScrollLink";
+import MobileActionBarClient from "./MobileActionBarClient";
 import { DesktopServicesMenu, DrawerServicesMenu } from "./ServiceNavigation";
 import LanguageSwitcher from "./i18n/LanguageSwitcher";
 import { localizePath, type Locale } from "./i18n/config";
@@ -99,7 +99,6 @@ export function SiteHeader({ locale = "en" }: { locale?: Locale }) {
           <Link className="drawer-shop-link" href={localizePath("/olaplex-hair-extensions", locale)}>
             <span className="drawer-shop-icon"><ShoppingBag aria-hidden="true" /></span>
             <span className="drawer-shop-copy">
-              <small>{copy.shop.eyebrow}</small>
               <strong>{copy.shop.label}</strong>
               <span>{copy.shop.detail}</span>
             </span>
@@ -147,5 +146,13 @@ export function SiteFooter({ locale = "en" }: { locale?: Locale }) {
 
 export function MobileActionBar({ locale = "en" }: { locale?: Locale }) {
   const copy = sharedCopy[locale];
-  return <nav aria-label={copy.labels.mobileActions} className="mobile-action-bar"><BookingScrollLink className="mobile-action-primary" fallbackHref={localizePath("/booking", locale)}><CalendarDays aria-hidden="true"/>{copy.requestShort}</BookingScrollLink><a className="mobile-action-secondary" href={`tel:${phoneNumber}`}><Phone aria-hidden="true"/>{copy.call}</a></nav>;
+  return (
+    <MobileActionBarClient
+      ariaLabel={copy.labels.mobileActions}
+      bookingHref={localizePath("/booking", locale)}
+      callLabel={copy.call}
+      phoneNumber={phoneNumber}
+      requestLabel={copy.requestShort}
+    />
+  );
 }

@@ -45,7 +45,6 @@ export const sharedCopy = {
     requestShort: "Request",
     shop: {
       detail: "Shampoos, color, extensions & more",
-      eyebrow: "In-studio shop",
       label: "Beauty Supply",
     },
   },
@@ -93,7 +92,6 @@ export const sharedCopy = {
     requestShort: "Reservar",
     shop: {
       detail: "Champús, tintes, extensiones y más",
-      eyebrow: "Tienda en el salón",
       label: "Productos",
     },
   },

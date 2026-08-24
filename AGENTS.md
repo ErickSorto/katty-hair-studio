@@ -271,7 +271,7 @@ At `1440x900`, the current rendered baselines are: header `130px`; hero top `130
 
 ## Booking/Contact Rules
 
-- Homepage CTA links target `#booking`. The fixed mobile request action uses `BookingScrollLink` to align `#booking-container` below the fixed header with a `12px` gap.
+- Homepage CTA links target `#booking`. The fixed mobile request action opens the localized standalone booking page, while the full mobile action bar hides whenever an embedded `.booking-experience--section` is visible and returns after the user leaves that section.
 - Booking art is `/editorial/katty-client-plan-result-v2.webp` (`1023x1537`) with a wine shade, inset border, serif heading, Monday note, and payment-at-salon note.
 - Booking is a three-step flow: service, schedule, details. Preserve progress semantics, backwards navigation, validation, focus movement, loading states, empty states, and confirmation state.
 - Service step loads `/api/booking/catalog`; schedule step loads `/api/booking/availability`; submission posts JSON to `/api/booking`.
@@ -287,7 +287,7 @@ At `1440x900`, the current rendered baselines are: header `130px`; hero top `130
 - Transparent padding in the model asset can create a visible floating gap. Inspect the rendered alpha edge at the bottom; CSS `bottom: 0` alone does not prove visual contact.
 - `.hero-model` must stay outside layout flow. A relative image in the grid will push the copy and move both CTAs below the first viewport.
 - Mobile trust signals live inside the hero; desktop trust signals live after it. Rendering both on mobile duplicates the proof and breaks the height calculation.
-- The fixed header, anchor scrolling, and fixed mobile action bar interact. Direct hash navigation can land behind the header if `scroll-padding-top` or `BookingScrollLink` is removed.
+- The fixed header, anchor scrolling, and fixed mobile action bar interact. Preserve `scroll-padding-top` for in-page booking links, and keep the mobile action bar visibility observer synchronized with the embedded booking section and the fixed header/action-bar heights.
 - The drawer can be taller than short phones. Never switch `.mobile-drawer` to `overflow: hidden`.
 - Review images intentionally lazy-render by active slide. A blank inactive slide before navigation is not a broken URL; test after activating that slide.
 - The video section intentionally defers MP4 source assignment. Do not add `autoPlay` or eager `src` attributes to all three videos.
