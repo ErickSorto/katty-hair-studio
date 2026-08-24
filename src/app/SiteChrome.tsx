@@ -15,6 +15,7 @@ import {
 import DrawerAutoClose from "./DrawerAutoClose";
 import DrawerToggleButton from "./DrawerToggleButton";
 import MobileActionBarClient from "./MobileActionBarClient";
+import MobileHeaderScroll from "./MobileHeaderScroll";
 import { DesktopServicesMenu, DrawerServicesMenu } from "./ServiceNavigation";
 import LanguageSwitcher from "./i18n/LanguageSwitcher";
 import { localizePath, type Locale } from "./i18n/config";
@@ -63,6 +64,7 @@ export function SiteHeader({ locale = "en" }: { locale?: Locale }) {
     <>
       <input aria-label={copy.labels.openMenu} className="drawer-toggle" id="katty-drawer" type="checkbox" />
       <DrawerAutoClose />
+      <MobileHeaderScroll />
       <header className="site-header">
         <div className="announcement-bar">
           <Link className="announcement-pill" href={localizePath("/#prices", locale)}><BadgePercent aria-hidden="true" className="site-icon"/><span className="announcement-copy-long">{copy.announcement.long}</span><span className="announcement-copy-short">{copy.announcement.short}</span></Link>

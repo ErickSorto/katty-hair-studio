@@ -214,7 +214,8 @@ At `1440x900`, the current rendered baselines are: header `130px`; hero top `130
 - The mobile contract starts at `740px`. Tablet/small-desktop adjustments also exist at `1100px` and `900px`; test both transitions.
 - Mobile header shows only the Monday offer and WhatsApp in the announcement row. Hide the desktop phone center, social icons, language switcher, and Brentwood location from that row.
 - Mobile navbar shows the official lockup at `52px` high and a `46x46` menu button.
-- `.mobile-action-bar` is fixed above the safe area with two columns: request `1.25fr`, call `0.75fr`. Each link is at least `48px` high. It must remain visible while scrolling but must not cover booking controls or footer links.
+- The mobile header begins at `116px` tall. During the first `44px` of page scrolling, the announcement row moves off-screen while the `72px` logo/menu navbar remains fixed at the top. Desktop keeps both header rows fixed.
+- `.mobile-action-bar` is fixed above the safe area with two columns: request `1.25fr`, call `0.75fr`. Each link is at least `48px` high. It remains visible while browsing, hides while an embedded booking section is visible, and must not cover booking controls or footer links.
 - At `390x844`, confirm `document.documentElement.scrollWidth === document.documentElement.clientWidth`.
 - At `320px` and `360px`, announcement text may use the short label, but WhatsApp and the menu button must remain reachable.
 - Mobile gallery is exactly two columns with `8px` gaps. Tile heights are `clamp(220px, 68vw, 270px)` and labels stay inset `10px` from the bottom and sides.

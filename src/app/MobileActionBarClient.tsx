@@ -37,7 +37,9 @@ export default function MobileActionBarClient({
     const observeBookingSection = () => {
       observer?.disconnect();
 
-      const headerHeight = document.querySelector<HTMLElement>(".site-header")?.offsetHeight ?? 0;
+      const headerHeight = window.matchMedia("(max-width: 740px)").matches
+        ? document.querySelector<HTMLElement>(".main-nav")?.offsetHeight ?? 0
+        : document.querySelector<HTMLElement>(".site-header")?.offsetHeight ?? 0;
       const actionBarHeight = actionBarRef.current?.offsetHeight ?? 0;
 
       observer = new IntersectionObserver(

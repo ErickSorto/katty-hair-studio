@@ -4635,6 +4635,12 @@ section {
     --mobile-signal-height: 86px;
   }
 
+  .site-header {
+    --mobile-header-scroll-offset: 0px;
+    transform: translate3d(0, var(--mobile-header-scroll-offset), 0);
+    will-change: transform;
+  }
+
   .site-shell {
     padding-bottom: calc(72px + env(safe-area-inset-bottom));
   }
