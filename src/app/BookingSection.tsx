@@ -607,26 +607,28 @@ export default function BookingSection({
       data-reveal={mode === "section" ? "" : undefined}
       id="booking"
     >
-      <div className="reservation-atmosphere">
-        <Image
-          alt={copy.atmosphere.alt}
-          fill
-          loading={mode === "page" ? "eager" : "lazy"}
-          sizes={mode === "page" ? "(max-width: 900px) 100vw, 42vw" : "(max-width: 1100px) 100vw, 42vw"}
-          src="/editorial/katty-client-plan-result-v2.webp"
-        />
-        <div className="reservation-atmosphere-shade" />
-        <div className="reservation-atmosphere-copy">
-          <p className="eyebrow">{copy.atmosphere.eyebrow}</p>
-          {pageHeading ? (
-            <h1 className="reservation-page-title">{pageHeading}</h1>
-          ) : (
-            <h2>{copy.atmosphere.title}</h2>
-          )}
-          <p>{copy.atmosphere.body}</p>
-          <div className="reservation-atmosphere-notes">
-            <span><BadgePercent aria-hidden="true" />{copy.atmosphere.monday}</span>
-            <span><CheckCircle2 aria-hidden="true" />{copy.atmosphere.payment}</span>
+      <div className="reservation-atmosphere-frame">
+        <div className="reservation-atmosphere">
+          <Image
+            alt={copy.atmosphere.alt}
+            fill
+            loading={mode === "page" ? "eager" : "lazy"}
+            sizes={mode === "page" ? "(max-width: 900px) 100vw, 42vw" : "(max-width: 1100px) 100vw, 42vw"}
+            src="/editorial/katty-client-plan-result-v2.webp"
+          />
+          <div className="reservation-atmosphere-shade" />
+          <div className="reservation-atmosphere-copy">
+            <p className="eyebrow">{copy.atmosphere.eyebrow}</p>
+            {pageHeading ? (
+              <h1 className="reservation-page-title">{pageHeading}</h1>
+            ) : (
+              <h2>{copy.atmosphere.title}</h2>
+            )}
+            <p>{copy.atmosphere.body}</p>
+            <div className="reservation-atmosphere-notes">
+              <span><BadgePercent aria-hidden="true" />{copy.atmosphere.monday}</span>
+              <span><CheckCircle2 aria-hidden="true" />{copy.atmosphere.payment}</span>
+            </div>
           </div>
         </div>
       </div>
