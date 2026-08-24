@@ -62,9 +62,12 @@ const staticRoutes: readonly RouteSpec[] = [
   {
     path: "/olaplex-hair-extensions",
     changeFrequency: "monthly",
-    lastModified: "2026-08-04",
+    lastModified: "2026-08-24",
     priority: 0.85,
-    images: ["/editorial/katty-olaplex-range-extension-hair-v1.webp"],
+    images: [
+      "/editorial/katty-beauty-supply-store-v1.webp",
+      "/editorial/katty-olaplex-range-extension-hair-v1.webp",
+    ],
   },
   {
     path: "/about",

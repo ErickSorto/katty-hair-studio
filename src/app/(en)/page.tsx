@@ -127,8 +127,8 @@ function HomeJsonLd({ faqs, locale }: { faqs: readonly { answer: string; questio
       name: "Katty Hair Studio",
       description:
         locale === "es"
-          ? "Salón de belleza de servicio completo en Brentwood, Maryland, con cortes, coloración, blowouts dominicanos, trenzas, extensiones, tratamientos y peinados para cada textura."
-          : "Full-service hair salon in Brentwood, Maryland offering silk presses, Dominican blowouts, haircuts, hair color, braids, extensions, treatments, and styling for every texture.",
+          ? "Salón de belleza y beauty supply de servicio completo en Brentwood, Maryland, con cortes, coloración, blowouts dominicanos, trenzas, extensiones, tratamientos, peinados y productos capilares para cada textura."
+          : "Full-service hair salon and beauty supply in Brentwood, Maryland offering silk presses, Dominican blowouts, haircuts, hair color, braids, extensions, treatments, styling, and take-home hair products for every texture.",
       url: "https://www.kattyhairstudio.com/",
       telephone: phoneNumber,
       address: {
@@ -712,15 +712,15 @@ export function HomePage({ locale = "en" }: { locale?: Locale }) {
           allServices: "Ver el directorio completo de servicios",
         },
         retail: {
-          eyebrow: "Productos para llevar",
-          title: "La línea Olaplex + cabello para extensiones, en un solo lugar.",
-          body: "Pregunta por los productos Olaplex No. 0, 3, 4, 4P, 5 y 7, y compara cabello indio, brasileño, camboyano y malasio para extensiones a precios accesibles.",
-          product: "Línea Olaplex No. 0–7",
-          productDetail: "Tratamiento, champú, matizante, acondicionador y aceite de acabado para crear tu rutina.",
+          eyebrow: "Beauty supply + productos para llevar",
+          title: "Cuidado capilar, color + extensiones, en un solo salón.",
+          body: "Compra champús, acondicionadores, tintes, tratamientos y productos para peinar; explora la línea Olaplex y compara cabello indio, brasileño, camboyano y malasio para extensiones.",
+          product: "Champú · acondicionador · color + cuidado",
+          productDetail: "Productos para lavar, tratar, mantener el color, peinar y terminar tu rutina en casa.",
           extensions: "Indio · brasileño · camboyano · malasio",
           extensionsDetail: "Opciones para comparar textura, largo, volumen y el plan de instalación adecuado.",
-          price: "Precios accesibles en el salón",
-          link: "Explorar productos y extensiones",
+          price: "Beauty supply dentro del salón",
+          link: "Explorar el beauty supply + extensiones",
           imageAlt: "Productos profesionales de cuidado capilar en una mesa de estilismo en tonos rosados",
         },
         process: {
@@ -824,15 +824,15 @@ export function HomePage({ locale = "en" }: { locale?: Locale }) {
           allServices: "View the complete service directory",
         },
         retail: {
-          eyebrow: "Take-home care",
-          title: "The Olaplex range + extension hair, in one place.",
-          body: "Ask about Olaplex No. 0, 3, 4, 4P, 5, and 7, then compare Indian, Brazilian, Cambodian, and Malaysian extension hair at low prices.",
-          product: "Olaplex No. 0–7 range",
-          productDetail: "Treatment, shampoo, toning, conditioner, and finishing oil to build your routine.",
+          eyebrow: "Beauty supply + take-home care",
+          title: "Hair care, color + extension hair, in one studio.",
+          body: "Shop shampoos, conditioners, hair dyes, treatments, and styling products; explore the Olaplex range and compare Indian, Brazilian, Cambodian, and Malaysian extension hair.",
+          product: "Shampoo · conditioner · color + care",
+          productDetail: "Products to wash, treat, maintain color, style, and finish your at-home routine.",
           extensions: "Indian · Brazilian · Cambodian · Malaysian",
           extensionsDetail: "Options to compare texture, length, fullness, and the right install plan.",
-          price: "Low prices in the studio",
-          link: "Explore products + extensions",
+          price: "Beauty supply inside the studio",
+          link: "Explore the beauty supply + extensions",
           imageAlt: "Professional hair-care products arranged on a rose-toned styling counter",
         },
         process: {

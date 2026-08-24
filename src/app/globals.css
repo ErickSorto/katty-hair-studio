@@ -7397,6 +7397,26 @@ section {
   object-position: 38% center;
 }
 
+.retail-store-section {
+  background:
+    radial-gradient(circle at 96% 14%, rgba(193, 147, 101, 0.2), transparent 22rem),
+    linear-gradient(135deg, #fffdfd 0%, #f8dfe5 100%);
+}
+
+.retail-store-section .retail-supply-art {
+  aspect-ratio: 4 / 3;
+  min-height: 0;
+}
+
+.retail-store-section .retail-supply-art img {
+  object-position: 50% center;
+  transition: transform 600ms cubic-bezier(0.2, 0.72, 0.24, 1);
+}
+
+.retail-store-section .retail-supply-art:hover img {
+  transform: scale(1.025);
+}
+
 .retail-supply-art-label,
 .retail-product-image > span {
   position: absolute;
@@ -7539,6 +7559,7 @@ section {
   .retail-supply-art,
   .retail-product-image,
   .retail-extension-art { min-height: min(126vw, 540px); }
+  .retail-store-section .retail-supply-art { min-height: 0; }
   .retail-supply-copy h2,
   .retail-intro-copy h2,
   .retail-product-copy h2,
@@ -7557,6 +7578,12 @@ section {
   .extension-origin-grid > div { min-height: auto; padding: 14px 0; }
   .retail-faq-list summary { min-height: 76px; font-size: 0.98rem; }
   .retail-faq-list details p { margin-right: 12px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .retail-store-section .retail-supply-art img {
+    transition: none;
+  }
 }
 
 .home-faq-section {
