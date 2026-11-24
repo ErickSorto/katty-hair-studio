@@ -147,7 +147,7 @@ At `1440x900`, the current rendered baselines are: header `130px`; hero top `130
 
 ### Mobile geometry
 
-- At `740px` and below, `.hero` is exactly `calc(100svh - var(--header-height) - var(--mobile-action-height))` and has `min-height: 0`.
+- At widths of `740px` and below, the hero fills the space between the fixed header and bottom action bar. At heights of `700px` and below, use that space as a minimum height and place the trust strip in its own grid row so longer content can scroll.
 - Reserve `--mobile-signal-height: 86px` at the bottom of the hero. The background, shades, and model visual stop above this signal strip.
 - `.hero-image` height is `calc(100% - var(--mobile-signal-height))` with `object-position: 36% 50%`.
 - Model: `top: 24px`, `right: -8px`, width `max(min(85vw, 340px), calc(39.3svh - 114px))`.
@@ -157,6 +157,7 @@ At `1440x900`, the current rendered baselines are: header `130px`; hero top `130
 - Stack hero actions within `min(54vw, 204px)`. Each is at least `46px` high. The primary gradient button precedes the dark translucent services button.
 - At `390x844`, the hero must show the model's entire face, all three H1 lines, both CTAs, and all three trust cells without horizontal overflow.
 - At heights at or below `820px`, reduce H1 sizing using the existing short-height media query. Do not solve short heights by hiding either hero CTA.
+- At `390x560` and `320x560`, verify in English and Spanish that both hero links are at least `46px` high, respond to taps, and end at least `10px` above the trust strip.
 
 ## Trust Signal And Review Section Rules
 
