@@ -138,9 +138,10 @@ At `1440x900`, the current rendered baselines are: header `130px`; hero top `130
 - `.hero` uses `min-height: calc(100svh - var(--header-height))`.
 - `.hero-image` uses `object-fit: cover` and `object-position: 50% 50%`.
 - Base model: `top: clamp(18px, 3vh, 30px)`, `right: clamp(22px, 4vw, 72px)`, width `max(clamp(360px, 37vw, 510px), calc(39.3svh - 63px))`.
-- At `1280px` and above, model right is `clamp(88px, 6vw, 112px)` and width is `max(clamp(540px, 36vw, 640px), calc(39.3svh - 63px))`.
-- `.hero-content` is bottom-aligned, `min(760px, 100%)` wide, and padded with `clamp(68px, 10vh, 118px)` above and `clamp(88px, 13vh, 144px)` below.
-- Desktop H1 uses the single text node `Katty Hair Studio`, Playfair Display, `clamp(4.4rem, 8vw, 8.4rem)`, `0.88` line-height, and a cream-peach-brass text gradient. Keep its shadow and underline accent.
+- At `1280px` and above, the portrait grows with the viewport. Its width uses `max(540px, min(36vw, 68svh), calc(39.3svh - 63px))` and its right inset is `6vw`.
+- `.hero-content` is bottom-aligned, spans 55% of the viewport, and starts at the page gutter. Apply the gutter as a margin so the text keeps its full width. The content is padded with `clamp(68px, 10vh, 118px)` above and `clamp(88px, 13vh, 144px)` below.
+- Desktop H1 uses the single text node `Katty Hair Studio`, Playfair Display, one line at a fluid size of `clamp(2.9rem, 6.4vw, max(5vw, 12svh))`, `0.88` line-height, and a cream-peach-brass text gradient. Keep its shadow and underline accent.
+- Above 1440px, the homepage scales its base typography up to 150% and its content container to the larger of 87.5rem and 86vw. Check the heading, model, actions, and section columns at 1920px, 2560px, and 3440px.
 - The left content sequence is eyebrow, H1, supporting sentence, two CTA buttons, then the small review/quote line. Both CTAs must fit in the first viewport at `1440x900`.
 - The left-side wine gradient must make all text readable without darkening the model's face.
 

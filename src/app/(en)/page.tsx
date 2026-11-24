@@ -874,7 +874,7 @@ export function HomePage({ locale = "en" }: { locale?: Locale }) {
       };
 
   return (
-    <main className="site-shell">
+    <main className="site-shell home-page">
       <HomeJsonLd faqs={localizedFaqs} locale={locale} />
       <ViewportReveal />
       <SiteHeader locale={locale} />
@@ -897,7 +897,7 @@ export function HomePage({ locale = "en" }: { locale?: Locale }) {
           height={1698}
           loading="eager"
           quality={75}
-          sizes="(max-width: 740px) 100vw, (max-width: 1100px) 42vw, 510px"
+          sizes="(max-width: 740px) 100vw, (max-width: 1279px) 42vw, max(540px, min(36vw, 68svh), calc(39.3svh - 63px))"
           src="/hero/katty-red-hair-model-cutout-v8.webp"
           width={667}
         />
@@ -1071,7 +1071,7 @@ export function HomePage({ locale = "en" }: { locale?: Locale }) {
             <Image
               alt={copy.plan.artAlt}
               fill
-              sizes="(max-width: 1100px) 100vw, 42vw"
+              sizes="(max-width: 900px) 100vw, 42vw"
               src="/editorial/katty-reference-chestnut-layers-v4.webp"
             />
           </figure>
